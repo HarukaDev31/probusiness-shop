@@ -30,7 +30,11 @@
               <Icon name="heroicons:chevron-down" class="w-4 h-4 ml-1" />
             </button>
             <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-64 hidden group-hover:block">
-              <ul>
+              <ul 
+                class="py-2 max-h-60 overflow-y-auto"
+                
+              >
+               
                 <li v-for="category in categories" :key="category.id">
                   <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100 ">
                     {{ category.name }}
@@ -39,7 +43,8 @@
               </ul>
             </div>
           </li>
-          <li v-for="category in categories" :key="category.id">
+           <!--if categories. length >8-->
+          <li v-for="category in categories.slice(1,9)" :key="category.id">
             <NuxtLink :to="`/category/${category.slug}`" class="nav-link py-3 px-10 block">
               {{ category.name }}
             </NuxtLink>

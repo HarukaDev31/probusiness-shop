@@ -1,17 +1,16 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useInitialData } from '@/composables/useInitialData';
+import { categoryService } from '@/services/category-service';
 export const useCategoryStore = defineStore('category', () => {
   const categories = ref([]);
 
   async function fetchCategories(initialData = null) {
-    if (initialData) {
-      categories.value = initialData;
-    }
-    else {
-      categories.value = useInitialData().categories;
-    }
-    
+    const  data  = await categoryService.getCategories();
+    categories.value = data.map(category => ({
+      ...category,
+      slug: category.slug || category.name.toLowerCase().replace(/\s+/g, '-')
+    }));
     return categories.value;
   }
 

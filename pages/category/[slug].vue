@@ -51,14 +51,14 @@ const category = computed(() => {
 // Get products for this category
 const categoryProducts = computed(() => {
   if (!category.value) return [];
-  return products.value.filter(product => product.categoryId === category.value.id);
+  return products.value.filter(product => product.category_id === category.value.id);
 });
 
 // Ensure data is loaded
 onMounted(async () => {
   await Promise.all([
-    categoryStore.fetchCategories(),
-    productStore.fetchProducts()
+    // categoryStore.fetchCategories(),
+    productStore.fetchProductsByCategory(slug)
   ]);
   loading.value = false;
 });

@@ -4,8 +4,8 @@
       <Loader v-if="pending" />
       <div v-else>
         <Hero />
-        <CategorySection v-for="category in categories" :key="category.id" :title="category.name"
-          :slug="category.slug" :products="getProductsByCategory(category.id).slice(0, 4)" />
+        <CategorySection v-for="category in categories" :key="category.id" :title="category.name" :slug="category.slug"
+          :products="getProductsByCategory(category.id)" />
       </div>
     </Transition>
   </ClientOnly>
@@ -22,26 +22,17 @@ const productStore = useProductStore();
 const { categories } = storeToRefs(categoryStore);
 const { products } = storeToRefs(productStore);
 
-// Limit to a few featured categories for homepage
 
 
 const getProductsByCategory = (categoryId) => {
-  return products.value.filter(product => product.categoryId === categoryId);
+  return products.value.filter(product => product.category_id === categoryId);
 };
 
 const loadingStore = useLoadingStore();
 
-const { data, pending, error } = await useAsyncData(
-  'init',
-  async () => {
-    await Promise.all([
-      // Ejecuta tus stores/métodos asíncronos aquí
-      categoryStore.fetchCategories(),
-      productStore.fetchProducts()
-    ]);
-  }
-)
+
 onMounted(async () => {
+  await productStore.fetchProducts();
 
 });
 

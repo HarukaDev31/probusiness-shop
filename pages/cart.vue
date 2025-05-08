@@ -30,9 +30,12 @@
                 class="block  w-full  py-3 text-center text-gray-400 rounded-full border-2  hover:underline border-gray-300">
                 <p>Regresar</p>
               </NuxtLink>
-              <button class="btn w-full py-3 text-lg  rounded-full">
+              <NuxtLink 
+              to="/checkout"
+              class="btn w-full py-3 text-lg  rounded-full text-center   border-2 "
+              >
                 Continuar
-              </button>
+              </NuxtLink>
             </div>
           </div>
         </div>
