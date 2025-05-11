@@ -1,11 +1,11 @@
 <template>
   <ClientOnly>
     <Transition name="fade" mode="out-in">
-      <Loader v-if="pending" />
-      <div v-else>
+
+      <div>
         <Hero />
         <CategorySection v-for="category in categories" :key="category.id" :title="category.name" :slug="category.slug"
-          :products="getProductsByCategory(category.id)" />
+          :products="getProductsByCategory(category.id)" :is-loading="isLoadingProducts" />
       </div>
     </Transition>
   </ClientOnly>
@@ -18,22 +18,18 @@ import { useProductStore } from '~/stores/product';
 
 const categoryStore = useCategoryStore();
 const productStore = useProductStore();
-
 const { categories } = storeToRefs(categoryStore);
 const { products } = storeToRefs(productStore);
-
-
-
+const isLoadingProducts = ref(true);
 const getProductsByCategory = (categoryId) => {
   return products.value.filter(product => product.category_id === categoryId);
 };
 
 const loadingStore = useLoadingStore();
 
-
 onMounted(async () => {
   await productStore.fetchProducts();
-
+  isLoadingProducts.value = false;
 });
 
 </script>

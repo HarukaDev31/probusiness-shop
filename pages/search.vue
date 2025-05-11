@@ -36,18 +36,16 @@ const { products } = storeToRefs(productStore);
 const loading = ref(true);
 
 const searchResults = computed(() => {
-  if (!searchQuery.value) return [];
   
-  const query = searchQuery.value.toLowerCase();
-  return products.value.filter(product => 
-    product.name.toLowerCase().includes(query) || 
-    (product.description && product.description.toLowerCase().includes(query))
-  );
+  return productStore.products;
 });
 
 // Ensure data is loaded
 onMounted(async () => {
-  await productStore.fetchProducts();
+  if (!searchQuery.value) return [];
+  
+  const query = searchQuery.value.toLowerCase();
+  await productStore.searchProducts(query)
   loading.value = false;
 });
 

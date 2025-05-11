@@ -14,8 +14,8 @@
             class="aspect-square overflow-hidden rounded-md cursor-pointer border-2"
             :class="{ 'border-primary': activeMediaIndex === media.originalIndex }"
             @mouseover="activeMediaIndex = media.originalIndex">
-            <img v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
-              class="w-full h-full object-contain">
+            <NuxtImg v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
+              class="w-full h-full object-contain"/>
             <video v-else :src="media.url" :alt="product.nombre" class="w-full h-full object-contain" muted
               loop></video>
           </div>
@@ -45,8 +45,8 @@
           <div class="aspect-square overflow-hidden rounded-md w-full relative">
 
 
-            <img v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
-              class="w-full h-full object-contain">
+            <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
+              class="w-full h-full object-contain"/>
             <video v-else :src="activeMedia.url" :alt="product.nombre" class="w-full h-full object-contain" autoplay
               muted loop></video>
           </div>

@@ -8,7 +8,8 @@
         </NuxtLink>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <ProductCard
+        <ProductCardSkeleton v-if="isLoading" v-for="i in 4" :key="i" />
+        <ProductCard v-else
           v-for="product in products"
           :key="product.id"
           :product="product"
@@ -31,6 +32,10 @@ defineProps({
   products: {
     type: Array,
     required: true
+  },
+  isLoading: {
+    type: Boolean,
+    default: false
   }
 });
 </script>

@@ -48,7 +48,6 @@ const category = computed(() => {
   return categories.value.find(c => c.slug === slug);
 });
 
-// Get products for this category
 const categoryProducts = computed(() => {
   if (!category.value) return [];
   return products.value.filter(product => product.category_id === category.value.id);

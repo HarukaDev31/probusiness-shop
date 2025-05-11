@@ -8,7 +8,7 @@
         <h1 class="text-2xl font-bold mb-2">Pedido realizado</h1>
         <p class="text-gray-600 mb-2">¡Gracias por confiar en nosotros!</p>
         <p class="text-sm text-gray-500 mb-8">
-          Su pedido se ha realizado con éxito, en unos minutos le llegará a su correo la información.
+          Su pedido se ha realizado con éxito, le enviaremos la cotización a la brevedad posible.
           <br>
           Será derivado a WhatsApp para ser atendido por uno de nuestros asesores.
         </p>

@@ -5,11 +5,11 @@
       <div class="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
         <div class="flex items-start gap-4 pb-6 border-b">
           <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
-            <img 
+            <NuxtImg 
               :src="cartItems[0]?.main_image_url" 
               :alt="cartItems[0]?.nombre"
               class="w-full h-full object-contain p-2"
-            >
+            />
           </div>
           <div>
             <h3 class="font-medium">{{ cartItems[0]?.nombre }}</h3>

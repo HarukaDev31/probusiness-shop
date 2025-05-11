@@ -1,33 +1,27 @@
 <template>
-  <footer class="bg-secondary text-white py-8 mt-12">
+  <footer class="bg-black text-white py-10 mt-12">
     <div class="container-custom">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
-          <h3 class="text-lg font-bold mb-4">ProBusiness</h3>
-          <p class="text-sm">Tu tienda online con productos de alta calidad para todas tus necesidades.</p>
+          <NuxtImg src="/images/logo-white.svg" alt="ProBusiness Logo" class="h-20" loading="lazy"/>
         </div>
         <div>
-          <h3 class="text-lg font-bold mb-4">Enlaces rápidos</h3>
-          <ul class="space-y-2">
-            <li v-for="category in categories.slice(0, 5)" :key="category.id">
-              <NuxtLink :to="`/category/${category.slug}`" class="text-sm hover:text-primary">
-                {{ category.name }}
-              </NuxtLink>
-            </li>
-          </ul>
+          Importadora líder con comunidad sólida y estándares profesionales destacados, comprometida con la excelencia
+          en importación.
         </div>
-        <div>
+        <!-- <div>
           <h3 class="text-lg font-bold mb-4">Contacto</h3>
           <p class="text-sm mb-2">Correo: info@probusiness.com</p>
           <p class="text-sm mb-4">Teléfono: +51 123 456 789</p>
           <div class="flex space-x-4">
-            <a v-for="social in socialMedia" :key="social.name" :href="social.url" class="text-white hover:text-primary">
+            <a v-for="social in socialMedia" :key="social.name" :href="social.url"
+              class="text-white hover:text-primary">
               <Icon :name="social.icon" class="w-6 h-6" />
             </a>
           </div>
-        </div>
+        </div> -->
       </div>
-      <div class="mt-8 pt-6 border-t border-gray-700 text-center text-sm">
+      <div class="mt-8 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
         <ClientOnly>
           <p>&copy; {{ currentYear }} ProBusiness. Todos los derechos reservados.</p>
         </ClientOnly>

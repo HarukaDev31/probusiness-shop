@@ -23,5 +23,11 @@ class ProductService {
         const data = await response.json();
         return data.data;
     }
+    async searchProducts(searchTerm) {
+        const { public: { apiUrl } } = useRuntimeConfig();
+        const response = await fetch(`${apiUrl}/products?search=${searchTerm}`);
+        const data = await response.json();
+        return data.data;
+    }
 }
 export const productService = new ProductService();

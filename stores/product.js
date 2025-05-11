@@ -33,6 +33,13 @@ export const useProductStore = defineStore('product', () => {
       slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
     }));
   }
+  async function searchProducts(searchTerm) {
+    const data = await productService.searchProducts(searchTerm);
+    products.value = data.map(product => ({
+      ...product,
+      slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
+    }));
+  }
 
   return {
     products,
@@ -40,6 +47,7 @@ export const useProductStore = defineStore('product', () => {
     fetchProducts,
     fetchProductsByCategory,
     fetchProductById,
-    fetchRelatedProducts
+    fetchRelatedProducts,
+    searchProducts
   };
 });

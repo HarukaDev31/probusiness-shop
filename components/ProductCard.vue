@@ -3,11 +3,12 @@
   :to="`/product/${product.id}`"
   >
     <div class="relative pb-[100%] overflow-hidden">
-      <img 
+      <NuxtImg  
         :src="product.main_image_url" 
-        :alt="product.nombre" 
+        :alt="product.nombre"
+        loading="lazy"
         class="absolute inset-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
-      >
+      />
     </div>
     <div class="p-4 flex flex-col flex-grow">
       <h3 class="text-lg font-semibold mb-2 line-clamp-2">{{ product.nombre }}</h3>

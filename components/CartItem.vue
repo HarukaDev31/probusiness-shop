@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col sm:flex-row items-start sm:items-center py-6 border-b border-gray-200">
     <div class="sm:w-1/5 w-full h-full sm:h-1/5  flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-4 mb-4 sm:mb-0">
-      <img :src="item.main_image_url" :alt="item.nombre" class="w-full h-full  object-contain ">
+      <NuxtImg :src="item.main_image_url" :alt="item.nombre" class="w-full h-full  object-contain "/>
     </div>
     <div class="flex-grow xl:w-2/5 md:w-3/5 w-3/5">
       <h3 class="text-lg font-medium">{{ item.nombre }}</h3>
