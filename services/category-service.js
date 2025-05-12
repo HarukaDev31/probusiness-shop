@@ -1,4 +1,5 @@
 class CategoryService {
+  
   async getCategories() {
     //get runtimeConfig variable
     const { public: { apiUrl } } = useRuntimeConfig();

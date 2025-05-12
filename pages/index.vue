@@ -13,6 +13,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
+import { onUnmounted } from 'vue';
 import { useCategoryStore } from '~/stores/category';
 import { useProductStore } from '~/stores/product';
 
@@ -24,14 +25,14 @@ const isLoadingProducts = ref(true);
 const getProductsByCategory = (categoryId) => {
   return products.value.filter(product => product.category_id === categoryId);
 };
-
-const loadingStore = useLoadingStore();
-
 onMounted(async () => {
   await productStore.fetchProducts();
   isLoadingProducts.value = false;
 });
-
+onUnmounted(async (to) => {
+  productStore.products = [];
+  isLoadingProducts.value = true;
+});
 </script>
 <style scoped>
 .fade-enter-active,

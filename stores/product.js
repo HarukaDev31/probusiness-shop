@@ -5,8 +5,8 @@ import { productService } from '../services/product-service';
 export const useProductStore = defineStore('product', () => {
   const products = ref([]);
   const relatedProducts = ref([]);
+  const totalProducts = ref(0);
   async function fetchProducts() {
-    console.log('fetchProducts');
     const data = await productService.getProducts();
     products.value = data.map(product => ({
       ...product,
@@ -14,12 +14,13 @@ export const useProductStore = defineStore('product', () => {
     }));
 
   }
-  async function fetchProductsByCategory(categorySlug) {
-    const data = await productService.getProductsByCategory(categorySlug);
-    products.value = data.map(product => ({
+  async function fetchProductsByCategory(categorySlug,currentPage = 1) {
+    const {data,total} = await productService.getProductsByCategory(categorySlug,currentPage);
+    totalProducts.value = total;
+    products.value.push(...data.map(product => ({
       ...product,
       slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
-    }));
+    })));
 
   }
   async function fetchProductById(id) {
@@ -33,12 +34,13 @@ export const useProductStore = defineStore('product', () => {
       slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
     }));
   }
-  async function searchProducts(searchTerm) {
-    const data = await productService.searchProducts(searchTerm);
-    products.value = data.map(product => ({
+  async function searchProducts(searchTerm,currentPage = 1) {
+    const {data,total} = await productService.searchProducts(searchTerm,currentPage);
+    totalProducts.value = total;
+    products.value.push(...data.map(product => ({
       ...product,
       slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
-    }));
+    })));
   }
 
   return {
@@ -48,6 +50,7 @@ export const useProductStore = defineStore('product', () => {
     fetchProductsByCategory,
     fetchProductById,
     fetchRelatedProducts,
-    searchProducts
+    searchProducts,
+    totalProducts
   };
 });

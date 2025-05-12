@@ -2,15 +2,20 @@
   <NuxtLink class="product-card flex flex-col h-full"
   :to="`/product/${product.id}`"
   >
-    <div class="relative pb-[100%] overflow-hidden">
+    <div class="relative pb-[100%] overflow-hidden relative">
       <NuxtImg  
         :src="product.main_image_url" 
         :alt="product.nombre"
         loading="lazy"
         class="absolute inset-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
       />
+      <div class="text-sm text-gray-500 mb-2 absolute top-2 right-2 bg-white rounded-full px-2 py-1 shadow-md">
+        <span >{{ product.category_name }}</span>
+      </div>
     </div>
     <div class="p-4 flex flex-col flex-grow">
+      <!--badge from category-->
+ 
       <h3 class="text-lg font-semibold mb-2 line-clamp-2">{{ product.nombre }}</h3>
       <div class="text-sm text-gray-500 mb-2">Orden mínima: {{ product.moq }}</div>
       <div class="text-2xl font-bold text-black mt-auto ">S/{{ product.precio }}</div>

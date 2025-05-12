@@ -1,15 +1,18 @@
 class ProductService {
     async getProducts() {
         const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?per_category=5`);
+        const response = await fetch(`${apiUrl}/products?per_category=5&all_categories=true`);
         const data = await response.json();
         return data.data;
     }
-    async getProductsByCategory(categorySlug) {
+    async getProductsByCategory(categorySlug, currentPage = 1) {
         const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?category=${categorySlug}&per_category=all`);
+        const response = await fetch(`${apiUrl}/products?category=${categorySlug}&per_category=50&current_page=${currentPage}`);
         const data = await response.json();
-        return data.data;
+        return {
+            data: data.data,
+            total: data.meta.total
+        }
     }
     async getProductById(id) {
         const { public: { apiUrl } } = useRuntimeConfig();
@@ -23,11 +26,11 @@ class ProductService {
         const data = await response.json();
         return data.data;
     }
-    async searchProducts(searchTerm) {
+    async searchProducts(searchTerm, currentPage = 1) {
         const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?search=${searchTerm}`);
+        const response = await fetch(`${apiUrl}/products?search=${searchTerm}&per_category=50&current_page=${currentPage}`);
         const data = await response.json();
-        return data.data;
+        return { data: data.data, total: data.meta.total };
     }
 }
 export const productService = new ProductService();
