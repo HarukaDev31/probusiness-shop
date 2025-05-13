@@ -23,22 +23,22 @@ const slides = [
   {
     id: 1,
     title: 'Productos electrónicos',
-    image: 'https://images.pexels.com/photos/1029757/pexels-photo-1029757.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    image: '/images/hero.jpg'
   },
   {
     id: 2,
     title: 'Productos para el hogar',
-    image: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    image: '/images/hero.jpg'
   },
   {
     id: 3,
     title: 'Mascotas',
-    image: 'https://images.pexels.com/photos/4588047/pexels-photo-4588047.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    image: '/images/hero.jpg'
   },
   {
     id: 4,
     title: 'Productos de belleza',
-    image: 'https://images.pexels.com/photos/3373746/pexels-photo-3373746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+    image: '/images/hero.jpg'
   }
 ];
 
