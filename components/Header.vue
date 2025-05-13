@@ -125,7 +125,7 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useCategoryStore } from '~/stores/category';
-
+import logo from '~/assets/images/logo.svg';
 const categoryStore = useCategoryStore();
 const { categories } = storeToRefs(categoryStore);
 
