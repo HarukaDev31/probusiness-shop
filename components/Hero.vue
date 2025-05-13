@@ -23,22 +23,22 @@ const slides = [
   {
     id: 1,
     title: 'Productos electrónicos',
-    image: '/images/hero.jpg'
+    image: '/images/hero.jpeg'
   },
   {
     id: 2,
     title: 'Productos para el hogar',
-    image: '/images/hero.jpg'
+    image: '/images/hero.jpeg'
   },
   {
     id: 3,
     title: 'Mascotas',
-    image: '/images/hero.jpg'
+    image: '/images/hero.jpeg'
   },
   {
     id: 4,
     title: 'Productos de belleza',
-    image: '/images/hero.jpg'
+    image: '/images/hero.jpeg'
   }
 ];
 
