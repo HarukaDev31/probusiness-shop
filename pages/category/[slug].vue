@@ -1,7 +1,7 @@
   <template>
     <div class="container-custom py-8">
       <div v-if="loading" class="flex justify-center mb-8 flex-col items-start w-full">
-        <h1 class="text-3xl font-bold mb-8">{{ category.name }}</h1>
+        <h1 class="text-3xl font-bold mb-8">{{ category?.name }}</h1>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
           <ProductCardSkeleton v-for="i in 12" :key="i" />
         </div>
@@ -9,7 +9,7 @@
       </div>
 
       <template v-else-if="category">
-        <h1 class="text-3xl font-bold mb-8">{{ category.name }}  {{ products.length }} {{ total }}</h1>
+        <h1 class="text-3xl font-bold mb-8">{{ category?.name }}</h1>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           
@@ -31,7 +31,6 @@
         <p class="text-lg text-gray-500">Categoría no encontrada.</p>
         <NuxtLink to="/" class="mt-4 btn inline-block">Volver al inicio</NuxtLink>
       </div>
-      {{ total }} {{ products.length }}
       <div v-if="total >= 50
         && products.length < total" class="flex justify-center mt-6">
         <button @click="loadMore" class="btn py-3">Ver más</button>

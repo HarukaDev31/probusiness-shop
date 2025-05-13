@@ -48,36 +48,77 @@
     <!-- Navigation -->
     <nav class="bg-secondary text-white">
       <div class="container-custom">
-        <ul class="flex items-center flex-col md:flex-row">
+        <!-- Mobile menu button -->
+        <div class="flex justify-between items-center py-3 md:hidden">
+          <div  class="mobile-menu-button flex items-center justify-between w-full">
+            <span class="text-white">Menú</span>
+            <Icon  @click="toggleMobileMenu" :name="mobileMenuOpen ? 'heroicons:x-mark' : 'heroicons:bars-3'" class="w-6 h-6 ml-2 text-white" />
+          </div>
+        </div>
+
+        <!-- Desktop menu -->
+        <ul class="hidden md:flex items-center flex-row">
           <li class="relative group">
             <button class="nav-link py-3 flex items-center">
               Todas las categorías
               <Icon name="heroicons:chevron-down" class="w-4 h-4 ml-1" />
             </button>
-            <div
-              class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-64 hidden group-hover:block">
+            <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-64 hidden group-hover:block">
               <ul class="py-2 max-h-60 overflow-y-auto">
-
                 <li v-for="category in categories" :key="category.id">
-                  <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100 ">
+                  <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100">
                     {{ category.name }}
                   </NuxtLink>
                 </li>
               </ul>
             </div>
           </li>
-          <!--if categories. length >8-->
+          <!-- Desktop category links -->
           <li v-for="category in categories.slice(1, 9)" :key="category.id">
             <NuxtLink :to="`/category/${category.slug}`" class="nav-link py-3 px-10 block">
               {{ category.name }}
             </NuxtLink>
           </li>
         </ul>
+
+        <!-- Mobile menu (hidden by default) -->
+        <div :class="['md:hidden', {'hidden': !mobileMenuOpen}]">
+          <ul class="flex flex-col w-full">
+            <!-- Mobile categories dropdown trigger -->
+            <li class="relative">
+              <button @click="toggleCategoriesDropdown" class="w-full text-left py-3 px-4 flex justify-between items-center border-b border-gray-700">
+                Todas las categorías
+                <Icon :name="categoriesOpen ? 'heroicons:chevron-up' : 'heroicons:chevron-down'" class="w-4 h-4" />
+              </button>
+              <!-- Mobile categories list -->
+              <div v-if="categoriesOpen" class="bg-gray-800 w-full">
+                <ul class="py-2 max-h-60 overflow-y-auto">
+                  <li v-for="category in categories" :key="category.id">
+                    <NuxtLink 
+                      :to="`/category/${category.slug}`" 
+                      class="block px-6 py-2 hover:bg-gray-700"
+                      @click="closeAllMenus"
+                    >
+                      {{ category.name }}
+                    </NuxtLink>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <!-- Mobile direct category links -->
+            <li v-for="category in categories.slice(1, 9)" :key="category.id">
+              <NuxtLink 
+                :to="`/category/${category.slug}`" 
+                class="block py-3 px-4 border-b border-gray-700 hover:bg-gray-700"
+                @click="closeAllMenus"
+              >
+                {{ category.name }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
-
-    <!-- Social Media Dropdown -->
-    
   </header>
 </template>
 
@@ -95,8 +136,40 @@ const socialMedia = [
   { name: 'Tiktok', url: '#', icon: 'mdi:tik_tok' }
 ];
 
-// Ensure categories are loaded
+const mobileMenuOpen = ref(false);
+const categoriesOpen = ref(false);
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+  if (!mobileMenuOpen.value) {
+    categoriesOpen.value = false;
+  }
+};
+
+const toggleCategoriesDropdown = () => {
+  categoriesOpen.value = !categoriesOpen.value;
+};
+
+const closeAllMenus = () => {
+  mobileMenuOpen.value = false;
+  categoriesOpen.value = false;
+};
+
+// Close menus when window is resized
+const handleResize = () => {
+  if (window.innerWidth >= 768) { // md breakpoint
+    closeAllMenus();
+  }
+};
+
+// Ensure categories are loaded and set up resize listener
 onMounted(() => {
   categoryStore.fetchCategories();
+  window.addEventListener('resize', handleResize);
+});
+
+// Clean up resize listener
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize);
 });
 </script>
