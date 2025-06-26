@@ -131,11 +131,23 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useCategoryStore } from '~/stores/category';
-import { ref, onMounted } from 'vue'
+import { useUserStore } from '~/stores/user'
+import { onMounted, watchEffect, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const categoryStore = useCategoryStore();
 const { categories } = storeToRefs(categoryStore);
+
+const userStore = useUserStore()
+onMounted(() => {
+  userStore.syncFromLocalStorage()
+  window.addEventListener('storage', userStore.syncFromLocalStorage)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('storage', userStore.syncFromLocalStorage)
+})
+const userName = computed(() => userStore.name)
 
 const socialMedia = [
   { name: 'Instagram', url: '#', icon: 'mdi:instagram' },
@@ -146,7 +158,6 @@ const socialMedia = [
 
 const mobileMenuOpen = ref(false);
 const categoriesOpen = ref(false);
-const userName = ref('')
 const router = useRouter()
 
 const toggleMobileMenu = () => {
@@ -165,14 +176,8 @@ const closeAllMenus = () => {
   categoriesOpen.value = false;
 };
 
-function checkUser() {
-  userName.value = localStorage.getItem('user_name') || ''
-}
-
 function logout() {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('user_name')
-  userName.value = ''
+  userStore.logout()
   router.push('/login')
 }
 
@@ -186,14 +191,11 @@ const handleResize = () => {
 // Ensure categories are loaded and set up resize listener
 onMounted(() => {
   categoryStore.fetchCategories();
-  checkUser()
   window.addEventListener('resize', handleResize);
-  window.addEventListener('storage', checkUser)
 });
 
 // Clean up resize listener
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize);
-  window.removeEventListener('storage', checkUser)
 });
 </script>

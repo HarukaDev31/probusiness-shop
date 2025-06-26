@@ -110,6 +110,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '~/stores/user'
 const router = useRouter()
 const showRegister = ref(false)
 const registerSuccess = ref(false)
@@ -207,14 +208,16 @@ function handleLogin() {
         data = { message: 'Respuesta inválida del servidor' }
       }
       if (res.ok && data.access_token) {
-        localStorage.setItem('access_token', data.access_token)
-        if (data.user && data.user.name) {
-          localStorage.setItem('user_name', data.user.name)
-        }
+        const userStore = useUserStore()
+        userStore.setUser({
+          name: data.user?.name,
+          email: data.user?.email,
+          token: data.access_token
+        })
         loginSuccess.value = true
         setTimeout(() => {
           loginSuccess.value = false
-          window.location.href = '/'
+          router.push('/')
         }, 2000)
       } else {
         loginError.value = data.message || 'Credenciales incorrectas'
