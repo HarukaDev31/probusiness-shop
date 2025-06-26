@@ -12,18 +12,24 @@
 
       <!-- User Actions -->
       <div class="flex items-center gap-4">
-        <button class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-primary">
-          <svg width="23" height="25" viewBox="0 0 23 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M21.4998 24.0007V21.4451C21.4998 20.0895 20.973 18.7895 20.0353 17.831C19.0977 16.8725 17.8259 16.334 16.4998 16.334H6.49982C5.17373 16.334 3.90196 16.8725 2.96428 17.831C2.0266 18.7895 1.49982 20.0895 1.49982 21.4451V24.0007"
-              stroke="#272A30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <path
-              d="M11.4998 11.2222C14.2612 11.2222 16.4998 8.9339 16.4998 6.11111C16.4998 3.28832 14.2612 1 11.4998 1C8.73839 1 6.49982 3.28832 6.49982 6.11111C6.49982 8.9339 8.73839 11.2222 11.4998 11.2222Z"
-              stroke="#272A30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-
-          Iniciar sesión
-        </button>
+        <div v-if="userName" class="relative group flex items-center gap-2 text-sm font-medium text-gray-700">
+          <button class="flex items-center gap-2 focus:outline-none">
+            <span>Hola, {{ userName }}</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-md hidden group-hover:block z-20">
+            <button @click="logout" class="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">Cerrar sesión</button>
+          </div>
+        </div>
+        <div v-else>
+          <NuxtLink to="/login" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-red-500">
+            <svg width="23" height="25" viewBox="0 0 23 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21.4998 24.0007V21.4451C21.4998 20.0895 20.973 18.7895 20.0353 17.831C19.0977 16.8725 17.8259 16.334 16.4998 16.334H6.49982C5.17373 16.334 3.90196 16.8725 2.96428 17.831C2.0266 18.7895 1.49982 20.0895 1.49982 21.4451V24.0007" stroke="#272A30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M11.4998 11.2222C14.2612 11.2222 16.4998 8.9339 16.4998 6.11111C16.4998 3.28832 14.2612 1 11.4998 1C8.73839 1 6.49982 3.28832 6.49982 6.11111C6.49982 8.9339 8.73839 11.2222 11.4998 11.2222Z" stroke="#272A30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Iniciar sesión
+          </NuxtLink>
+        </div>
         <CartButton />
         <!-- dropdown redes with first red instagram-->
         <div class="relative group">
@@ -125,6 +131,8 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useCategoryStore } from '~/stores/category';
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const categoryStore = useCategoryStore();
 const { categories } = storeToRefs(categoryStore);
@@ -138,6 +146,8 @@ const socialMedia = [
 
 const mobileMenuOpen = ref(false);
 const categoriesOpen = ref(false);
+const userName = ref('')
+const router = useRouter()
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
@@ -155,6 +165,17 @@ const closeAllMenus = () => {
   categoriesOpen.value = false;
 };
 
+function checkUser() {
+  userName.value = localStorage.getItem('user_name') || ''
+}
+
+function logout() {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('user_name')
+  userName.value = ''
+  router.push('/login')
+}
+
 // Close menus when window is resized
 const handleResize = () => {
   if (window.innerWidth >= 768) { // md breakpoint
@@ -165,11 +186,14 @@ const handleResize = () => {
 // Ensure categories are loaded and set up resize listener
 onMounted(() => {
   categoryStore.fetchCategories();
+  checkUser()
   window.addEventListener('resize', handleResize);
+  window.addEventListener('storage', checkUser)
 });
 
 // Clean up resize listener
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize);
+  window.removeEventListener('storage', checkUser)
 });
 </script>

@@ -34,8 +34,8 @@ export default defineNuxtConfig({
       xxl: 1536,
       '2xl': 1536
     },
-    provider: 'netlify',
-    domains: ["tienda.probusiness.pe", "localhost"],
+    // provider: 'netlify',
+    // domains: ["tienda.probusiness.pe", "localhost"],
     // Domains that are allowed to be optimized
     
     // Adjust image quality
