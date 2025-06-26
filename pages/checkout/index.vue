@@ -149,6 +149,12 @@ onMounted(() => {
     const savedInfo = localStorage.getItem('checkoutInfo');
     if (savedInfo) {
         form.value = JSON.parse(savedInfo);
+    } else {
+        // Autocompletar si el usuario está logueado
+        const userName = localStorage.getItem('user_name');
+        const userEmail = localStorage.getItem('user_email');
+        if (userName) form.value.fullName = userName;
+        if (userEmail) form.value.email = userEmail;
     }
 });
 </script>
