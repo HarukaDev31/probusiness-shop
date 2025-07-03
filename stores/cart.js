@@ -22,21 +22,44 @@ export const useCartStore = defineStore('cart', {
 
   actions: {
     addItem(product) {
+      // Helper para extraer el número del string de precio
+      const parsePrecio = (precioStr) => {
+        if (typeof precioStr === 'number') return precioStr;
+        if (!precioStr) return 0;
+        // Buscar el primer número decimal en el string
+        const match = precioStr.replace(',', '.').match(/([0-9]+(\.[0-9]+)?)/);
+        return match ? parseFloat(match[1]) : 0;
+      };
+
       const existingItem = this.items.find(item => item.id === product.id);
-      
+      // Fallback definitivo para imagen principal
+      let image = product.image || product.main_image_url;
+      if (!image || typeof image !== 'string' || image.trim() === '' || image === 'undefined' || image === 'null') {
+        image = '/images/logo.png';
+      }
+      // Solo guardamos nombre, precio, cantidad e imagen principal
+      const cleanProduct = {
+        id: product.id,
+        name: product.name || product.nombre || '',
+        price: parsePrecio(product.price),
+        quantity: product.quantity || 1,
+        image
+      };
+
       if (existingItem) {
-        // Update quantity if item already exists
-        this.updateItemQuantity(existingItem.id, existingItem.quantity + (product.quantity || 1));
+        // Suma la cantidad
+        existingItem.quantity += (product.quantity || 1);
+        // Actualiza nombre, precio e imagen por si cambiaron
+        existingItem.name = cleanProduct.name;
+        existingItem.price = cleanProduct.price;
+        existingItem.image = cleanProduct.image;
       } else {
         // Add new item
-        this.items.push({
-          ...product,
-          quantity: product.quantity || 1
-        });
+        this.items.push(cleanProduct);
       }
-      
+
       // Provide feedback
-      this.showNotification(`${product.name} añadido al carrito`);
+      this.showNotification(`${cleanProduct.name} añadido al carrito`);
     },
     
     updateItemQuantity(productId, quantity) {

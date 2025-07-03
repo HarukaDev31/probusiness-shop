@@ -1,24 +1,66 @@
 <template>
   <header class="bg-white shadow-md">
     <!-- Top Header -->
-    <div class="container-custom py-4 flex items-center justify-between">
+    <!-- MOBILE HEADER -->
+    <div class="md:hidden px-4 py-3 flex items-center justify-between">
+      <!-- Menú hamburguesa -->
+      <button @click="toggleMobileMenu" class="mr-2">
+        <Icon :name="mobileMenuOpen ? 'heroicons:x-mark' : 'heroicons:bars-3'" class="w-7 h-7 text-gray-900" />
+      </button>
+      <!-- Logo centrado -->
+      <NuxtLink to="/" class="flex-1 flex justify-center">
+        <NuxtImg src="/images/logo.svg" alt="ProBusiness Logo" class="h-8"/>
+      </NuxtLink>
+      <!-- Carrito a la derecha -->
+      <div class="ml-2">
+        <CartButton />
+      </div>
+    </div>
+    <!-- Barra de búsqueda móvil -->
+    <div class="md:hidden px-4 pb-2">
+      <div class="flex items-center bg-white rounded shadow overflow-hidden">
+        <input type="text" placeholder="Escribe el nombre de lo que buscas" class="flex-1 px-3 py-2 text-sm outline-none" />
+        <button class="bg-[#FF5C00] p-2 flex items-center justify-center">
+          <Icon name="heroicons:magnifying-glass-20-solid" class="w-5 h-5 text-white" />
+        </button>
+      </div>
+    </div>
+    <!-- DESKTOP HEADER -->
+    <div class="container-custom py-8 items-center justify-between hidden md:flex">
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center">
         <NuxtImg src="/images/logo.svg" alt="ProBusiness Logo" class="h-10"/>
       </NuxtLink>
-
       <!-- Search Bar -->
-      <SearchBar />
-
-      <!-- User Actions -->
+      <div class="flex-1 mx-8">
+        <SearchBar />
+      </div>
+      <!-- User/Cart/Redes (solo desktop) -->
       <div class="flex items-center gap-4">
-        <div v-if="userName" class="relative group flex items-center gap-2 text-sm font-medium text-gray-700">
-          <button class="flex items-center gap-2 focus:outline-none">
-            <span>Hola, {{ userName }}</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        <div v-if="userName" class="relative flex items-center gap-2 text-sm font-medium text-gray-700">
+          <button
+            class="flex items-center gap-2 focus:outline-none px-2 py-1 rounded-lg hover:bg-gray-100 transition"
+            @click="userMenuOpen = !userMenuOpen"
+            @blur="userMenuOpen = false"
+            tabindex="0"
+          >
+            <Icon name="heroicons:user" class="w-6 h-6 text-secondary"/> 
+            <span class="font-medium text-gray-800">{{ userName }}</span>
+            <Icon :name="userMenuOpen ? 'heroicons:chevron-up' : 'heroicons:chevron-down'" class="w-5 h-5 text-gray-500 ml-1" />
           </button>
-          <div class="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-md hidden group-hover:block z-20">
-            <button @click="logout" class="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">Cerrar sesión</button>
+          <div v-show="userMenuOpen" class="absolute top-[15px] right-0 mt-3 min-w-[200px] bg-white shadow-xl rounded-xl z-30 py-2 px-0 animate-fade-in border border-gray-100">
+            <NuxtLink to="/wishlist" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 transition text-base">
+              <Icon name="heroicons:heart" class="w-5 h-5" />
+              Lista de deseos
+            </NuxtLink>
+            <NuxtLink to="/orders" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 transition text-base">
+              <Icon name="heroicons:cube" class="w-5 h-5" />
+              Pedidos
+            </NuxtLink>
+            <button @mousedown.prevent="logout" class="flex items-center gap-3 px-5 py-3 w-full text-left text-gray-700 hover:bg-gray-50 transition text-base">
+              <Icon name="heroicons:arrow-left-on-rectangle" class="w-5 h-5" />
+              Cerrar sesión
+            </button>
           </div>
         </div>
         <div v-else>
@@ -31,14 +73,13 @@
           </NuxtLink>
         </div>
         <CartButton />
-        <!-- dropdown redes with first red instagram-->
+        <!-- Redes sociales dropdown -->
         <div class="relative group">
-          <button class=" p-2 rounded-l-md flex items-center gap-2 bg-white text-secondary  hover:bg-gray-100">
+          <button class="p-2 rounded-md flex items-center gap-2 bg-white text-secondary hover:bg-gray-100">
             <Icon name="mdi:instagram" class="w-6 h-6 text-secondary" />
-            <!-- arrow bottom-->
             <Icon name="heroicons:chevron-down" class="w-4 h-4 text-secondary" />
           </button>
-          <div class="absolute  top-10 bg-white shadow-lg rounded-l-md w-48 hidden group-hover:block z-10">
+          <div class="absolute top-10 right-0 bg-white shadow-lg rounded-md w-48 hidden group-hover:block z-10">
             <ul class="py-2">
               <li v-for="social in socialMedia" :key="social.name" class="hover:bg-gray-100">
                 <a :href="social.url" class="flex items-center px-4 py-2">
@@ -53,76 +94,68 @@
 
     <!-- Navigation -->
     <nav class="bg-secondary text-white">
-      <div class="container-custom">
-        <!-- Mobile menu button -->
-        <div class="flex justify-between items-center py-3 md:hidden">
-          <div  class="mobile-menu-button flex items-center justify-between w-full">
-            <span class="text-white">Menú</span>
-            <Icon  @click="toggleMobileMenu" :name="mobileMenuOpen ? 'heroicons:x-mark' : 'heroicons:bars-3'" class="w-6 h-6 ml-2 text-white" />
+      <div class="container-custom flex items-center">
+        <!-- Dropdown de categorías -->
+        <div class="relative group">
+          <button class="nav-link py-3 flex items-center">
+            Todas las categorías
+            <Icon name="heroicons:chevron-down" class="w-4 h-4 ml-1" />
+          </button>
+          <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-64 hidden group-hover:block">
+            <ul class="py-2 max-h-60 overflow-y-auto">
+              <li v-for="category in categories" :key="category.id">
+                <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100">
+                  {{ category.name }}
+                </NuxtLink>
+              </li>
+            </ul>
           </div>
         </div>
-
-        <!-- Desktop menu -->
-        <ul class="hidden md:flex items-center flex-row">
-          <li class="relative group">
-            <button class="nav-link py-3 flex items-center">
-              Todas las categorías
-              <Icon name="heroicons:chevron-down" class="w-4 h-4 ml-1" />
-            </button>
-            <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-64 hidden group-hover:block">
-              <ul class="py-2 max-h-60 overflow-y-auto">
-                <li v-for="category in categories" :key="category.id">
-                  <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100">
-                    {{ category.name }}
-                  </NuxtLink>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <!-- Desktop category links -->
+        <!-- Links directos a categorías principales -->
+        <ul class="hidden md:flex items-center flex-row ml-8">
           <li v-for="category in categories.slice(1, 9)" :key="category.id">
             <NuxtLink :to="`/category/${category.slug}`" class="nav-link py-3 px-10 block">
               {{ category.name }}
             </NuxtLink>
           </li>
         </ul>
-
-        <!-- Mobile menu (hidden by default) -->
-        <div :class="['md:hidden', {'hidden': !mobileMenuOpen}]">
-          <ul class="flex flex-col w-full">
-            <!-- Mobile categories dropdown trigger -->
-            <li class="relative">
-              <button @click="toggleCategoriesDropdown" class="w-full text-left py-3 px-4 flex justify-between items-center border-b border-gray-700">
-                Todas las categorías
-                <Icon :name="categoriesOpen ? 'heroicons:chevron-up' : 'heroicons:chevron-down'" class="w-4 h-4" />
-              </button>
-              <!-- Mobile categories list -->
-              <div v-if="categoriesOpen" class="bg-gray-800 w-full">
-                <ul class="py-2 max-h-60 overflow-y-auto">
-                  <li v-for="category in categories" :key="category.id">
-                    <NuxtLink 
-                      :to="`/category/${category.slug}`" 
-                      class="block px-6 py-2 hover:bg-gray-700"
-                      @click="closeAllMenus"
-                    >
-                      {{ category.name }}
-                    </NuxtLink>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <!-- Mobile direct category links -->
-            <li v-for="category in categories.slice(1, 9)" :key="category.id">
-              <NuxtLink 
-                :to="`/category/${category.slug}`" 
-                class="block py-3 px-4 border-b border-gray-700 hover:bg-gray-700"
-                @click="closeAllMenus"
-              >
-                {{ category.name }}
-              </NuxtLink>
-            </li>
-          </ul>
+        <!-- Botón menú móvil -->
+        <div class="md:hidden ml-auto">
+          <Icon  @click="toggleMobileMenu" :name="mobileMenuOpen ? 'heroicons:x-mark' : 'heroicons:bars-3'" class="w-6 h-6 text-white" />
         </div>
+      </div>
+      <!-- Menú móvil -->
+      <div :class="['md:hidden', {'hidden': !mobileMenuOpen}]">
+        <ul class="flex flex-col w-full bg-secondary">
+          <li class="relative">
+            <button @click="toggleCategoriesDropdown" class="w-full text-left py-3 px-4 flex justify-between items-center border-b border-gray-700">
+              Todas las categorías
+              <Icon :name="categoriesOpen ? 'heroicons:chevron-up' : 'heroicons:chevron-down'" class="w-4 h-4" />
+            </button>
+            <div v-if="categoriesOpen" class="bg-gray-800 w-full">
+              <ul class="py-2 max-h-60 overflow-y-auto">
+                <li v-for="category in categories" :key="category.id">
+                  <NuxtLink 
+                    :to="`/category/${category.slug}`" 
+                    class="block px-6 py-2 hover:bg-gray-700"
+                    @click="closeAllMenus"
+                  >
+                    {{ category.name }}
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li v-for="category in categories.slice(1, 9)" :key="category.id">
+            <NuxtLink 
+              :to="`/category/${category.slug}`" 
+              class="block py-3 px-4 border-b border-gray-700 hover:bg-gray-700"
+              @click="closeAllMenus"
+            >
+              {{ category.name }}
+            </NuxtLink>
+          </li>
+        </ul>
       </div>
     </nav>
   </header>
@@ -148,6 +181,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('storage', userStore.syncFromLocalStorage)
 })
 const userName = computed(() => userStore.name)
+const userMenuOpen = ref(false);
 
 const socialMedia = [
   { name: 'Instagram', url: '#', icon: 'mdi:instagram' },
