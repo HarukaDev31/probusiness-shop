@@ -1,7 +1,7 @@
 class ProductService {
     async getProducts() {
         const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?per_category=5&all_categories=true`);
+        const response = await fetch(`${apiUrl}/products?per_category=10&all_categories=true`);
         const data = await response.json();
         return data.data;
     }
@@ -11,7 +11,7 @@ class ProductService {
         const data = await response.json();
         return {
             data: data.data,
-            total: data.meta.total
+            total: data.meta?.total
         }
     }
     async getProductById(id) {

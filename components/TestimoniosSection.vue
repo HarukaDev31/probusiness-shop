@@ -75,7 +75,7 @@ const testimonios = [
     id: 4,
     nombre: 'IMPORTADOR WILLY',
     thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oc2AjDeIvA6bPn2oeQEtjMAlAdIML0IAGTHPfo~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=wwWcZ3OxrnDMOaekep%2BQQcXho%2Fo%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
-    tiktokUrl: 'https://www.tiktok.com/embed/v2/7520395148686150934'
+    tiktokUrl: 'https://www.tiktok.com/embed/v2/7490750609021324551'
   },
   {
     id: 5,

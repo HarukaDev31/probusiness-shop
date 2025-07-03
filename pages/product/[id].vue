@@ -65,14 +65,14 @@
             <div class="flex flex-row flex-wrap gap-2 md:gap-4 justify-start md:justify-between pt-4">
               <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity" class="flex flex-col items-center min-w-[110px]">
                 <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
-                <div class="text-2xl font-bold text-gray-800">{{ price.price }}</div>
+                <div class="text-2xl font-bold text-gray-800">S/{{ price.price }}</div>
               </div>
             </div>
           </div>
           <!-- Botones -->
           <div class="flex flex-col md:flex-row gap-4 mb-6 py-8">
-            <button @click="showCartPanel = true" class="w-full md:w-1/2 border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition">Añadir al carrito</button>
-            <button class="w-full md:w-1/2 bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
+            <button @click="openCartPanel" class="w-full md:w-1/2 border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition">Añadir al carrito</button>
+            <button @click="iniciarPedidoMinimo" class="w-full md:w-1/2 bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
           </div>
   <!-- Panel lateral de carrito -->
   <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40" @click.self="showCartPanel = false">
@@ -87,7 +87,7 @@
         <div class="flex flex-row flex-wrap gap-2 md:gap-4 justify-start md:justify-between">
           <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity" class="flex flex-col items-center min-w-[90px]">
             <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
-            <div class="text-lg font-bold text-gray-800">{{ price.price }}</div>
+            <div class="text-lg font-bold text-gray-800">S/{{ price.price }}</div>
           </div>
         </div>
       </div>
@@ -102,10 +102,10 @@
         </div>
         <div class="flex items-center justify-between mb-6">
           <span class="font-semibold">Total</span>
-          <span class="text-lg font-bold">USD{{ (getPrecioPuestoEnPeru() * cartQuantity).toFixed(2) }}</span>
+          <span class="text-lg font-bold">S/{{ (getPrecioPuestoEnPeru() * cartQuantity).toFixed(2) }}</span>
         </div>
         <div class="flex flex-col gap-3">
-          <button class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
+          <button @click="iniciarPedidoPanel" class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
           <button
             class="w-full border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition"
             @click="addToCartFromPanel"
@@ -198,20 +198,34 @@
 </template>
 
 <script setup>
-
-import { storeToRefs } from 'pinia';
-import { useProductStore } from '~/stores/product';
-import { useCartStore } from '~/stores/cart';
-import { computed as vueComputed, ref } from 'vue';
-// Estado para mostrar el panel lateral de carrito
-const showCartPanel = ref(false);
-const cartQuantity = ref(1);
+import { useRouter } from 'vue-router'
+const router = useRouter();
+const iniciarPedidoPanel = () => {
+  if (product.value) {
+    cartStore.addItem({
+      id: product.value.id,
+      name: product.value.name || product.value.nombre,
+      price: getPrecioPuestoEnPeru(),
+      quantity: cartQuantity.value,
+      image: product.value.main_image_url || product.value.image || '/images/logo.png'
+    });
+    showCartPanel.value = false;
+    router.push('/cart');
+  }
+};
+function openCartPanel() {
+  // Establece la cantidad mínima según los rangos de precios
+  const minQty = getMinimumOrderQuantity() || 1;
+  cartQuantity.value = minQty;
+  showCartPanel.value = true;
+}
 
 const route = useRoute();
 const productId = parseInt(route.params.id);
-
+const cartQuantity = ref(1)
+const showCartPanel = ref(false)
 const productStore = useProductStore();
-const cartStore = useCartStore();
+const cartStore = useCartStore();   
 
 const { products } = storeToRefs(productStore);
 const loading = ref(true);
@@ -238,27 +252,24 @@ const relatedProducts = computed(() => {
   return productStore.relatedProducts;
 });
 
-const increaseQuantity = () => {
-  quantity.value++;
-};
 
-const decreaseQuantity = () => {
-  if (quantity.value > (product.value.moq == 0 ? 1 : product.value.moq)) {
-    quantity.value--;
-  }
-};
 computed(() => {
   if (product.value) {
     currentMainImage.value = product.value.main_image_url;
   }
 });
-const addToCart = () => {
+
+
+const iniciarPedidoMinimo = () => {
   if (product.value) {
     cartStore.addItem({
-      ...product.value,
-      quantity: quantity.value,
+      id: product.value.id,
+      name: product.value.name || product.value.nombre,
+      price: getPrecioPuestoEnPeru(),
+      quantity: getMinimumOrderQuantity() || 1,
       image: product.value.main_image_url || product.value.image || '/images/logo.png'
     });
+    router.push('/cart');
   }
 };
 

@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center py-4 border-b border-gray-200 gap-2">
     <!-- Checkbox -->
-    <input type="checkbox" class="form-checkbox w-5 h-5 accent-[#FF5000] mt-1" v-model="selected" />
+    <input type="checkbox" class="form-checkbox w-5 h-5 accent-[#FF5000] mt-1" v-model="isSelected" />
     <!-- Imagen -->
     <div class="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-4">
       <NuxtImg :src="item.image || item.main_image_url" :alt="item.name || item.nombre" class="w-full h-full object-contain" />
@@ -70,4 +70,16 @@ const decreaseQuantity = () => {
 const removeItem = () => {
   cartStore.removeItem(props.item.id);
 };
+const isSelected = computed({
+  get() {
+    return cartStore.selectedIds?.includes(props.item.id)
+  },
+  set(val) {
+    if (val && !cartStore.selectedIds.includes(props.item.id)) {
+      cartStore.selectedIds.push(props.item.id)
+    } else if (!val) {
+      cartStore.selectedIds = cartStore.selectedIds.filter(id => id !== props.item.id)
+    }
+  }
+})
 </script>

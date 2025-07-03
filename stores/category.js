@@ -10,7 +10,12 @@ export const useCategoryStore = defineStore('category', () => {
     categories.value = data.map(category => ({
       ...category,
       slug: category.slug || category.name.toLowerCase().replace(/\s+/g, '-'),
-      meta:null
+      meta:{
+        total: category.meta?.total || 0,
+        currentPage: category.meta?.current_page || 1,
+        perPage: category.meta?.per_page || 10
+    
+      }
     }));
     return categories.value;
   }

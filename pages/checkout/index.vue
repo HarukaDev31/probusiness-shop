@@ -1,144 +1,152 @@
 <template>
-    <div class="container-custom py-8 ">
-
-        <div class="bg-white rounded-lg shadow-md  max-w-3xl w-3/4 mx-auto shadow-lg">
-            <h1 class="text-4xl font-bold mb-2 p-10">Información de contacto</h1>
-            <div class="border-b border-gray-300 mb-4"></div>
-
-            <form @submit.prevent="handleSubmit" class="space-y-6 px-20 py-10">
-                <div class="grid grid-cols-2 md:grid-cols-5 align-items-center">
-                    <label class="block text-sm font-medium text-gray-700 mb-1
-                    col-span-1 md:col-span-2">
-                        Nombres completos <span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.fullName" type="text" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50
-                        col-span-1 md:col-span-3">
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-5 align-items-center">
-                    <label class="block text-sm font-medium text-gray-700 mb-1 col-span-1 md:col-span-2">
-                        DNI<span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.dni" type="text" required maxlength="8"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 col-span-1 md:col-span-3">
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-5 align-items-center col-span-1 md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1 col-span-1 md:col-span-2">
-                        Correo<span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.email" type="email" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 col-span-1 md:col-span-3">
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-5 align-items-center ">
-                    <label class="block text-sm font-medium text-gray-700 mb-1 col-span-1 md:col-span-2">
-                        Celular<span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.phone" type="tel" required maxlength="9"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 col-span-1 md:col-span-3">
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-5 align-items-center">
-                    <label class="block text-sm font-medium text-gray-700 mb-2 col-span-1 md:col-span-2">
-                        Tipo de comprobante<span class="text-red-500">*</span>
-                    </label>
-                    <div class="flex gap-4">
-                        <label class="flex items-center border-gray-300 border rounded-md px-4 py-2">
-                            <input type="radio" v-model="form.documentType"
-                            @change="form.type = form.documentType"
-                            value="boleta"
-                                class="accent-orange-300 border-orange-300">
-                            <span class="ml-2 border-orange-300">Boleta</span>
-                        </label>
-                        <label class="flex items-center border-gray-300 border rounded-md px-4 py-2">
-                            <input type="radio" v-model="form.documentType" value="factura"
-                            @change="form.type = form.documentType"
-                                class="accent-orange-300 border-orange-300">
-                            <span class="ml-2">Factura</span>
-                        </label>
-                    </div>
-                </div>
-                <!--if factura is selected add razon social and ruc fiedls -->
-                <div v-if="form.documentType === 'factura'" class="grid grid-cols-2 md:grid-cols-5 align-items-center">
-                    <label class="block text-sm font-medium text-gray-700 mb-1 col-span-1 md:col-span-2">
-                        Razón social<span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.businessName" type="text" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 col-span-1 md:col-span-3">
-                </div>
-                <div v-if="form.documentType === 'factura'" class="grid grid-cols-2 md:grid-cols-5 align-items-center">
-                    <label class="block text-sm font-medium text-gray-700 mb-1 col-span-1 md:col-span-2">
-                        RUC<span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.ruc" type="text" required maxlength="11"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 col-span-1 md:col-span-3">
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-5 align-items-center">
-                    <label class="block text-sm font-medium text-gray-700 mb-1 col-span-1 md:col-span-2">
-                        Ciudad<span class="text-red-500">*</span>
-                    </label>
-                    <select v-model="form.city" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 col-span-1 md:col-span-3">
-                        <option value="">Selecciona una ciudad</option>
-                        <option v-for="city in cities" :key="city" :value="city">
-                            {{ city }}
-                        </option>
+  <div class="min-h-screen bg-[#f5f8fb] flex flex-col">
+    <div class="flex-1 flex flex-col md:flex-row gap-8 p-6 md:p-12 max-w-[1200px] mx-auto w-full">
+      <!-- Columna izquierda -->
+      <div class="flex-1 flex flex-col">
+        <div class="bg-white rounded-lg shadow-md p-8 mb-6">
+          <h2 class="text-xl font-bold mb-2">Tus datos</h2>
+          <p class="text-xs text-gray-500 flex items-center gap-2 mb-4">
+            <Icon name="heroicons:lock-closed" class="w-4 h-4" />
+            Tu información personal está encriptada y solo se utilizará para fines de entrega
+          </p>
+          <form @submit.prevent="handleSubmit" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre y apellido*</label>
+                <input v-model="form.fullName" type="text" required class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ingresa tus nombres y apellidos">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">DNI/ID*</label>
+                <input v-model="form.dni" type="text" required maxlength="8" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ingresa tu documento de identidad">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Correo*</label>
+                <input v-model="form.email" type="email" required class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ingresa tu correo">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp*</label>
+                <input v-model="form.phone" type="tel" required maxlength="9" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ingresa tu número de celular">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
+                    <select v-model="form.province" @change="onProvinceChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50">
+                    <option value="">Selecciona provincia</option>
+                    <option v-for="prov in provinces" :key="prov.id" :value="prov.name">{{ prov.name }}</option>
                     </select>
                 </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-5 align-items-center">
-                    <label class="block text-sm font-medium text-gray-700 mb-1 col-span-1 md:col-span-2">
-                        Dirección<span class="text-red-500">*</span>
-                    </label>
-                    <input v-model="form.address" type="text" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 col-span-1 md:col-span-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ciudad*</label>
+                    <select v-model="form.city" @change="onCityChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50">
+                    <option value="">Selecciona ciudad</option>
+                    <option v-for="city in cities" :key="city.id" :value="city.name">{{ city.name }}</option>
+                    </select>
                 </div>
-
-                <div class="flex gap-4 pt-4">
-                    <NuxtLink to="/cart"
-                        class="flex-1 rounded-full  px-6 py-3 bg-white border-gray-300 text-gray-400 border-2  rounded text-center hover:bg-gray-300 hover:text-gray-700 transition">
-                        Regresar
-                    </NuxtLink>
-                    <button type="submit" class="flex-1 btn py-3 rounded-full ">
-                        Continuar
-                    </button>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Distrito*</label>
+                    <select v-model="form.district" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50">
+                    <option value="">Selecciona distrito</option>
+                    <option v-for="district in districts" :key="district.id" :value="district.name">{{ district.name }}</option>
+                    </select>
                 </div>
-            </form>
+                </div>
+            <button type="submit" class="w-[25%] bg-[#FF5000] text-white font-semibold p-3 rounded mt-4">Guardar</button>
+          </form>
         </div>
+        <!-- Productos seleccionados -->
+        <div class="bg-white rounded-lg shadow-md p-8">
+          <h3 class="text-base font-bold mb-4">Productos seleccionados</h3>
+          <div v-for="item in cartItems" :key="item.id" class="flex items-center gap-4 mb-4">
+            <img :src="item.image" alt="" class="w-14 h-14 rounded object-cover" />
+            <div class="flex-1">
+              <div class="font-semibold">{{ item.name }}</div>
+              <div class="flex items-center gap-2 mt-2">
+                <button @click="decreaseQuantity(item)" class="px-2 py-1 bg-gray-200 rounded">-</button>
+                <input type="number" v-model.number="item.quantity" min="1" class="w-14 text-center border rounded" />
+                <button @click="increaseQuantity(item)" class="px-2 py-1 bg-gray-200 rounded">+</button>
+              </div>
+            </div>
+            <div class="font-semibold">s/{{ (item.price * item.quantity).toFixed(2) }}</div>
+            <button @click="removeItem(item.id)" class="text-red-500 hover:text-red-700">
+              <Icon name="heroicons:trash" class="w-5 h-5" />
+            </button>
+          </div>
+          <NuxtLink to="/cart" class="text-primary text-sm hover:underline">Agregar productos</NuxtLink>
+        </div>
+      </div>
+      <!-- Columna derecha -->
+      <div class="w-full md:w-[340px] flex-shrink-0">
+        <div class="bg-white rounded-lg shadow-md p-8 mb-6">
+          <h3 class="text-lg font-bold mb-6">Resumen del pedido</h3>
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-gray-600">Pagar en soles:</span>
+            <span class="text-2xl font-bold text-gray-800">s/{{ cartTotal.toFixed(2) }}</span>
+          </div>
+          <button class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Enviar pedido</button>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-8">
+          <h4 class="text-lg font-bold mb-4">Datos importantes:</h4>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <Icon name="heroicons:currency-dollar" class="w-6 h-6 mt-1" />
+              <div>
+                <span class="font-semibold">Sobre el precio</span><br>
+                <span class="text-gray-500 text-sm">Es puesto en Perú, incluye todo.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <Icon name="heroicons:clock" class="w-6 h-6 mt-1" />
+              <div>
+                <span class="font-semibold">Tiempo de entrega</span><br>
+                <span class="text-gray-500 text-sm">Se tiene que realizar la importación, la entrega es en 2 meses</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+import { useCartStore } from '~/stores/cart'
+import { storeToRefs } from 'pinia'
+import { ref, onMounted } from 'vue'
 const router = useRouter();
 //add middleware to check if cart is empty
 const cartStore = useCartStore();
-const { cartItems } = storeToRefs(cartStore);
+const { cartItems, cartTotal } = storeToRefs(cartStore); // <-- agrega cartTotal aquí
 if (cartItems.value.length === 0) {
     router.push('/cart');
 }
-const cities = [
-    'Lima',
-    'Arequipa',
-    'Trujillo',
-    'Chiclayo',
-    'Piura',
-    'Cusco',
-    'Huancayo'
-];
+const { checkoutItems } = storeToRefs(cartStore)
+
+function increaseQuantity(item) {
+  cartStore.updateItemQuantity(item.id, item.quantity + 1);
+}
+function decreaseQuantity(item) {
+  if (item.quantity > 1) {
+    cartStore.updateItemQuantity(item.id, item.quantity - 1);
+  }
+}
+function removeItem(productId) {
+  cartStore.removeItem(productId);
+}
+// Arrays reactivos para selects
+const provinces = ref([])
+const cities = ref([])
+const districts = ref([])
 
 const form = ref({
     fullName: '',
     dni: '',
     email: '',
     phone: '',
-    documentType: 'boleta',
+    province: '',
     city: '',
-    address: '',
-    businessName: '',
-    ruc: '',
-    type: 'boleta'
+    district: ''
 });
 
 const handleSubmit = () => {

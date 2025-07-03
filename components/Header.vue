@@ -170,7 +170,6 @@ import { useRouter } from 'vue-router'
 
 const categoryStore = useCategoryStore();
 const { categories } = storeToRefs(categoryStore);
-
 const userStore = useUserStore()
 onMounted(() => {
   userStore.syncFromLocalStorage()
