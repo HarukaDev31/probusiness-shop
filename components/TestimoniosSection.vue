@@ -2,7 +2,7 @@
   <section class="py-10">
     <div class="container-custom max-w-[1440px] mx-auto">
       <h2 class="text-2xl font-bold mb-6">Testimonios de nuestros clientes</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         <div
           v-for="testimonio in testimonios"
           :key="testimonio.id"
@@ -55,17 +55,35 @@ import { ref } from 'vue';
 const testimonios = [
   {
     id: 1,
-    nombre: 'EL IMPORTADOR',
-    thumbnail: 'https://probusiness.pe/assets/img/home/cliente_2.jpg',
-    tiktokUrl: 'https://www.tiktok.com/embed/v2/7520395148686150934'
+    nombre: 'ALUMNO DE CHINA',
+    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oEFgogQVAA9eDlvRjLeZBQGCfUrhgIIgcgUBHY~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=048SiX1sFFrkR90snPi8yLpCM80%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
+    tiktokUrl: 'https://www.tiktok.com/embed/v2/7518214656066915602'
   },
   {
     id: 2,
-    nombre: 'KRISTEL SÁNCHEZ',
-    thumbnail: 'https://probusiness.pe/assets/img/nosotros/team_miguel.jpeg',
+    nombre: 'IMPORTADOR ARIEL MEDINA',
+    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/ocPZlilDABqllAyBIRaiEFYEEA8AMtxAZAPBW~tplv-photomode-zoomcover:720:720.avif?dr=14555&x-expires=1751724000&x-signature=SNhWZ5UTwTAZIBV3nPzbea%2BfQ1U%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva&ftpl=1 1x, https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/ocPZlilDABqllAyBIRaiEFYEEA8AMtxAZAPBW~tplv-photomode-zoomcover:720:720.avif?dr=14555&x-expires=1751724000&x-signature=SNhWZ5UTwTAZIBV3nPzbea%2BfQ1U%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva&ftpl=1 2x',
+    tiktokUrl: 'https://www.tiktok.com/embed/v2/7501137755292962056'
+  },
+  {
+    id: 3,
+    nombre: 'IMPORTADOR RODRIGO',
+    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oIyhSfAnEQufB4AGe8gRGMlJGIsIQSA8AAeXAG~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=vmuSefscNDOYs89AEQnZdjSuWgA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
+    tiktokUrl: 'https://www.tiktok.com/embed/v2/7495945030528503047'
+  },
+  {
+    id: 4,
+    nombre: 'IMPORTADOR WILLY',
+    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oc2AjDeIvA6bPn2oeQEtjMAlAdIML0IAGTHPfo~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=wwWcZ3OxrnDMOaekep%2BQQcXho%2Fo%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7520395148686150934'
   },
-  // ...agrega más testimonios aquí
+  {
+    id: 5,
+    nombre: 'IMPORTADOR PERCY ACUÑA',
+    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oUaCbAoGPEAng5iLIAAAHAIGID1EexfAejQIHP~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=3vkM6Q%2F%2F3biZgz4g0M4UvbzhSds%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
+    tiktokUrl: 'https://www.tiktok.com/embed/v2/7485545802073525512'
+  },
+  
 ];
 
 const showModal = ref(false);
