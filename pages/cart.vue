@@ -18,7 +18,12 @@
               <CartItem v-for="item in cartItems" :key="item.id" :item="item" :showCheckbox="true" />
             </div>
             <div class="flex justify-end mt-6">
-              <NuxtLink to="/checkout" class="bg-[#FF5000] text-white font-semibold px-8 py-3 rounded">Continuar</NuxtLink>
+              <button
+                class="bg-[#FF5000] text-white font-semibold px-8 py-3 rounded"
+                @click="goToCheckout"
+              >
+                Continuar
+              </button>
             </div>
           </template>
         </div>
@@ -29,9 +34,19 @@
           <h3 class="text-lg font-bold mb-6">Resumen del pedido</h3>
           <div class="flex justify-between items-center mb-6">
             <span class="text-gray-600">Pagar en soles:</span>
-            <span class="text-2xl font-bold text-gray-800">USD {{ cartTotal.toFixed(2) }}</span>
+            <span class="text-2xl font-bold text-gray-800">S/ {{ selectedTotal.toFixed(2) }}</span>
           </div>
-          <button class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
+            <button
+            class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
+            >
+            Iniciar pedido
+          </button>
+        </div>
+        <div v-if="selectedItems.length === 0" class="text-xs text-red-500 mt-2">
+          Selecciona al menos un producto para continuar.
+        </div>
+        <div v-else-if="selectedTotal < 3000" class="text-xs text-red-500 mt-2">
+          El monto mínimo para continuar es S/ 3,000.
         </div>
         <div class="bg-white rounded-lg shadow-md p-8">
           <h4 class="text-lg font-bold mb-4">Datos importantes:</h4>
@@ -59,16 +74,42 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart';
 
 const cartStore = useCartStore();
 const { cartItems, cartTotal, cartItemCount } = storeToRefs(cartStore);
+const selectedItems = computed(() => cartStore.cartItems.filter(item => cartStore.selectedIds.includes(item.id)))
+const selectedTotal = computed(() => selectedItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0))
+const canContinue = computed(() => selectedItems.value.length > 0 && selectedTotal.value >= 3000)
 
-// Seleccionar todos los productos (dummy, depende de tu lógica de selección)
 const selectAll = () => {
-  // Aquí deberías implementar la lógica real de selección si tienes checkboxes
-  // Por ahora solo es un placeholder visual
-};
+  cartStore.selectedIds = cartStore.cartItems.map(item => item.id)
+}
+
+async function goToCheckout() {
+  // Guarda solo los seleccionados en una propiedad temporal del store
+  cartStore.checkoutItems = selectedItems.value
+  if (selectedTotal.value < 3000) {
+    await Swal.fire({
+      icon: 'error',
+      title: '¡Atención!',
+      html: `
+        <div>
+          <div style="font-size:18px;margin-bottom:12px;">El monto mínimo de importación es de s/3000 para este pedido</div>
+          <div style="margin-bottom:8px;">Tu pedido actual: <b>s/${selectedTotal.value.toFixed(2)}</b></div>
+          <div>Importe pendiente: <b style="color:#FF5000;">s/${(3000 - selectedTotal.value).toFixed(2)}</b></div>
+          <div style="font-size:12px;color:#888;margin-top:12px;">*Puedes aumentar unidades o agregar más productos</div>
+        </div>
+      `,
+      confirmButtonText: 'Entendido',
+      width: 400
+    });
+    return;
+  }
+  router.push('/checkout')
+}
+
 </script>
 
 <style scoped>

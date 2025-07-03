@@ -2,21 +2,30 @@ import { defineStore } from 'pinia';
 
 export const useCartStore = defineStore('cart', {
   state: () => ({
-    items: []
+    items: [],
+    selectedIds: [], 
+    checkoutItems: [] 
   }),
 
   getters: {
     cartItems: (state) => state.items,
-    
+
     cartItemCountAll: (state) => {
       return state.items.reduce((total, item) => total + item.quantity, 0);
     },
     cartItemCount: (state) => {
       return state.items.reduce((total, item) => total + (item.quantity > 0 ? 1 : 0), 0);
-
     },
     cartTotal: (state) => {
       return state.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    },
+    selectedItems: (state) => {
+      return state.items.filter(item => state.selectedIds.includes(item.id));
+    },
+    selectedTotal: (state) => {
+      return state.items
+        .filter(item => state.selectedIds.includes(item.id))
+        .reduce((sum, item) => sum + item.price * item.quantity, 0);
     }
   },
 
@@ -61,7 +70,12 @@ export const useCartStore = defineStore('cart', {
       // Provide feedback
       this.showNotification(`${cleanProduct.name} añadido al carrito`);
     },
-    
+    addToCart(product) {
+      this.cartItems.push({
+        ...product,
+        selected: false // <-- importante
+      })
+    },
     updateItemQuantity(productId, quantity) {
       const itemIndex = this.items.findIndex(item => item.id === productId);
       if (itemIndex !== -1) {
@@ -86,9 +100,11 @@ export const useCartStore = defineStore('cart', {
     
     showNotification(message) {
       // This would be replaced with a proper notification system
-      console.log(message);
-    }
+    },
+
+    // getter
   },
+    persist: true
   
-  persist: true
+
 });

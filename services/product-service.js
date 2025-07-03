@@ -11,7 +11,7 @@ class ProductService {
         const data = await response.json();
         return {
             data: data.data,
-            total: data.meta.total
+            total: data.meta?.total
         }
     }
     async getProductById(id) {

@@ -62,17 +62,17 @@
           <h5 class="text-2xl font-bold text-gray-800 mb-4">Cantidades</h5>
           <!-- Tabla de precios horizontal -->
           <div v-if="product.prices_range && product.prices_range.length > 0" class="my-6">
-            <div class="flex flex-row flex-wrap gap-2 md:gap-4 justify-start md:justify-between pt-4">
-              <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity" class="flex flex-col items-center min-w-[110px]">
+            <div class="grid grid-cols-4 gap-4 pt-4">
+              <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity" class="flex flex-col items-center">
                 <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
-                <div class="text-2xl font-bold text-gray-800">{{ price.price }}</div>
+                <div class="text-2xl font-bold text-gray-800">S/{{ price.price }}</div>
               </div>
             </div>
           </div>
           <!-- Botones -->
           <div class="flex flex-col md:flex-row gap-4 mb-6 py-8">
-            <button @click="showCartPanel = true" class="w-full md:w-1/2 border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition">Añadir al carrito</button>
-            <button class="w-full md:w-1/2 bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
+            <button @click="openCartPanel" class="w-full md:w-1/2 border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition">Añadir al carrito</button>
+            <button @click="iniciarPedidoMinimo" class="w-full md:w-1/2 bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
           </div>
   <!-- Panel lateral de carrito -->
   <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40" @click.self="showCartPanel = false">
@@ -82,15 +82,15 @@
         <button @click="showCartPanel = false" class="text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
       </div>
       <div class="text-xs text-gray-500 mb-2">*Pedido mínimo de importación s/3,000</div>
-      <div class="mb-4">
-        <h3 class="font-semibold mb-2">Cantidades</h3>
-        <div class="flex flex-row flex-wrap gap-2 md:gap-4 justify-start md:justify-between">
-          <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity" class="flex flex-col items-center min-w-[90px]">
-            <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
-            <div class="text-lg font-bold text-gray-800">{{ price.price }}</div>
+              <div class="mb-4">
+          <h3 class="font-semibold mb-2">Cantidades</h3>
+          <div class="grid grid-cols-4 gap-2">
+            <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity" class="flex flex-col items-center">
+              <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
+              <div class="text-lg font-bold text-gray-800">S/{{ price.price }}</div>
+            </div>
           </div>
         </div>
-      </div>
       <div class="mb-6">
         <div class="flex items-center justify-between mb-4">
           <span class="font-semibold">Cantidad</span>
@@ -102,10 +102,10 @@
         </div>
         <div class="flex items-center justify-between mb-6">
           <span class="font-semibold">Total</span>
-          <span class="text-lg font-bold">USD{{ (getPrecioPuestoEnPeru() * cartQuantity).toFixed(2) }}</span>
+          <span class="text-lg font-bold">S/{{ (getPrecioPuestoEnPeru() * cartQuantity).toFixed(2) }}</span>
         </div>
         <div class="flex flex-col gap-3">
-          <button class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
+          <button @click="iniciarPedidoPanel" class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
           <button
             class="w-full border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition"
             @click="addToCartFromPanel"
@@ -184,8 +184,31 @@
             </tbody>
           </table>
         </div>
-        <br>
-        <h1 class="text-2xl font-bold mb-4">Descripción de producto de proveedor</h1>
+                  <br>
+          <h1 class="text-2xl font-bold mb-4">Embalaje y entrega</h1>
+          <div class="overflow-x-auto">
+            <table class="w-full border-separate border-spacing-0 text-sm">
+              <tbody>
+                <tr v-for="(value, key) in parsedPackaging" :key="key">
+                  <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 font-semibold bg-gray-50 min-w-[120px]">{{ key }}</td>
+                  <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 whitespace-pre-line align-top min-w-[120px]">{{ value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br>
+          <h1 class="text-2xl font-bold mb-4">Plazo de entrega</h1>
+          <div class="overflow-x-auto">
+            <table class="w-full border-separate border-spacing-0 text-sm">
+              <tbody>
+                <tr v-for="(value, key) in parsedDeliveryTimes" :key="key">
+                  <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 font-semibold bg-gray-50 min-w-[120px]">{{ key }}</td>
+                  <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 whitespace-pre-line align-top min-w-[120px]">{{ value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h1 class="text-2xl font-bold mb-4">Descripción de producto de proveedor</h1>
         <div v-html="cleanHtmlContent(product.product_details)" class="descripcion-html text-gray-700 mt-4" v-if="product.product_details"></div>
       </div>
       <div class="mt-16" >
@@ -205,20 +228,34 @@
 </template>
 
 <script setup>
-
-import { storeToRefs } from 'pinia';
-import { useProductStore } from '~/stores/product';
-import { useCartStore } from '~/stores/cart';
-import { computed as vueComputed, ref } from 'vue';
-// Estado para mostrar el panel lateral de carrito
-const showCartPanel = ref(false);
-const cartQuantity = ref(1);
+import { useRouter } from 'vue-router'
+const router = useRouter();
+const iniciarPedidoPanel = () => {
+  if (product.value) {
+    cartStore.addItem({
+      id: product.value.id,
+      name: product.value.name || product.value.nombre,
+      price: getPrecioPuestoEnPeru(),
+      quantity: cartQuantity.value,
+      image: product.value.main_image_url || product.value.image || '/images/logo.png'
+    });
+    showCartPanel.value = false;
+    router.push('/cart');
+  }
+};
+function openCartPanel() {
+  // Establece la cantidad mínima según los rangos de precios
+  const minQty = getMinimumOrderQuantity() || 1;
+  cartQuantity.value = minQty;
+  showCartPanel.value = true;
+}
 
 const route = useRoute();
 const productId = parseInt(route.params.id);
-
+const cartQuantity = ref(1)
+const showCartPanel = ref(false)
 const productStore = useProductStore();
-const cartStore = useCartStore();
+const cartStore = useCartStore();   
 
 const { products } = storeToRefs(productStore);
 const loading = ref(true);
@@ -252,23 +289,23 @@ const increaseQuantity = () => {
   quantity.value++;
 };
 
-const decreaseQuantity = () => {
-  if (quantity.value > (product.value.moq == 0 ? 1 : product.value.moq)) {
-    quantity.value--;
-  }
-};
 computed(() => {
   if (product.value) {
     currentMainImage.value = product.value.main_image_url;
   }
 });
-const addToCart = () => {
+
+
+const iniciarPedidoMinimo = () => {
   if (product.value) {
     cartStore.addItem({
-      ...product.value,
-      quantity: quantity.value,
+      id: product.value.id,
+      name: product.value.name || product.value.nombre,
+      price: getPrecioPuestoEnPeru(),
+      quantity: getMinimumOrderQuantity() || 1,
       image: product.value.main_image_url || product.value.image || '/images/logo.png'
     });
+    router.push('/cart');
   }
 };
 
@@ -501,7 +538,31 @@ const getPrecioPuestoEnPeru = () => {
   // Si no hay precios, devolver precio base del producto
   return parsePrecio(product.value.precio || '0');
 };
-// Parsear atributos del producto
+const parsedPackaging = computed(() => {
+  if (!product.value?.packaging_info) return {};
+  return JSON.parse(product.value.packaging_info);
+});
+
+const parsedDeliveryTimes = computed(() => {
+  if (!product.value?.delivery_lead_times) return {};
+  
+  try {
+    // Si ya es un objeto, devolverlo directamente
+    if (typeof product.value.delivery_lead_times === 'object' && !Array.isArray(product.value.delivery_lead_times)) {
+      return product.value.delivery_lead_times;
+    }
+    
+    // Si es un string JSON, parsearlo
+    if (typeof product.value.delivery_lead_times === 'string') {
+      return JSON.parse(product.value.delivery_lead_times);
+    }
+    
+    return {};
+  } catch (error) {
+    console.error('Error parsing delivery lead times:', error);
+    return {};
+  }
+});
 const parsedAttributes = computed(() => {
   if (!product.value?.attributes) return {};
   
