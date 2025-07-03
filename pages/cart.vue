@@ -38,15 +38,12 @@
           </div>
             <button
             class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
-            >
+            disabled  >
             Iniciar pedido
           </button>
         </div>
         <div v-if="selectedItems.length === 0" class="text-xs text-red-500 mt-2">
           Selecciona al menos un producto para continuar.
-        </div>
-        <div v-else-if="selectedTotal < 3000" class="text-xs text-red-500 mt-2">
-          El monto mínimo para continuar es S/ 3,000.
         </div>
         <div class="bg-white rounded-lg shadow-md p-8">
           <h4 class="text-lg font-bold mb-4">Datos importantes:</h4>
@@ -70,18 +67,56 @@
       </div>
     </div>
   </div>
+  <!-- Modal de alerta de monto mínimo -->
+<div
+  v-if="showMinAlert"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+>
+  <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-8 relative text-center">
+    <button
+      class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl"
+      @click="showMinAlert = false"
+    >&times;</button>
+    <div class="flex flex-col items-center mb-4">
+      <div class="w-14 h-14 flex items-center justify-center rounded-full border-2 border-[#FF5000] mb-2">
+        <span class="text-4xl text-[#FF5000]">!</span>
+      </div>
+      <div class="text-lg font-semibold mb-2">
+        El monto mínimo de importación es de s/3000 para este pedido
+      </div>
+    </div>
+    <div class="border-t border-gray-200 pt-4"></div>
+    <div class="flex flex-col gap-3 mb-2 text-left">
+      <div>
+        Tu pedido actual:
+        <b>s/{{ selectedTotal.toFixed(2) }}</b>
+      </div>
+      <div>
+        Importe pendiente:
+        <b class="text-[#FF5000]">s/{{ (3000 - selectedTotal).toFixed(2) }}</b>
+      </div>
+    </div>
+    <div class="border-t border-gray-200 pt-4"></div>
+    <div class="text-xs text-gray-500 mt-3">
+      *Puedes aumentar unidades o agregar más productos
+    </div>
+  </div>
+</div>
 </template>
+
+
 
 <script setup>
 import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
 import { useCartStore } from '~/stores/cart';
 
+const router = useRouter(); 
 const cartStore = useCartStore();
 const { cartItems, cartTotal, cartItemCount } = storeToRefs(cartStore);
 const selectedItems = computed(() => cartStore.cartItems.filter(item => cartStore.selectedIds.includes(item.id)))
 const selectedTotal = computed(() => selectedItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0))
-const canContinue = computed(() => selectedItems.value.length > 0 && selectedTotal.value >= 3000)
+const showMinAlert = ref(false)
 
 const selectAll = () => {
   cartStore.selectedIds = cartStore.cartItems.map(item => item.id)
@@ -91,21 +126,8 @@ async function goToCheckout() {
   // Guarda solo los seleccionados en una propiedad temporal del store
   cartStore.checkoutItems = selectedItems.value
   if (selectedTotal.value < 3000) {
-    await Swal.fire({
-      icon: 'error',
-      title: '¡Atención!',
-      html: `
-        <div>
-          <div style="font-size:18px;margin-bottom:12px;">El monto mínimo de importación es de s/3000 para este pedido</div>
-          <div style="margin-bottom:8px;">Tu pedido actual: <b>s/${selectedTotal.value.toFixed(2)}</b></div>
-          <div>Importe pendiente: <b style="color:#FF5000;">s/${(3000 - selectedTotal.value).toFixed(2)}</b></div>
-          <div style="font-size:12px;color:#888;margin-top:12px;">*Puedes aumentar unidades o agregar más productos</div>
-        </div>
-      `,
-      confirmButtonText: 'Entendido',
-      width: 400
-    });
-    return;
+    showMinAlert.value = true
+    return
   }
   router.push('/checkout')
 }
