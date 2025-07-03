@@ -34,8 +34,13 @@ export default defineNuxtConfig({
       xxl: 1536,
       '2xl': 1536
     },
-    // provider: 'netlify',
-    // domains: ["tienda.probusiness.pe", "localhost"],
+    provider: 'ipx',
+
+    // Si tienes tu propio servidor de imágenes, puedes usar:
+    // provider: 'custom',
+    // custom: {
+    //   baseURL: 'https://tu-servidor-imagenes.com'
+    // }
     // Domains that are allowed to be optimized
     
     // Adjust image quality
@@ -43,6 +48,9 @@ export default defineNuxtConfig({
     
     // Enable format auto-detection (webp, avif, etc.)
     format: ['webp']
+    
+    // Para deshabilitar completamente la optimización:
+    // provider: false
 
   },
   compression: {
