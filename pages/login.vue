@@ -1,107 +1,88 @@
 <template>
-  <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50 py-8 px-4">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
-      <div class="flex flex-col items-center mb-8">
-        <img src="/images/logo.png" alt="probusiness logo" class="h-10 mb-2" />
-        <span class="text-xl font-bold text-gray-700">probusiness</span>
+  <div class="min-h-screen flex">
+    <!-- Fondo izquierdo -->
+    <div class="hidden md:flex w-1/2 h-screen items-center justify-center bg-cover bg-center relative" style="background-image: url('/images/bg-login.jpg');">
+      <div class="absolute bottom-10 left-10 text-white">
+        <img src="/images/logo.png" alt="probusiness logo" class="h-8 mb-2" />
+        <div class="font-semibold">Probusiness® 2025</div>
       </div>
-      <h2 class="text-2xl font-bold text-center mb-6">Ingresar</h2>
-      <form @submit.prevent="handleLogin" class="space-y-5">
-        <div>
-          <label class="block text-gray-600 mb-1" for="email">Tu dirección de E-mail</label>
-          <input id="email" v-model="loginData.email" type="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="correo@ejemplo.com" />
-        </div>
-        <div>
-          <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
-          <input id="password" v-model="loginData.password" type="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="••••••••" />
-          <div class="text-right mt-1">
-            <button type="button" @click="showForgot = true" class="text-sm text-red-500 hover:underline bg-transparent border-0 p-0">¿Olvidaste tu contraseña?</button>
-          </div>
-        </div>
-        <button type="submit" :disabled="loginLoading" class="w-full bg-red-500 text-white py-3 rounded-lg font-semibold text-lg hover:bg-red-600 transition disabled:opacity-60">
-          <span v-if="loginLoading" class="animate-spin h-5 w-5 mr-3 border-t-2 border-white rounded-full"></span>
-          Ingresar
-        </button>
-        <div v-if="loginError" class="text-red-500 text-sm text-center mt-2">{{ loginError }}</div>
-        <div v-if="loginSuccess" class="text-green-500 text-sm text-center mt-2">¡Has iniciado sesión exitosamente!</div>
-      </form>
-      <div class="flex items-center my-6">
-        <div class="flex-grow h-px bg-gray-200"></div>
-        <span class="mx-3 text-gray-400">o</span>
-        <div class="flex-grow h-px bg-gray-200"></div>
-      </div>
-      <!-- Registro -->
-      <div class="text-center mb-6">
-        <span class="text-gray-600">¿No tienes una cuenta?</span>
-        <button @click="showRegister = true" class="ml-2 text-red-500 font-semibold hover:underline">Regístrate</button>
-      </div>
-      <div v-if="showRegister" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50" @mousedown.self="closeRegister">
-        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
-          <button @click="closeRegister" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
-          <h2 class="text-2xl font-bold text-center mb-2">Regístrate</h2>
-          <div class="text-center text-gray-500 mb-4">O regístrate con tu email</div>
-          <form v-if="!registerSuccess" @submit.prevent="handleRegister" class="space-y-4">
-            <div class="flex gap-2">
-              <input v-model="registerData.nombre" type="text" placeholder="Nombre" class="w-1/2 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" />
-              <input v-model="registerData.apellido" type="text" placeholder="Apellido" class="w-1/2 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" />
+    </div>
+    <!-- Lado derecho -->
+    <div class="w-full md:w-1/2 flex items-center justify-center min-h-screen bg-[#f5f8fb]">
+      <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-10">
+        <!-- Mostrar solo el registro si showRegister es true -->
+        <template v-if="showRegister">
+          <button @click="closeRegister" class="absolute top-6 right-6 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
+          <h2 class="text-2xl font-bold text-center mb-2">Registrarme</h2>
+          <div class="border-b my-4"></div>
+          <form @submit.prevent="handleRegister" class="space-y-4">
+            <div>
+              <label class="block text-gray-600 mb-1" for="nombre">Nombres</label>
+              <input id="nombre" v-model="registerData.nombre" type="text" class="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#FF5000]" placeholder="Ingresa tus nombres" />
             </div>
             <div>
-              <input v-model="registerData.email" type="email" placeholder="Tu dirección de E-mail" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" />
+              <label class="block text-gray-600 mb-1" for="apellido">Apellidos</label>
+              <input id="apellido" v-model="registerData.apellido" type="text" class="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#FF5000]" placeholder="Ingresa tus apellidos" />
             </div>
-            <div class="relative">
-              <input :type="showPassword ? 'text' : 'password'" v-model="registerData.password" placeholder="Contraseña para tienda" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 pr-16" />
-              <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-2 text-gray-400 text-sm">{{ showPassword ? 'Ocultar' : 'Mostrar' }}</button>
-              <p class="text-xs text-gray-500 mt-1">(*) La contraseña debe tener al menos 6 caracteres.</p>
+            <div>
+              <label class="block text-gray-600 mb-1" for="whatsapp">WhatsApp</label>
+              <input id="whatsapp" v-model="registerData.whatsapp" type="text" class="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#FF5000]" placeholder="Ingresa tu número de celular" />
             </div>
-            <div class="flex items-center">
-              <input v-model="registerData.ofertas" type="checkbox" id="ofertas" class="mr-2" />
-              <label for="ofertas" class="text-sm">Recibir Ofertas!</label>
+            <div>
+              <label class="block text-gray-600 mb-1" for="email">Correo electrónico</label>
+              <input id="email" v-model="registerData.email" type="email" class="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#FF5000]" placeholder="Ingresa tu correo electrónico" />
             </div>
-            <button :disabled="loading" type="submit" class="w-full bg-red-500 text-white py-3 rounded-lg font-semibold text-lg hover:bg-red-600 transition disabled:opacity-60">Regístrate</button>
+            <div>
+              <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
+              <div class="relative">
+                <input :type="showPassword ? 'text' : 'password'" id="password" v-model="registerData.password" class="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#FF5000] pr-10" placeholder="Ingresa tu contraseña" />
+                <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-2 text-gray-400 text-sm focus:outline-none">
+                  <span v-if="showPassword">🙈</span>
+                  <span v-else>👁️</span>
+                </button>
+              </div>
+            </div>
+            <button type="submit" :disabled="loading" class="w-full bg-[#FF5000] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#e04a00] transition disabled:opacity-60">
+              Crear cuenta
+            </button>
+            <div v-if="registerSuccess" class="text-green-500 text-sm text-center mt-2">¡Registro exitoso!</div>
           </form>
-          <div v-else class="flex flex-col items-center space-y-4 py-8">
-            <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            <div class="text-green-700 text-center text-lg font-semibold">¡Registro exitoso!</div>
-            <div class="text-gray-500 text-center">Ya puedes iniciar sesión con tu correo y contraseña.</div>
+          <div class="mt-6 text-xs text-gray-400 text-center">
+            Al registrarte aceptas nuestra <a href="#" class="underline">política de privacidad</a> y <a href="#" class="underline">términos y condiciones</a>.
           </div>
-          <div class="text-xs text-gray-500 mt-4 text-left">
-            * Al ingresar con Facebook o Google estás aceptando recibir ofertas por email<br>
-            Tienda está protegida por reCAPTCHA y se aplican la <a href="#" class="text-blue-600 underline">Política de Privacidad</a> y los <a href="#" class="text-blue-600 underline">Términos de Servicio de Google</a>.
-          </div>
-          <div class="flex items-center my-6">
-            <div class="flex-grow h-px bg-gray-200"></div>
-            <span class="mx-3 text-xs text-gray-400">¿Ya tienes una cuenta? </span>
-            <div class="flex-grow h-px bg-gray-200"></div>
-          </div>
-          <div class="mt-6 text-center">
-            <button @click="closeRegister" class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">Ingresar</button>
-          </div>
-        </div>
-      </div>
-      <!-- Modal de Recuperar Contraseña -->
-      <div v-if="showForgot" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50" @mousedown.self="closeForgot">
-        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
-          <button @click="closeForgot" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
-          <h2 class="text-2xl font-bold text-center mb-2">Recuperar contraseña</h2>
-          <div class="text-center text-gray-500 mb-4">Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.</div>
-          <form v-if="!forgotSuccess" @submit.prevent="handleForgot" class="space-y-4">
-            <input v-model="forgotEmail" type="email" placeholder="Tu dirección de E-mail" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" required />
-            <button :disabled="forgotLoading" type="submit" class="w-full bg-red-500 text-white py-3 rounded-lg font-semibold text-lg hover:bg-red-600 transition disabled:opacity-60">Enviar instrucciones</button>
+        </template>
+        <!-- Si showRegister es false, muestra el login -->
+        <template v-else>
+          <h2 class="text-2xl font-bold text-center mb-8">Iniciar sesión</h2>
+          <form @submit.prevent="handleLogin" class="space-y-5">
+            <div>
+              <label class="block text-gray-600 mb-1" for="email">Correo</label>
+              <input id="email" v-model="loginData.email" type="email" class="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#FF5000]" placeholder="Ingresa tu correo" />
+            </div>
+            <div>
+              <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
+              <div class="relative">
+                <input :type="showPassword ? 'text' : 'password'" id="password" v-model="loginData.password" class="w-full px-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#FF5000] pr-10" placeholder="Ingresa tu contraseña" />
+                <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-2 text-gray-400 text-sm focus:outline-none">
+                  <span v-if="showPassword">🙈</span>
+                  <span v-else>👁️</span>
+                </button>
+              </div>
+            </div>
+            <button type="submit" :disabled="loginLoading" class="w-full bg-[#FF5000] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#e04a00] transition disabled:opacity-60">
+              Ingresar
+            </button>
+            <div v-if="loginError" class="text-red-500 text-sm text-center mt-2">{{ loginError }}</div>
+            <div v-if="loginSuccess" class="text-green-500 text-sm text-center mt-2">¡Has iniciado sesión exitosamente!</div>
           </form>
-          <div v-else class="flex flex-col items-center space-y-4">
-            <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            <div class="text-green-700 text-center">Si el correo existe, te hemos enviado instrucciones para restablecer tu contraseña.</div>
+          <div class="mt-8 text-center">
+            <div class="mb-4 text-gray-700">¿Aún no tienes una cuenta?</div>
+            <button @click="showRegister = true" class="w-full border border-gray-300 py-2 rounded-lg font-semibold hover:bg-gray-50 transition">Registrarme</button>
           </div>
-        </div>
-      </div>
-      <div class="mt-6 bg-green-50 border border-green-200 rounded-lg p-4 text-sm text-green-700">
-        <p class="font-semibold mb-2">Guardamos tu correo electrónico de manera 100% segura para:</p>
-        <ul class="list-disc pl-5 space-y-1">
-          <li>Identificar tu perfil</li>
-          <li>Notificar sobre el estado de tus compras</li>
-          <li>Guardar el historial de compra</li>
-          <li>Facilitar el proceso de compra</li>
-        </ul>
+          <div class="mt-4 text-xs text-gray-400 text-center">
+            Al registrarte aceptas nuestra <a href="#" class="underline">política de privacidad</a> y <a href="#" class="underline">términos y condiciones</a>.
+          </div>
+        </template>
       </div>
     </div>
   </div>
