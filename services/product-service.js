@@ -1,7 +1,7 @@
 class ProductService {
     async getProducts() {
         const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?per_category=5&all_categories=true`);
+        const response = await fetch(`${apiUrl}/products?per_category=10&all_categories=true`);
         const data = await response.json();
         return data.data;
     }
@@ -22,7 +22,13 @@ class ProductService {
     }
     async getRelatedProducts(category) {
         const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?category=${category}&per_category=4`);
+        const response = await fetch(`${apiUrl}/products?category=${category}&per_category=10`);
+        const data = await response.json();
+        return data.data;
+    }
+    async getProductBySupplierId(supplierId) {
+        const { public: { apiUrl } } = useRuntimeConfig();
+        const response = await fetch(`${apiUrl}/products?supplier=${supplierId}&per_category=10`);
         const data = await response.json();
         return data.data;
     }

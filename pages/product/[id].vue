@@ -177,8 +177,9 @@
         <div class="overflow-x-auto">
           <table class="w-full border-separate border-spacing-0 text-sm">
             <tbody>
-              <tr v-for="(row, rowIndex) in attributeRows" :key="rowIndex">
-                <td v-for="(cell, cellIndex) in row" :key="cellIndex" class="border border-[#e5e7eb] px-4 py-2 text-gray-700 whitespace-pre-line align-top min-w-[120px]">{{ cell }}</td>
+              <tr v-for="(value, key) in parsedAttributes" :key="key">
+                <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 font-semibold bg-gray-50 min-w-[120px]">{{ key }}</td>
+                <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 whitespace-pre-line align-top min-w-[120px]">{{ value }}</td>
               </tr>
             </tbody>
           </table>
@@ -186,6 +187,12 @@
         <br>
         <h1 class="text-2xl font-bold mb-4">Descripción de producto de proveedor</h1>
         <div v-html="cleanHtmlContent(product.product_details)" class="descripcion-html text-gray-700 mt-4" v-if="product.product_details"></div>
+      </div>
+      <div class="mt-16" >
+        <h2 class="text-2xl font-bold mb-6">Productos populares de este proveedor</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <ProductCard v-for="supplierProduct in supplierProducts" :key="supplierProduct.id" :product="supplierProduct" />
+        </div>
       </div>
       <!--di-->
     </template>
@@ -234,10 +241,13 @@ const product = computed(() => {
 // Get related products (same category)
 const relatedProducts = computed(() => {
   if (!product.value) return [];
-  console.log('product.value.category_slug', productStore.relatedProducts);
   return productStore.relatedProducts;
 });
-
+const supplierProducts = computed(() => {
+  if (!product.value) return [];
+  console.log('supplierProducts', productStore.supplierProducts);
+  return productStore.supplierProducts;
+});
 const increaseQuantity = () => {
   quantity.value++;
 };
@@ -279,7 +289,9 @@ const addToCartFromPanel = () => {
 onMounted(async () => {
   await productStore.fetchProductById(productId);
   await productStore.fetchRelatedProducts(product.value.category_slug);
-
+  if(product?.value?.supplier_id){
+    await productStore.fetchProductBySupplierId(product.value.supplier_id);
+  }
   loading.value = false;
 });
 
@@ -489,6 +501,28 @@ const getPrecioPuestoEnPeru = () => {
   // Si no hay precios, devolver precio base del producto
   return parsePrecio(product.value.precio || '0');
 };
+// Parsear atributos del producto
+const parsedAttributes = computed(() => {
+  if (!product.value?.attributes) return {};
+  
+  try {
+    // Si ya es un objeto, devolverlo directamente
+    if (typeof product.value.attributes === 'object' && !Array.isArray(product.value.attributes)) {
+      return product.value.attributes;
+    }
+    
+    // Si es un string JSON, parsearlo
+    if (typeof product.value.attributes === 'string') {
+      return JSON.parse(product.value.attributes);
+    }
+    
+    return {};
+  } catch (error) {
+    console.error('Error parsing product attributes:', error);
+    return {};
+  }
+});
+
 // Inicialización
 watch(() => product.value, () => {
   activeMediaIndex.value = 0;

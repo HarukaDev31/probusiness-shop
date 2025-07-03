@@ -5,6 +5,7 @@ import { productService } from '../services/product-service';
 export const useProductStore = defineStore('product', () => {
   const products = ref([]);
   const relatedProducts = ref([]);
+  const supplierProducts = ref([]);
   const totalProducts = ref(0);
   async function fetchProducts() {
     const data = await productService.getProducts();
@@ -34,6 +35,15 @@ export const useProductStore = defineStore('product', () => {
       slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
     }));
   }
+  async function fetchProductBySupplierId(supplierId) {
+    const data = await productService.getProductBySupplierId(supplierId);
+    supplierProducts.value = data.map(product => ({
+      ...product,
+      slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
+    }));
+    console.log('supplierProducts', supplierProducts.value);
+
+  }
   async function searchProducts(searchTerm,currentPage = 1) {
     const {data,total} = await productService.searchProducts(searchTerm,currentPage);
     totalProducts.value = total;
@@ -50,7 +60,9 @@ export const useProductStore = defineStore('product', () => {
     fetchProductsByCategory,
     fetchProductById,
     fetchRelatedProducts,
+    fetchProductBySupplierId,
     searchProducts,
-    totalProducts
+    totalProducts,
+    supplierProducts
   };
 });
