@@ -16,6 +16,23 @@
         :class="currentSlide === index ? 'bg-primary' : 'bg-white bg-opacity-50'"></button>
     </div>
   </div>
+    <!-- Beneficios superiores -->
+  <div class="w-full flex justify-center pt-6 pb-8">
+    <div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-4 px-6 py-4 bg-white rounded-xl shadow-[0_2px_16px_0_rgba(0,0,0,0.06)]">
+      <div class="flex items-center gap-4">
+        <Icon name="mdi:briefcase-outline" class="text-[#FF3D00] w-7 h-7 md:w-8 md:h-8" />
+        <span class="text-gray-700 text-sm md:text-base font-medium">Tienda solo para negocios B2B, no compras por unidad</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <Icon name="mdi:truck-outline" class="text-[#FF3D00] w-7 h-7 md:w-8 md:h-8" />
+        <span class="text-gray-700 text-sm md:text-base font-medium">Nos encargamos de todo el proceso de importación</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <Icon name="mdi:credit-card-outline" class="text-[#FF3D00] w-7 h-7 md:w-8 md:h-8" />
+        <span class="text-gray-700 text-sm md:text-base font-medium">Paga con tarjeta de crédito o débito</span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>

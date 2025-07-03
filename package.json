@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "@nuxt/image": "^1.10.0",
-    "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
     "@pinia/nuxt": "^0.5.1",
     "nuxt": "^3.13.0",
-    "pinia": "^2.1.7"
+    "pinia": "^2.1.7",
+    "swiper": "^11.2.10"
   },
   "devDependencies": {
     "@nuxt/icon": "^1.12.0",

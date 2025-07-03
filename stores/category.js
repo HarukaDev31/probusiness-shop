@@ -9,7 +9,8 @@ export const useCategoryStore = defineStore('category', () => {
     const  data  = await categoryService.getCategories();
     categories.value = data.map(category => ({
       ...category,
-      slug: category.slug || category.name.toLowerCase().replace(/\s+/g, '-')
+      slug: category.slug || category.name.toLowerCase().replace(/\s+/g, '-'),
+      meta:null
     }));
     return categories.value;
   }

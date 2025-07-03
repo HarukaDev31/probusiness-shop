@@ -1,55 +1,69 @@
 <template>
-  <div class="flex flex-col sm:flex-row items-start sm:items-center py-6 border-b border-gray-200">
-    <div class="sm:w-1/5 w-full h-full sm:h-1/5  flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-4 mb-4 sm:mb-0">
-      <NuxtImg :src="item.main_image_url" :alt="item.nombre" class="w-full h-full  object-contain "/>
+  <div class="flex items-center py-4 border-b border-gray-200 gap-2">
+    <!-- Checkbox -->
+    <input type="checkbox" class="form-checkbox w-5 h-5 accent-[#FF5000] mt-1" v-model="selected" />
+    <!-- Imagen -->
+    <div class="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-4">
+      <NuxtImg :src="item.image || item.main_image_url" :alt="item.name || item.nombre" class="w-full h-full object-contain" />
     </div>
-    <div class="flex-grow xl:w-2/5 md:w-3/5 w-3/5">
-      <h3 class="text-lg font-medium">{{ item.nombre }}</h3>
-      <div class="flex justify-start items-center mt-2 bg-white border-gray-200 border-2 rounded-lg px-2">
-        <div class="flex flex-row gap-1 items-center ">
-          <h3 class="text-md text-gray-500 ">Cantidad:</h3>
-          <p class="px-4 text-md text-gray-500">{{ item.quantity }}</p>
-        </div>
-        <div class="flex items-center justify-center rounded ">
-          <button v-if="item.quantity > item.moq" @click="decreaseQuantity"
-            class="px-4 text-xl hover:bg-gray-100 text-gray-500 ">-</button>
-
-          <button @click="increaseQuantity" class="px-4 text-xl text-gray-500 hover:bg-gray-100">+</button>
-        </div>
-      </div>
+    <!-- Nombre -->
+    <div class="flex-1 min-w-0">
+      <h3 class="text-base font-medium text-gray-900 break-words whitespace-normal leading-tight" style="word-break: break-word;">{{ item.name || item.nombre }}</h3>
     </div>
-    <div class="flex-grow xl:w-2/5 md:w-1/5 w-0">
+    <!-- Controles de cantidad -->
+    <div class="flex items-center gap-1 mx-2 bg-[#F5F8FB] rounded-lg border border-gray-200 px-1">
+      <button @click="decreaseQuantity" class="w-8 h-8 flex items-center justify-center text-xl text-gray-700 hover:bg-gray-200 rounded">-</button>
+      <input type="number" :min="1" v-model.number="inputQuantity" class="w-12 text-center bg-transparent outline-none border-none text-base font-semibold" />
+      <button @click="increaseQuantity" class="w-8 h-8 flex items-center justify-center text-xl text-gray-700 hover:bg-gray-200 rounded">+</button>
     </div>
-    <div class="flex items-center mt-4 sm:mt-0 w-1/5">
-
-      <button @click="removeItem" class="ml-4 text-red-500 hover:text-red-500">
-        <Icon name="heroicons:trash" class="w-8 h-8" />
-      </button>
+    <!-- Precio -->
+    <div class="w-28 text-right font-semibold text-gray-800 text-base">
+      s/{{ (item.price * item.quantity).toFixed(2) }}
     </div>
+    <!-- Eliminar -->
+    <button @click="removeItem" class="ml-2 text-red-500 hover:text-red-600 flex items-center justify-center">
+      <Icon name="heroicons:trash" class="w-6 h-6" />
+    </button>
   </div>
 </template>
 
 <script setup>
+import { ref, watch } from 'vue';
 import { useCartStore } from '~/stores/cart';
 
 const props = defineProps({
   item: {
     type: Object,
     required: true
+  },
+  showCheckbox: {
+    type: Boolean,
+    default: true
   }
 });
 
 const cartStore = useCartStore();
+const selected = ref(false); // Para selección futura
+const inputQuantity = ref(props.item.quantity);
+
+watch(() => props.item.quantity, (val) => {
+  inputQuantity.value = val;
+});
+
+watch(inputQuantity, (val) => {
+  if (val < 1) inputQuantity.value = 1;
+  if (val !== props.item.quantity) {
+    cartStore.updateItemQuantity(props.item.id, val);
+  }
+});
 
 const increaseQuantity = () => {
-  cartStore.updateItemQuantity(props.item.id, props.item.quantity + 1);
+  inputQuantity.value++;
 };
 
 const decreaseQuantity = () => {
-  if (props.item.quantity > 1) {
-    cartStore.updateItemQuantity(props.item.id, props.item.quantity - 1);
-  } else {
-    removeItem();
+  if (inputQuantity.value > 1) {
+    inputQuantity.value--;
   }
 };
 
