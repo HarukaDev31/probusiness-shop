@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#f5f8fb] flex flex-col">
+  <div v-if="!showSuccess" class="min-h-screen bg-[#f5f8fb] flex flex-col">
     <div class="flex-1 flex flex-col md:flex-row gap-8 p-6 md:p-12 max-w-[1200px] mx-auto w-full">
       <!-- Columna izquierda -->
       <div class="flex-1 flex flex-col">
@@ -51,7 +51,14 @@
                     </select>
                 </div>
                 </div>
-            <button type="submit" class="w-[25%] bg-[#FF5000] text-white font-semibold p-3 rounded mt-4">Guardar</button>
+            <button
+              type="button"
+              class="w-[25%] bg-[#FF5000] text-white font-semibold p-3 rounded mt-4"
+              @click="guardarDatos"
+            >
+              Guardar
+            </button>
+            <span v-if="savedMessage" class="ml-4 text-green-600 font-semibold">¡Guardado!</span>
           </form>
         </div>
         <!-- Productos seleccionados -->
@@ -83,7 +90,13 @@
             <span class="text-gray-600">Pagar en soles:</span>
             <span class="text-2xl font-bold text-gray-800">s/{{ cartTotal.toFixed(2) }}</span>
           </div>
-          <button class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Enviar pedido</button>
+          <button
+            @click="handlePedido"
+            :disabled="!isFormValid"
+            class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
+            >
+            Enviar pedido
+          </button>
         </div>
         <div class="bg-white rounded-lg shadow-md p-8">
           <h4 class="text-lg font-bold mb-4">Datos importantes:</h4>
@@ -107,6 +120,73 @@
       </div>
     </div>
   </div>
+  <!-- Modal de alerta de monto mínimo -->
+<div
+  v-if="showMinAlert"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+>
+  <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-8 relative text-center">
+    <button
+      class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl"
+      @click="showMinAlert = false"
+    >&times;</button>
+    <div class="flex flex-col items-center mb-4">
+      <div class="w-14 h-14 flex items-center justify-center rounded-full border-2 border-[#FF5000] mb-2">
+        <span class="text-4xl text-[#FF5000]">!</span>
+      </div>
+      <div class="text-lg font-semibold mb-2">
+        El monto mínimo de importación es de s/3000 para este pedido
+      </div>
+    </div>
+    <div class="flex flex-col gap-2 mb-2 text-left">
+      <div>
+        Tu pedido actual:
+        <b>s/{{ cartTotal.toFixed(2) }}</b>
+      </div>
+      <div>
+        Importe pendiente:
+        <b class="text-[#FF5000]">s/{{ (3000 - cartTotal).toFixed(2) }}</b>
+      </div>
+    </div>
+    <div class="text-xs text-gray-500 mt-3">
+      *Puedes aumentar unidades o agregar más productos
+    </div>
+  </div>
+</div>
+<!-- Sección de confirmación de pedido -->
+<div
+  v-if="showSuccess"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+>
+  <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-10 text-center relative">
+    <div class="flex flex-col items-center mb-6">
+      <div class="w-16 h-16 flex items-center justify-center rounded-full bg-green-100 mb-4">
+        <svg width="40" height="40" fill="none" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="12" fill="#22C55E"/>
+          <path d="M8 12.5l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold mb-2">¡Pedido confirmado!</h2>
+      <div class="font-semibold mb-2">Nº Pedido: 25JUN0001</div>
+      <p class="text-gray-600 mb-2">
+        Nuestro equipo de Pro Business se pondrá en contacto con usted a la brevedad posible.<br>
+        <br>
+        Envíanos un WhatsApp.
+      </p>
+    </div>
+    <div class="border-t my-6"></div>
+    <a
+      href="https://wa.me/51999999999?text=Hola,%20acabo%20de%20realizar%20un%20pedido%20en%20ProBusiness"
+      target="_blank"
+      class="inline-flex items-center justify-center bg-[#FF5000] text-white font-semibold px-6 py-3 rounded hover:bg-[#e04a00] transition"
+    >
+      <svg class="mr-2" width="22" height="22" fill="none" viewBox="0 0 24 24">
+        <path fill="#fff" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.67.15-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.363.71.306 1.263.489 1.695.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      </svg>
+      Hablemos por WhatsApp
+    </a>
+  </div>
+</div>
 </template>
 
 <script setup>
@@ -117,11 +197,20 @@ import { ref, onMounted } from 'vue'
 const router = useRouter();
 //add middleware to check if cart is empty
 const cartStore = useCartStore();
+const savedMessage = ref(false)
 const { cartItems, cartTotal } = storeToRefs(cartStore); // <-- agrega cartTotal aquí
 if (cartItems.value.length === 0) {
     router.push('/cart');
 }
 const { checkoutItems } = storeToRefs(cartStore)
+
+function guardarDatos() {
+  localStorage.setItem('checkoutInfo', JSON.stringify(form.value));
+  savedMessage.value = true
+  setTimeout(() => {
+    savedMessage.value = false
+  }, 2000)
+}
 
 function increaseQuantity(item) {
   cartStore.updateItemQuantity(item.id, item.quantity + 1);
@@ -135,9 +224,53 @@ function removeItem(productId) {
   cartStore.removeItem(productId);
 }
 // Arrays reactivos para selects
-const provinces = ref([])
+
+const showMinAlert = ref(false)
+const showSuccess = ref(false)
+
+const provinciasData = [
+  {
+    name: 'Lima',
+    cities: [
+      {
+        name: 'Lima',
+        districts: ['Miraflores', 'San Isidro', 'Surco']
+      },
+      {
+        name: 'Callao',
+        districts: ['Bellavista', 'La Perla']
+      }
+    ]
+  },
+  {
+    name: 'Arequipa',
+    cities: [
+      {
+        name: 'Arequipa',
+        districts: ['Cercado', 'Yanahuara']
+      }
+    ]
+  }
+]
+
+const provinces = ref(provinciasData.map(p => ({ name: p.name })))
 const cities = ref([])
 const districts = ref([])
+
+function onProvinceChange() {
+  form.value.city = ''
+  form.value.district = ''
+  const prov = provinciasData.find(p => p.name === form.value.province)
+  cities.value = prov ? prov.cities.map(c => ({ name: c.name })) : []
+  districts.value = []
+}
+
+function onCityChange() {
+  form.value.district = ''
+  const prov = provinciasData.find(p => p.name === form.value.province)
+  const city = prov?.cities.find(c => c.name === form.value.city)
+  districts.value = city ? city.districts.map(d => ({ name: d })) : []
+}
 
 const form = ref({
     fullName: '',
@@ -148,6 +281,23 @@ const form = ref({
     city: '',
     district: ''
 });
+const isFormValid = computed(() =>
+  form.value.fullName.trim() &&
+  form.value.dni.trim() &&
+  form.value.email.trim() &&
+  form.value.phone.trim() &&
+  form.value.province.trim() &&
+  form.value.city.trim() &&
+  form.value.district.trim()
+)
+function handlePedido() {
+  if (cartTotal.value < 3000 && isFormValid.value) {
+    showMinAlert.value = true
+    return
+  }
+  // Aquí va tu lógica para enviar el pedido
+  showSuccess.value = true
+}
 
 const handleSubmit = () => {
     localStorage.setItem('checkoutInfo', JSON.stringify(form.value));
