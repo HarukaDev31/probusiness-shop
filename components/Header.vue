@@ -206,7 +206,7 @@
         <!-- Dropdown de categorías como primer cuadro -->
         <!-- Swiper/scroll horizontal de categorías principales, incluyendo el primer cuadro -->
         <div class="hidden md:flex flex-1 ml-0">
-          <ul class="flex flex-nowrap items-center gap-2 overflow-x-auto scrollbar-hide">
+          <ul class="flex flex-nowrap items-center gap-2 ">
             <!-- Primer cuadro: Todas las categorías, igual ancho que las demás -->
             <li class="flex-shrink-0">
               <div class="relative group">
@@ -214,8 +214,8 @@
                   Todas las categorías
                   <Icon name="heroicons:chevron-down" class="w-4 h-4 ml-1" />
                 </button>
-                <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-full hidden group-hover:block">
-                  <ul class="py-2 max-h-60 overflow-auto scrollbar-hide">
+                <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-full hidden group-hover:block ">
+                  <ul class="py-2 max-h-60 ">
                     <li v-for="category in categories" :key="category.id">
                       <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100">
                         {{ category.name }}
@@ -225,7 +225,7 @@
                 </div>
               </div>
             </li>
-            <li v-for="category in categories.slice(1, 20)" :key="category.id" class="flex-shrink-0">
+            <li v-for="category in categories.slice(1, 20)" :key="category.id" class="flex-shrink-0 overflow-auto scrollbar-hide w-full">
               <NuxtLink :to="`/category/${category.slug}`" class="nav-link py-3 px-8 block whitespace-nowrap min-w-[120px] text-center">
                 {{ category.name }}
               </NuxtLink>
