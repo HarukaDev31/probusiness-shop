@@ -1,7 +1,9 @@
 <template>
   <div class="min-h-screen flex flex-col relative">
     <Header />
-    <main class="flex-grow">
+    <main class="flex-grow"
+    
+    >
       <slot />
     </main>
     <Footer />
@@ -11,6 +13,9 @@
         <span class="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></span>
       </div>
     </Transition>
+    
+    <!-- Modal Global -->
+    <GlobalModal />
   </div>
 </template>
 

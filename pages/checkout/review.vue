@@ -6,7 +6,7 @@
       <div class="border-b border-gray-300 mb-6"></div>
       <div class="flex items-start gap-4 pb-6 " v-for="cartItems in cartItems">
         <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden" :key="cartItems.id">
-          <NuxtImg :src="cartItems?.main_image_url" :alt="cartItems?.nombre" class="w-full h-full object-contain p-2" />
+          <NuxtImg :src="getCartItemImage(cartItems)" :alt="cartItems?.nombre" class="w-full h-full object-contain p-2" />
         </div>
         <div>
           <h3 class="font-medium">{{ cartItems?.nombre }}</h3>
@@ -67,6 +67,19 @@ import { orderService } from '../../services/order-service';
 const router = useRouter();
 const cartStore = useCartStore();
 const { cartItems } = storeToRefs(cartStore);
+
+const getCartItemImage = (item) => {
+  // Si hay media array y tiene elementos, usar la primera imagen
+  if (item.media && Array.isArray(item.media) && item.media.length > 0) {
+    const firstMedia = item.media[0];
+    if (firstMedia.url) {
+      return firstMedia.url;
+    }
+  }
+  
+  // Fallback a image, main_image_url o nombre
+  return item.image || item.main_image_url || '/images/logo.png';
+};
 
 const checkoutInfo = ref({});
 

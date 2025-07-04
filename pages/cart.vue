@@ -45,6 +45,9 @@
         <div v-if="selectedItems.length === 0" class="text-xs text-red-500 mt-2">
           Selecciona al menos un producto para continuar.
         </div>
+        <div class="text-xs text-gray-500 mt-2">
+          *Cada producto tiene su cantidad mínima de compra (MOQ)
+        </div>
         <div class="bg-white rounded-lg shadow-md p-8">
           <h4 class="text-lg font-bold mb-4">Datos importantes:</h4>
           <ul class="space-y-4">
@@ -123,12 +126,7 @@ const selectAll = () => {
 }
 
 async function goToCheckout() {
-  // Guarda solo los seleccionados en una propiedad temporal del store
   cartStore.checkoutItems = selectedItems.value
-  if (selectedTotal.value < 3000) {
-    showMinAlert.value = true
-    return
-  }
   router.push('/checkout')
 }
 

@@ -4,7 +4,7 @@
   >
     <div class="relative pb-[100%] overflow-hidden relative">
       <NuxtImg  
-        :src="product.main_image_url" 
+        :src="getProductImage()" 
         :alt="product.nombre"
         loading="lazy"
         class="absolute inset-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
@@ -40,6 +40,19 @@ const props = defineProps({
 });
 
 const cartStore = useCartStore();
+
+const getProductImage = () => {
+  // Si hay media array y tiene elementos, usar la primera imagen
+  if (props.product.media && Array.isArray(props.product.media) && props.product.media.length > 0) {
+    const firstMedia = props.product.media[0];
+    if (firstMedia.url) {
+      return firstMedia.url;
+    }
+  }
+  
+  // Fallback a main_image_url
+  return props.product.main_image_url || '/images/logo.png';
+};
 
 const addToCart = () => {
   cartStore.addItem(props.product);

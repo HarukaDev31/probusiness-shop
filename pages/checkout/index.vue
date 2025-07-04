@@ -69,9 +69,21 @@
             <div class="flex-1">
               <div class="font-semibold">{{ item.name }}</div>
               <div class="flex items-center gap-2 mt-2">
-                <button @click="decreaseQuantity(item)" class="px-2 py-1 bg-gray-200 rounded">-</button>
-                <input type="number" v-model.number="item.quantity" min="1" class="w-14 text-center border rounded" />
-                <button @click="increaseQuantity(item)" class="px-2 py-1 bg-gray-200 rounded">+</button>
+                <button 
+                  @click="decreaseQuantity(item)" 
+                  :disabled="item.quantity <= getProductMOQ(item)"
+                  :class="item.quantity <= getProductMOQ(item) ? 'px-2 py-1 bg-gray-100 text-gray-400 rounded cursor-not-allowed' : 'px-2 py-1 bg-gray-200 rounded hover:bg-gray-300'"
+                >
+                  -
+                </button>
+                <input 
+                  type="number" 
+                  v-model.number="item.quantity" 
+                  :min="getProductMOQ(item)" 
+                  @input="validateQuantity(item)"
+                  class="w-14 text-center border rounded" 
+                />
+                <button @click="increaseQuantity(item)" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
               </div>
             </div>
             <div class="font-semibold">s/{{ (item.price * item.quantity).toFixed(2) }}</div>
@@ -80,6 +92,9 @@
             </button>
           </div>
           <NuxtLink to="/cart" class="text-primary text-sm hover:underline">Agregar productos</NuxtLink>
+          <div class="text-xs text-gray-500 mt-2">
+            *Cada producto tiene su cantidad mínima de compra (MOQ)
+          </div>
         </div>
       </div>
       <!-- Columna derecha -->
@@ -216,8 +231,34 @@ function increaseQuantity(item) {
   cartStore.updateItemQuantity(item.id, item.quantity + 1);
 }
 function decreaseQuantity(item) {
-  if (item.quantity > 1) {
+  // Validar que la cantidad no sea menor al MOQ del producto
+  const moq = getProductMOQ(item);
+  if (item.quantity > moq) {
     cartStore.updateItemQuantity(item.id, item.quantity - 1);
+  }
+}
+// Función para obtener el MOQ de un producto
+function getProductMOQ(product) {
+  // Si el producto tiene moq explícito, usarlo
+  if (product && product.moq && !isNaN(Number(product.moq))) {
+    return Number(product.moq);
+  }
+  // Si no, intentar obtener del primer rango de precios
+  try {
+    const precios = JSON.parse(product?.prices_range || '[]');
+    if (precios.length > 0) {
+      const match = precios[0].quantity.match(/(\d+)/);
+      if (match) return parseInt(match[1]);
+    }
+  } catch (e) {}
+  return 1;
+}
+
+function validateQuantity(item) {
+  // Validar que la cantidad no sea menor al MOQ del producto
+  const moq = getProductMOQ(item);
+  if (item.quantity < moq) {
+    cartStore.updateItemQuantity(item.id, moq);
   }
 }
 function removeItem(productId) {
@@ -291,7 +332,8 @@ const isFormValid = computed(() =>
   form.value.district.trim()
 )
 function handlePedido() {
-  if (cartTotal.value < 3000 && isFormValid.value) {
+  // Validación del monto mínimo solo al enviar el pedido
+  if (cartTotal.value < 3000) {
     showMinAlert.value = true
     return
   }

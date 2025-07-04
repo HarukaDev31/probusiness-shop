@@ -4,7 +4,7 @@
     <input type="checkbox" class="form-checkbox w-5 h-5 accent-[#FF5000] mt-1" v-model="isSelected" />
     <!-- Imagen -->
     <div class="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-4">
-      <NuxtImg :src="item.image || item.main_image_url" :alt="item.name || item.nombre" class="w-full h-full object-contain" />
+      <NuxtImg :src="getItemImage()" :alt="item.name || item.nombre" class="w-full h-full object-contain" />
     </div>
     <!-- Nombre -->
     <div class="flex-1 min-w-0">
@@ -12,8 +12,20 @@
     </div>
     <!-- Controles de cantidad -->
     <div class="flex items-center gap-1 mx-2 bg-[#F5F8FB] rounded-lg border border-gray-200 px-1">
-      <button @click="decreaseQuantity" class="w-8 h-8 flex items-center justify-center text-xl text-gray-700 hover:bg-gray-200 rounded">-</button>
-      <input type="number" :min="1" v-model.number="inputQuantity" class="w-12 text-center bg-transparent outline-none border-none text-base font-semibold" />
+      <button 
+        @click="decreaseQuantity" 
+        :disabled="inputQuantity <= getProductMOQ(props.item)"
+        :class="inputQuantity <= getProductMOQ(props.item) ? 'w-8 h-8 flex items-center justify-center text-xl text-gray-400 rounded cursor-not-allowed' : 'w-8 h-8 flex items-center justify-center text-xl text-gray-700 hover:bg-gray-200 rounded'"
+      >
+        -
+      </button>
+      <input 
+        type="number" 
+        :min="getProductMOQ(props.item)" 
+        v-model.number="inputQuantity" 
+        @input="validateInputQuantity"
+        class="w-12 text-center bg-transparent outline-none border-none text-base font-semibold" 
+      />
       <button @click="increaseQuantity" class="w-8 h-8 flex items-center justify-center text-xl text-gray-700 hover:bg-gray-200 rounded">+</button>
     </div>
     <!-- Precio -->
@@ -43,6 +55,36 @@ const props = defineProps({
 });
 
 const cartStore = useCartStore();
+
+// Función para obtener el MOQ de un producto
+const getProductMOQ = (product) => {
+  // Si el producto tiene moq explícito, usarlo
+  if (product && product.moq && !isNaN(Number(product.moq))) {
+    return Number(product.moq);
+  }
+  // Si no, intentar obtener del primer rango de precios
+  try {
+    const precios = JSON.parse(product?.prices_range || '[]');
+    if (precios.length > 0) {
+      const match = precios[0].quantity.match(/(\d+)/);
+      if (match) return parseInt(match[1]);
+    }
+  } catch (e) {}
+  return 1;
+};
+
+const getItemImage = () => {
+  // Si hay media array y tiene elementos, usar la primera imagen
+  if (props.item.media && Array.isArray(props.item.media) && props.item.media.length > 0) {
+    const firstMedia = props.item.media[0];
+    if (firstMedia.url) {
+      return firstMedia.url;
+    }
+  }
+  
+  // Fallback a image o main_image_url
+  return props.item.image || props.item.main_image_url || '/images/logo.png';
+};
 const selected = ref(false); // Para selección futura
 const inputQuantity = ref(props.item.quantity);
 
@@ -51,7 +93,11 @@ watch(() => props.item.quantity, (val) => {
 });
 
 watch(inputQuantity, (val) => {
-  if (val < 1) inputQuantity.value = 1;
+  // Validar que la cantidad no sea menor al MOQ del producto
+  const moq = getProductMOQ(props.item);
+  if (val < moq) {
+    inputQuantity.value = moq;
+  }
   if (val !== props.item.quantity) {
     cartStore.updateItemQuantity(props.item.id, val);
   }
@@ -62,8 +108,17 @@ const increaseQuantity = () => {
 };
 
 const decreaseQuantity = () => {
-  if (inputQuantity.value > 1) {
+  const moq = getProductMOQ(props.item);
+  if (inputQuantity.value > moq) {
     inputQuantity.value--;
+  }
+};
+
+const validateInputQuantity = () => {
+  // Validar que la cantidad no sea menor al MOQ del producto
+  const moq = getProductMOQ(props.item);
+  if (inputQuantity.value < moq) {
+    inputQuantity.value = moq;
   }
 };
 

@@ -45,7 +45,47 @@
               <div class="aspect-square overflow-hidden rounded-md w-full relative flex items-center justify-center">
                 <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
                   class="object-contain w-full h-full max-w-[350px] max-h-[350px] mx-auto" />
-                <video v-else :src="activeMedia.url" :alt="product.nombre" class="object-contain w-full h-full max-w-[350px] max-h-[350px] mx-auto" autoplay muted loop></video>
+                <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
+                  <video 
+                    :src="activeMedia.url" 
+                    :alt="product.nombre" 
+                    class="object-contain w-full h-full max-w-[350px] max-h-[350px] mx-auto" 
+                    autoplay 
+                    muted 
+                    loop
+                    controls
+                    preload="metadata"
+                    @error="handleVideoError"
+                    @loadstart="handleVideoLoadStart"
+                    crossorigin="anonymous">
+                    <source :src="activeMedia.url" type="video/mp4">
+                    Tu navegador no soporta el elemento de video.
+                  </video>
+                  <!-- Loading state -->
+                  <div v-if="videoLoading" class="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-md">
+                    <div class="text-center p-4">
+                      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                      <p class="text-gray-600 text-sm">Cargando video...</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Fallback para videos bloqueados -->
+                  <div v-if="videoError" class="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-md">
+                    <div class="text-center p-4">
+                      <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                      </svg>
+                      <p class="text-gray-600 text-sm">Video no disponible</p>
+                      <p class="text-gray-400 text-xs mt-1">El contenido está protegido por Alibaba</p>
+                      <button 
+                        @click="loadVideo(activeMedia.url)" 
+                        class="mt-2 px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary-dark transition"
+                      >
+                        Reintentar
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
               <!-- Flecha derecha -->
               <button v-if="mediaItems.length > 1" @click="nextMedia"
@@ -81,7 +121,7 @@
         <h2 class="text-xl font-bold">Selecciona la cantidad de tu interés</h2>
         <button @click="showCartPanel = false" class="text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
       </div>
-      <div class="text-xs text-gray-500 mb-2">*Pedido mínimo de importación s/3,000</div>
+
               <div class="mb-4">
           <h3 class="font-semibold mb-2">Cantidades</h3>
           <div class="grid grid-cols-4 gap-2">
@@ -95,8 +135,8 @@
         <div class="flex items-center justify-between mb-4">
           <span class="font-semibold">Cantidad</span>
           <div class="flex items-center gap-2">
-            <button @click="cartQuantity = Math.max(1, cartQuantity - 1)" class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl">-</button>
-            <input type="number" v-model.number="cartQuantity" min="1" class="w-16 text-center border border-gray-200 rounded px-2 py-1" />
+            <button @click="cartQuantity = Math.max(getProductMOQ, cartQuantity - 1)" class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl">-</button>
+            <input type="number" v-model.number="cartQuantity" :min="getProductMOQ" class="w-16 text-center border border-gray-200 rounded px-2 py-1" />
             <button @click="cartQuantity++" class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl">+</button>
           </div>
         </div>
@@ -145,21 +185,7 @@
                   <span class="text-gray-500 text-sm">Se tiene que realizar la importación, la entrega es en 2 meses</span>
                 </div>
               </li>
-              <li class="flex items-start gap-3">
-                <!-- Icono cantidad -->
-                <span class="inline-block w-6 h-6 mx-1"><svg width="25" height="28" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M14.7425 7.0412H12.4893C12.6566 6.70674 12.7622 6.33708 12.7622 5.94101V2.42041C12.7622 1.08258 11.6796 0 10.3418 0H6.82116C5.48333 0 4.40075 1.08258 4.40075 2.42041V5.94101C4.40075 6.33708 4.50637 6.70674 4.6736 7.0412H2.42041C1.08258 7.0412 0 8.12378 0 9.46161V13.8624C0 15.2002 1.08258 16.2828 2.42041 16.2828H6.82116C7.51648 16.2828 8.14139 15.9835 8.58146 15.517C9.02154 15.9923 9.64644 16.2828 10.3418 16.2828H14.7425C16.0803 16.2828 17.1629 15.2002 17.1629 13.8624V9.46161C17.1629 8.12378 16.0803 7.0412 14.7425 7.0412ZM5.72097 5.94101V2.42041C5.72097 1.81311 6.21386 1.32022 6.82116 1.32022H10.3418C10.9491 1.32022 11.4419 1.81311 11.4419 2.42041V5.94101C11.4419 6.54832 10.9491 7.0412 10.3418 7.0412H6.82116C6.21386 7.0412 5.72097 6.54832 5.72097 5.94101ZM6.82116 14.9625H2.42041C1.81311 14.9625 1.32022 14.4697 1.32022 13.8624V9.46161C1.32022 8.85431 1.81311 8.36142 2.42041 8.36142H6.82116C7.42846 8.36142 7.92135 8.85431 7.92135 9.46161V13.8624C7.92135 14.4697 7.42846 14.9625 6.82116 14.9625ZM15.8427 13.8624C15.8427 14.4697 15.3498 14.9625 14.7425 14.9625H10.3418C9.73446 14.9625 9.24157 14.4697 9.24157 13.8624V9.46161C9.24157 8.85431 9.73446 8.36142 10.3418 8.36142H14.7425C15.3498 8.36142 15.8427 8.85431 15.8427 9.46161V13.8624Z" fill="#272A30"/>
-<path d="M7.70237 5.28125H6.82222C6.46136 5.28125 6.16211 5.5805 6.16211 5.94136C6.16211 6.30222 6.46136 6.60147 6.82222 6.60147H7.70237C8.06323 6.60147 8.36248 6.30222 8.36248 5.94136C8.36248 5.5805 8.06323 5.28125 7.70237 5.28125Z" fill="#272A30"/>
-<path d="M3.30198 13.1992H2.42183C2.06097 13.1992 1.76172 13.4985 1.76172 13.8593C1.76172 14.2202 2.06097 14.5194 2.42183 14.5194H3.30198C3.66284 14.5194 3.96209 14.2202 3.96209 13.8593C3.96209 13.4985 3.66284 13.1992 3.30198 13.1992Z" fill="#272A30"/>
-<path d="M11.2219 13.1992H10.3418C9.98089 13.1992 9.68164 13.4985 9.68164 13.8593C9.68164 14.2202 9.98089 14.5194 10.3418 14.5194H11.2219C11.5828 14.5194 11.882 14.2202 11.882 13.8593C11.882 13.4985 11.5828 13.1992 11.2219 13.1992Z" fill="#272A30"/>
-</svg>
 
-</span>
-                <div>
-                  <span class="font-semibold">La cantidad</span><br>
-                  <span class="text-gray-500 text-sm">No se acepta pedidos por unidades, compra mínima de s/3.000</span>
-                </div>
-              </li>
             </ul>
           </div>
         </div>
@@ -197,27 +223,11 @@
             </table>
           </div>
           <br>
-          <h1 class="text-2xl font-bold mb-4">Plazo de entrega</h1>
-          <div class="overflow-x-auto">
-            <table class="w-full border-separate border-spacing-0 text-sm">
-              <tbody>
-                <tr v-for="(value, key) in parsedDeliveryTimes" :key="key">
-                  <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 font-semibold bg-gray-50 min-w-[120px]">{{ key }}</td>
-                  <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 whitespace-pre-line align-top min-w-[120px]">{{ value }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+       
           <h1 class="text-2xl font-bold mb-4">Descripción de producto de proveedor</h1>
         <div v-html="cleanHtmlContent(product.product_details)" class="descripcion-html text-gray-700 mt-4" v-if="product.product_details"></div>
       </div>
-      <div class="mt-16" >
-        <h2 class="text-2xl font-bold mb-6">Productos populares de este proveedor</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <ProductCard v-for="supplierProduct in supplierProducts" :key="supplierProduct.id" :product="supplierProduct" />
-        </div>
-      </div>
-      <!--di-->
+ 
     </template>
 
     <div v-else class="text-center py-12">
@@ -229,7 +239,12 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { useVideoLoader } from '~/composables/useVideoLoader';
+// Composable para manejar videos bloqueados
+const { videoError, videoLoading, loadVideo, isAlibabaVideo, getAlternativeUrl } = useVideoLoader();
 const router = useRouter();
+const cartQuantity = ref(1)
+
 const iniciarPedidoPanel = () => {
   if (product.value) {
     cartStore.addItem({
@@ -242,17 +257,37 @@ const iniciarPedidoPanel = () => {
     showCartPanel.value = false;
     router.push('/cart');
   }
-};
+}
+const getProductMOQ = computed(() => {
+  // Si el producto tiene moq explícito, usarlo
+  if (product.value && product.value.moq && !isNaN(Number(product.value.moq))) {
+    return Number(product.value.moq);
+  }
+  // Si no, intentar obtener del primer rango de precios
+  try {
+    const precios = JSON.parse(product.value?.prices_range || '[]');
+    if (precios.length > 0) {
+      const match = precios[0].quantity.match(/(\d+)/);
+      if (match) return parseInt(match[1]);
+    }
+  } catch (e) {}
+  return 1;
+});
+
 function openCartPanel() {
-  // Establece la cantidad mínima según los rangos de precios
-  const minQty = getMinimumOrderQuantity() || 1;
-  cartQuantity.value = minQty;
+  cartQuantity.value = getProductMOQ.value;
   showCartPanel.value = true;
 }
 
+// Validar que la cantidad nunca sea menor al MOQ
+watch(cartQuantity, (val) => {
+  if (val < getProductMOQ.value) {
+    cartQuantity.value = getProductMOQ.value;
+  }
+});
+
 const route = useRoute();
 const productId = parseInt(route.params.id);
-const cartQuantity = ref(1)
 const showCartPanel = ref(false)
 const productStore = useProductStore();
 const cartStore = useCartStore();   
@@ -275,7 +310,6 @@ const product = computed(() => {
   return productToReturn;
 });
 
-// Get related products (same category)
 const relatedProducts = computed(() => {
   if (!product.value) return [];
   return productStore.relatedProducts;
@@ -302,7 +336,7 @@ const iniciarPedidoMinimo = () => {
       id: product.value.id,
       name: product.value.name || product.value.nombre,
       price: getPrecioPuestoEnPeru(),
-      quantity: getMinimumOrderQuantity() || 1,
+      quantity: 1,
       image: product.value.main_image_url || product.value.image || '/images/logo.png'
     });
     router.push('/cart');
@@ -340,7 +374,7 @@ watch(() => route.params.id, () => {
 // Variables para el carrusel
 const activeMediaIndex = ref(0);
 const currentPage = ref(0);
-const itemsPerPage = 4; // Número de miniaturas visibles
+const itemsPerPage = 10; // Número de miniaturas visibles
 const cleanHtmlContent = (htmlString) => {
   if (!htmlString) return '';
 
@@ -375,32 +409,62 @@ const cleanHtmlContent = (htmlString) => {
 const mediaItems = computed(() => {
   const items = [];
 
-  if (product.value?.main_image_url) {
-    items.push({
-      url: product.value.main_image_url,
-      type: 'image'
+  // Función para determinar si una URL es un video
+  const isVideoUrl = (url) => {
+    // Verificar extensiones de video comunes
+    const videoExtensions = /\.(mp4|webm|ogg|mov|avi|mkv|flv|wmv|m4v|3gp)$/i;
+    
+    // Verificar URLs de Alibaba Video CDN
+    const alibabaVideoPattern = /gv\.videocdn\.alibaba\.com.*\.mp4/i;
+    
+    // Verificar otros patrones de video conocidos
+    const videoPatterns = [
+      /videocdn\.alibaba\.com/i,
+      /video.*\.mp4/i,
+      /\.mp4\?/i
+    ];
+    
+    return videoExtensions.test(url) || 
+           alibabaVideoPattern.test(url) || 
+           videoPatterns.some(pattern => pattern.test(url));
+  };
+
+  // Agregar media items del array product.value.media
+  if (product.value?.media && Array.isArray(product.value.media)) {
+    product.value.media.forEach(mediaItem => {
+      if (mediaItem.url) {
+        // Determinar si es video usando la función mejorada
+        const isVideo = isVideoUrl(mediaItem.url);
+        items.push({
+          url: mediaItem.url,
+          type: isVideo ? 'video' : 'image'
+        });
+      }
     });
   }
 
-  if (product.value?.aditional_image1_url) {
-    items.push({
-      url: product.value.aditional_image1_url,
-      type: 'image'
-    });
-  }
+  // Fallback: agregar imágenes adicionales si no hay media array
+  if (items.length <= 1) {
+    if (product.value?.aditional_image1_url) {
+      items.push({
+        url: product.value.aditional_image1_url,
+        type: 'image'
+      });
+    }
 
-  if (product.value?.aditional_image2_url) {
-    items.push({
-      url: product.value.aditional_image2_url,
-      type: 'image'
-    });
-  }
+    if (product.value?.aditional_image2_url) {
+      items.push({
+        url: product.value.aditional_image2_url,
+        type: 'image'
+      });
+    }
 
-  if (product.value?.aditional_video1_url) {
-    items.push({
-      url: product.value.aditional_video1_url,
-      type: 'video'
-    });
+    if (product.value?.aditional_video1_url) {
+      items.push({
+        url: product.value.aditional_video1_url,
+        type: 'video'
+      });
+    }
   }
 
   return items;
@@ -434,61 +498,23 @@ const prevMedia = () => {
 const updatePage = () => {
   currentPage.value = Math.floor(activeMediaIndex.value / itemsPerPage);
 };
-const getMinimumOrderQuantity = () => {
-  try {
-    const prices = JSON.parse(product.value.prices_range || '[]');
-    const quantitySelected = Number(quantity.value);
-    
-    if (!prices.length) return null;
 
-    for (const price of prices) {
-      const quantityRange = price.quantity.trim();
-      let minQty = null;
-
-      // Caso 1: Rango "20 - 59 conjuntos"
-      const rangeMatch = quantityRange.match(/^(\d+)\s*-\s*(\d+)/);
-      if (rangeMatch) {
-        minQty = parseInt(rangeMatch[1]);
-        const maxQty = parseInt(rangeMatch[2]);
-        
-        if (quantitySelected >= minQty && quantitySelected <= maxQty) {
-          return minQty;
-        }
-        continue;
-      }
-
-      // Caso 2: Mínimo ">= 180 conjuntos"
-      const minMatch = quantityRange.match(/^>=\s*(\d+)/);
-      if (minMatch) {
-        minQty = parseInt(minMatch[1]);
-        
-        if (quantitySelected >= minQty) {
-          return minQty;
-        }
-        continue;
-      }
-
-      // Caso 3: Cantidad fija "100 conjuntos"
-      const fixedMatch = quantityRange.match(/^(\d+)/);
-      if (fixedMatch) {
-        minQty = parseInt(fixedMatch[1]);
-        if (quantitySelected === minQty) {
-          return minQty;
-        }
-      }
+// Funciones para manejar errores de video
+const handleVideoError = (event) => {
+  console.warn('Error cargando video:', event);
+  if (isAlibabaVideo(event.target.src)) {
+    // Intentar cargar con URL alternativa
+    const alternativeUrl = getAlternativeUrl(event.target.src);
+    if (alternativeUrl !== event.target.src) {
+      event.target.src = alternativeUrl;
     }
-
-    // Si no coincide con ningún rango, devolver la mínima cantidad disponible
-    return prices.reduce((min, price) => {
-      const match = price.quantity.match(/(\d+)/);
-      return match ? Math.min(min, parseInt(match[1])) : min;
-    }, Infinity);
-
-  } catch (error) {
-    console.error('Error calculating minimum order quantity:', error);
-    return null;
   }
 };
+
+const handleVideoLoadStart = () => {
+  // El estado se maneja en el composable
+};
+
 const getPrecioPuestoEnPeru = () => {
   // get product.precios
   const precios = JSON.parse(product.value.prices_range || '[]');
@@ -589,6 +615,13 @@ watch(() => product.value, () => {
   activeMediaIndex.value = 0;
   currentPage.value = 0;
 }, { immediate: true });
+
+// Cargar video cuando cambia el media activo
+watch(() => activeMedia.value, async (newMedia) => {
+  if (newMedia && newMedia.type === 'video' && isAlibabaVideo(newMedia.url)) {
+    await loadVideo(newMedia.url);
+  }
+});
 </script>
 <style scoped>
 .border-primary {

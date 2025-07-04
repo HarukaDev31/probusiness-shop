@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia';
 
+// Constante para el mínimo de productos por item
+const MIN_QUANTITY_PER_ITEM = 1;
+
 export const useCartStore = defineStore('cart', {
   state: () => ({
     items: [],
@@ -41,8 +44,18 @@ export const useCartStore = defineStore('cart', {
       };
 
       const existingItem = this.items.find(item => item.id === product.id);
-      // Fallback definitivo para imagen principal
+      // Obtener imagen del producto
       let image = product.image || product.main_image_url;
+      
+      // Si no hay imagen principal, intentar usar la primera del array media
+      if ((!image || typeof image !== 'string' || image.trim() === '' || image === 'undefined' || image === 'null') && product.media && Array.isArray(product.media) && product.media.length > 0) {
+        const firstMedia = product.media[0];
+        if (firstMedia.url) {
+          image = firstMedia.url;
+        }
+      }
+      
+      // Fallback definitivo
       if (!image || typeof image !== 'string' || image.trim() === '' || image === 'undefined' || image === 'null') {
         image = '/images/logo.png';
       }
@@ -79,7 +92,12 @@ export const useCartStore = defineStore('cart', {
     updateItemQuantity(productId, quantity) {
       const itemIndex = this.items.findIndex(item => item.id === productId);
       if (itemIndex !== -1) {
-        this.items[itemIndex].quantity = quantity;
+        // Validar que la cantidad no sea menor al mínimo establecido
+        if (quantity < MIN_QUANTITY_PER_ITEM) {
+          this.items[itemIndex].quantity = MIN_QUANTITY_PER_ITEM;
+        } else {
+          this.items[itemIndex].quantity = quantity;
+        }
       }
     },
     
