@@ -202,7 +202,7 @@
 
     <!-- Navigation -->
     <nav class="bg-secondary text-white">
-      <div class="container-custom flex items-center">
+      <div class="container-custom flex items-center  overflow-auto scrollbar-hide w-full">
         <!-- Dropdown de categorías como primer cuadro -->
         <!-- Swiper/scroll horizontal de categorías principales, incluyendo el primer cuadro -->
         <div class="hidden md:flex flex-1 ml-0">
@@ -225,7 +225,7 @@
                 </div>
               </div>
             </li>
-            <li v-for="category in categories.slice(1, 20)" :key="category.id" class="flex-shrink-0 overflow-auto scrollbar-hide w-full">
+            <li v-for="category in categories.slice(1, 20)" :key="category.id" class="flex-shrink-0 ">
               <NuxtLink :to="`/category/${category.slug}`" class="nav-link py-3 px-8 block whitespace-nowrap min-w-[120px] text-center">
                 {{ category.name }}
               </NuxtLink>
