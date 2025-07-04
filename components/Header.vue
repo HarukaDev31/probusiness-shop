@@ -214,8 +214,8 @@
                   Todas las categorías
                   <Icon name="heroicons:chevron-down" class="w-4 h-4 ml-1" />
                 </button>
-                <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-64 hidden group-hover:block">
-                  <ul class="py-2 max-h-60 overflow-y-auto">
+                <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-full hidden group-hover:block">
+                  <ul class="py-2 max-h-60 overflow-auto scrollbar-hide">
                     <li v-for="category in categories" :key="category.id">
                       <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100">
                         {{ category.name }}
