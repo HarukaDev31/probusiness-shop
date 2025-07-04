@@ -111,8 +111,8 @@
           </div>
           <!-- Botones -->
           <div class="flex flex-col md:flex-row gap-4 mb-6 py-8">
-            <button @click="openCartPanel" class="w-full md:w-1/2 border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition">Añadir al carrito</button>
-            <button @click="iniciarPedidoMinimo" class="w-full md:w-1/2 bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
+            <button @click="iniciarPedidoMinimo" class="w-full md:w-1/2 border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition">Añadir al carrito</button>
+            <button @click="openCartPanel" class="w-full md:w-1/2 bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
           </div>
   <!-- Panel lateral de carrito -->
   <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40" @click.self="showCartPanel = false">
@@ -135,8 +135,21 @@
         <div class="flex items-center justify-between mb-4">
           <span class="font-semibold">Cantidad</span>
           <div class="flex items-center gap-2">
-            <button @click="cartQuantity = Math.max(getProductMOQ, cartQuantity - 1)" class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl">-</button>
-            <input type="number" v-model.number="cartQuantity" :min="getProductMOQ" class="w-16 text-center border border-gray-200 rounded px-2 py-1" />
+            <button
+              @click="cartQuantity = Math.max(getMinimumOrderQuantity() || 1, cartQuantity - 1)"
+              :disabled="cartQuantity <= (getMinimumOrderQuantity() || 1)"
+              class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl"
+              :class="{ 'opacity-50 cursor-not-allowed': cartQuantity <= (getMinimumOrderQuantity() || 1) }"
+            >
+              -
+            </button>
+            <input
+              type="number"
+              v-model.number="cartQuantity"
+              :min="getMinimumOrderQuantity() || 1"
+              class="w-16 text-center border border-gray-200 rounded px-2 py-1"
+              @input="handleCartQuantityInput"
+            />
             <button @click="cartQuantity++" class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl">+</button>
           </div>
         </div>
@@ -194,9 +207,22 @@
       <!-- Related Products -->
       <div class="mt-16">
         <h2 class="text-2xl font-bold mb-6">Otras Recomendaciones para tu negocio</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <ProductCard v-for="relatedProduct in relatedProducts" :key="relatedProduct.id" :product="relatedProduct" />
-        </div>
+        <Swiper
+          :modules="[Navigation]"
+          :slides-per-view="4"
+          :space-between="16"
+          :breakpoints="{
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 }
+          }"
+          navigation
+          class="!pb-10"
+        >
+          <SwiperSlide v-for="relatedProduct in relatedProducts" :key="relatedProduct.id">
+            <ProductCard :product="relatedProduct" />
+          </SwiperSlide>
+        </Swiper>
       </div>
       <div class="bg-white rounded-lg shadow-md p-6 col-span-12 md:col-span-6 mt-16">
         <h1 class="text-2xl font-bold mb-4">Atributos clave</h1>
@@ -238,6 +264,10 @@
 </template>
 
 <script setup>
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation } from 'swiper/modules';
 import { useRouter } from 'vue-router'
 import { useVideoLoader } from '~/composables/useVideoLoader';
 // Composable para manejar videos bloqueados
@@ -371,6 +401,12 @@ watch(() => route.params.id, () => {
   quantity.value = 1;
 });
 // Inicializamos con la imagen principal
+
+// Handler para forzar el mínimo en el input de cantidad
+function handleCartQuantityInput() {
+  const min = getMinimumOrderQuantity() || 1;
+  if (cartQuantity.value < min) cartQuantity.value = min;
+}
 // Variables para el carrusel
 const activeMediaIndex = ref(0);
 const currentPage = ref(0);
@@ -499,22 +535,42 @@ const updatePage = () => {
   currentPage.value = Math.floor(activeMediaIndex.value / itemsPerPage);
 };
 
-// Funciones para manejar errores de video
-const handleVideoError = (event) => {
-  console.warn('Error cargando video:', event);
-  if (isAlibabaVideo(event.target.src)) {
-    // Intentar cargar con URL alternativa
-    const alternativeUrl = getAlternativeUrl(event.target.src);
-    if (alternativeUrl !== event.target.src) {
-      event.target.src = alternativeUrl;
+// Debe estar en el scope superior para ser accesible en todo el componente
+function getMinimumOrderQuantity() {
+  try {
+    const prices = JSON.parse(product.value.prices_range || '[]');
+    if (!prices.length) return 1;
+    let minQty = Infinity;
+    for (const price of prices) {
+      const quantityRange = price.quantity.trim();
+      // Caso 1: Rango "20 - 59 conjuntos"
+      const rangeMatch = quantityRange.match(/^(\d+)\s*-\s*(\d+)/);
+      if (rangeMatch) {
+        const start = parseInt(rangeMatch[1]);
+        if (start < minQty) minQty = start;
+        continue;
+      }
+      // Caso 2: Mínimo ">= 180 conjuntos"
+      const minMatch = quantityRange.match(/^>=\s*(\d+)/);
+      if (minMatch) {
+        const start = parseInt(minMatch[1]);
+        if (start < minQty) minQty = start;
+        continue;
+      }
+      // Caso 3: Cantidad fija "100 conjuntos"
+      const fixedMatch = quantityRange.match(/^(\d+)/);
+      if (fixedMatch) {
+        const start = parseInt(fixedMatch[1]);
+        if (start < minQty) minQty = start;
+        continue;
+      }
     }
+    return isFinite(minQty) ? minQty : 1;
+  } catch (error) {
+    console.error('Error calculating minimum order quantity:', error);
+    return 1;
   }
-};
-
-const handleVideoLoadStart = () => {
-  // El estado se maneja en el composable
-};
-
+}
 const getPrecioPuestoEnPeru = () => {
   // get product.precios
   const precios = JSON.parse(product.value.prices_range || '[]');

@@ -203,31 +203,36 @@
     <!-- Navigation -->
     <nav class="bg-secondary text-white">
       <div class="container-custom flex items-center">
-        <!-- Dropdown de categorías -->
-        <div class="relative group">
-          <button class="nav-link py-3 flex items-center">
-            Todas las categorías
-            <Icon name="heroicons:chevron-down" class="w-4 h-4 ml-1" />
-          </button>
-          <div
-            class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-64 hidden group-hover:block">
-            <ul class="py-2 max-h-60 overflow-y-auto">
-              <li v-for="category in categories" :key="category.id">
-                <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100">
-                  {{ category.name }}
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
+        <!-- Dropdown de categorías como primer cuadro -->
+        <!-- Swiper/scroll horizontal de categorías principales, incluyendo el primer cuadro -->
+        <div class="hidden md:flex flex-1 ml-0">
+          <ul class="flex flex-nowrap items-center gap-2 overflow-x-auto scrollbar-hide">
+            <!-- Primer cuadro: Todas las categorías, igual ancho que las demás -->
+            <li class="flex-shrink-0">
+              <div class="relative group">
+                <button class="nav-link py-3 px-8 flex items-center w-full h-full min-w-[120px] justify-center">
+                  Todas las categorías
+                  <Icon name="heroicons:chevron-down" class="w-4 h-4 ml-1" />
+                </button>
+                <div class="absolute z-10 left-0 top-full bg-white text-secondary shadow-lg rounded-b-md w-64 hidden group-hover:block">
+                  <ul class="py-2 max-h-60 overflow-y-auto">
+                    <li v-for="category in categories" :key="category.id">
+                      <NuxtLink :to="`/category/${category.slug}`" class="block px-4 py-2 hover:bg-gray-100">
+                        {{ category.name }}
+                      </NuxtLink>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li v-for="category in categories.slice(1, 20)" :key="category.id" class="flex-shrink-0">
+              <NuxtLink :to="`/category/${category.slug}`" class="nav-link py-3 px-8 block whitespace-nowrap min-w-[120px] text-center">
+                {{ category.name }}
+              </NuxtLink>
+            </li>
+          </ul>
         </div>
-        <!-- Links directos a categorías principales -->
-        <ul class="hidden md:flex items-center flex-row ml-8">
-          <li v-for="category in categories.slice(1, 9)" :key="category.id">
-            <NuxtLink :to="`/category/${category.slug}`" class="nav-link py-3 px-10 block">
-              {{ category.name }}
-            </NuxtLink>
-          </li>
-        </ul>
+
         <!-- Botón menú móvil -->
         <div class="md:hidden ml-auto">
           <Icon @click="toggleMobileMenu" :name="mobileMenuOpen ? 'heroicons:x-mark' : 'heroicons:bars-3'"
@@ -337,3 +342,13 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize);
 });
 </script>
+<style scoped>
+/* Oculta la barra de scroll pero permite desplazamiento */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
