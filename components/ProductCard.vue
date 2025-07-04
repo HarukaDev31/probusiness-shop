@@ -9,9 +9,7 @@
         loading="lazy"
         class="absolute inset-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
       />
-      <div class="text-sm text-gray-500 mb-2 absolute top-2 right-2 bg-white rounded-full px-2 py-1 shadow-md">
-        <span >{{ product.category_name }}</span>
-      </div>
+      <!-- Eliminado el span de la categoría en la esquina superior derecha -->
     </div>
     <div class="p-4 flex flex-col flex-grow">
       <!--badge from category-->

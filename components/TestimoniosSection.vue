@@ -24,9 +24,6 @@
               </svg>
             </button>
           </div>
-          <div class="p-4 w-full text-center font-semibold text-sm text-gray-700">
-            {{ testimonio.nombre }}
-          </div>
         </div>
       </div>
     </div>
