@@ -40,22 +40,22 @@ const slides = [
   {
     id: 1,
     title: 'Productos electrónicos',
-    image: '/images/hero.jpeg'
+    image: 'https://intranet.probusiness.pe/assets/tienda/hero.webp'
   },
   {
     id: 2,
     title: 'Productos para el hogar',
-    image: '/images/hero.jpeg'
+    image: 'https://intranet.probusiness.pe/assets/tienda/hero.webp'
   },
   {
     id: 3,
     title: 'Mascotas',
-    image: '/images/hero.jpeg'
+    image: 'https://intranet.probusiness.pe/assets/tienda/hero.webp'
   },
   {
     id: 4,
     title: 'Productos de belleza',
-    image: '/images/hero.jpeg'
+    image: 'https://intranet.probusiness.pe/assets/tienda/hero.webp'
   }
 ];
 
