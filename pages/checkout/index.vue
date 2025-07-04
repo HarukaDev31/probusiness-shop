@@ -67,7 +67,7 @@
           <div v-for="item in cartItems" :key="item.id" class="flex items-center gap-4 mb-4">
             <img :src="item.image" alt="" class="w-14 h-14 rounded object-cover" />
             <div class="flex-1">
-              <div class="font-semibold">{{ item.name }}</div>
+              <div class="font-semibold cursor-pointer hover:text-[#FF5000] transition-colors" @click="goToProduct(item.id)">{{ item.name }}</div>
               <div class="flex items-center gap-2 mt-2">
                 <button 
                   @click="decreaseQuantity(item)" 
@@ -263,6 +263,10 @@ function validateQuantity(item) {
 }
 function removeItem(productId) {
   cartStore.removeItem(productId);
+}
+
+function goToProduct(productId) {
+  router.push(`/product/${productId}`);
 }
 // Arrays reactivos para selects
 

@@ -8,7 +8,13 @@
     </div>
     <!-- Nombre -->
     <div class="flex-1 min-w-0">
-      <h3 class="text-base font-medium text-gray-900 break-words whitespace-normal leading-tight" style="word-break: break-word;">{{ item.name || item.nombre }}</h3>
+      <h3 
+        class="text-base font-medium text-gray-900 break-words whitespace-normal leading-tight cursor-pointer hover:text-[#FF5000] transition-colors" 
+        style="word-break: break-word;"
+        @click="goToProduct(item.id)"
+      >
+        {{ item.name || item.nombre }}
+      </h3>
     </div>
     <!-- Controles de cantidad -->
     <div class="flex items-center gap-1 mx-2 bg-[#F5F8FB] rounded-lg border border-gray-200 px-1">
@@ -124,6 +130,10 @@ const validateInputQuantity = () => {
 
 const removeItem = () => {
   cartStore.removeItem(props.item.id);
+};
+
+const goToProduct = (productId) => {
+  navigateTo(`/product/${productId}`);
 };
 const isSelected = computed({
   get() {
