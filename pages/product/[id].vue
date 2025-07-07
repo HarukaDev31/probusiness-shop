@@ -1,8 +1,6 @@
 <template>
   <div class="container-custom py-8">
-    <div v-if="loading" class="flex justify-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-    </div>
+    <ProductDetailSkeleton v-if="loading" />
 
     <template v-else-if="product">
       <!-- Breadcrumb -->
