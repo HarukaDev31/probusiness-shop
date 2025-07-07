@@ -17,8 +17,8 @@
           </div>
           <div class="flex items-end justify-end relative w-[55%] h-full">
             <img
-              v-if="category.image"
-              :src="category.image"
+              v-if="category.img_url"
+              :src="category.img_url"
               :alt="category.name"
               class="object-contain h-[90%] w-auto max-w-none absolute right-0 bottom-0 transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
             />

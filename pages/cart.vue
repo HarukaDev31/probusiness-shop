@@ -10,14 +10,22 @@
             <NuxtLink to="/" class="btn px-6 py-3">Continuar comprando</NuxtLink>
           </div>
           <template v-else>
-            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-4"
+            v-if="selectedItems.length === 0"
+            >
               <span>No hay artículos seleccionados.</span>
-              <button class="text-primary hover:underline" @click="selectAll">Seleccionar todos los artículos</button>
+              <button class="text-blue-500 hover:underline" @click="selectAll">Seleccionar todos los productos</button>
+            </div>
+            <!--add any selected items-->
+            <div v-if="selectedItems.length > 0">
+              <div class="flex items-center gap -2 text-sm text-gray-500 mb-4">
+                <button class="text-blue-500 hover:underline" @click="deselectAll">Anular selección de todos los productos</button>
+              </div>
             </div>
             <div>
               <CartItem v-for="item in cartItems" :key="item.id" :item="item" :showCheckbox="true" />
             </div>
-            <div class="flex justify-end mt-6">
+            <div class="flex justify-start mt-6">
               <button
                 class="bg-[#FF5000] text-white font-semibold px-8 py-3 rounded"
                 @click="goToCheckout"
@@ -124,7 +132,9 @@ const showMinAlert = ref(false)
 const selectAll = () => {
   cartStore.selectedIds = cartStore.cartItems.map(item => item.id)
 }
-
+const deselectAll = () => { 
+  cartStore.selectedIds = []
+}
 async function goToCheckout() {
   cartStore.checkoutItems = selectedItems.value
   router.push('/checkout')

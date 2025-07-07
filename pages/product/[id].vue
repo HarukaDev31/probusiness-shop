@@ -186,8 +186,11 @@
           <span class="text-lg font-bold">S/{{ (getPrecioPuestoEnPeru() * cartQuantity).toFixed(2) }}</span>
         </div>
         <div class="flex flex-col gap-3">
-          <button @click="iniciarPedidoPanel" class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
           <button
+          v-if="!goToCart"
+          @click="iniciarPedidoPanel" class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
+          <button
+            v-if="goToCart"
             class="w-full border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition"
             @click="addToCartFromPanel"
           >
@@ -304,6 +307,7 @@ const router = useRouter();
 const cartQuantity = ref(1)
 
 const iniciarPedidoPanel = () => {
+  goToCart.value = false;
   if (product.value) {
     cartStore.addItem({
       id: product.value.id,
@@ -313,7 +317,7 @@ const iniciarPedidoPanel = () => {
       image: product.value.main_image_url || product.value.image || '/images/logo.png'
     });
     showCartPanel.value = false;
-    router.push('/cart');
+    router.push('/checkout');
   }
 }
 const getProductMOQ = computed(() => {
@@ -347,6 +351,7 @@ watch(cartQuantity, (val) => {
 const route = useRoute();
 const productId = parseInt(route.params.id);
 const showCartPanel = ref(false)
+const goToCart= ref(false)
 const productStore = useProductStore();
 const cartStore = useCartStore();   
 
@@ -389,7 +394,10 @@ computed(() => {
 
 
 const iniciarPedidoMinimo = () => {
-  if (product.value) {
+  //open cart panel
+  goToCart.value = true;
+  showCartPanel.value = true;
+  /*if (product.value) {
     cartStore.addItem({
       id: product.value.id,
       name: product.value.name || product.value.nombre,
@@ -398,10 +406,11 @@ const iniciarPedidoMinimo = () => {
       image: product.value.main_image_url || product.value.image || '/images/logo.png'
     });
     router.push('/cart');
-  }
+  }*/
 };
 
 const addToCartFromPanel = () => {
+  goToCart.value = false;
   if (product.value) {
     cartStore.addItem({
       id: product.value.id,

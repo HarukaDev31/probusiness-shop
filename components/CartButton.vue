@@ -80,7 +80,8 @@ const cartItems = computed(() => cartStore.cartItems);
 const cartTotal = computed(() => cartStore.cartTotal);
 
 function togglePreviewCart() {
-  previewCart.value = !previewCart.value;
+  //push to /cart
+  navigateTo('/cart'); 
 }
 
 function formatPrice(price) {

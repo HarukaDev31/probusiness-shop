@@ -13,39 +13,39 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nombre y apellido*</label>
-                <input v-model="form.fullName" type="text" required class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ingresa tus nombres y apellidos">
+                <input v-model="form.fullName" type="text" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tus nombres y apellidos">
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">DNI/ID*</label>
-                <input v-model="form.dni" type="text" required maxlength="8" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ingresa tu documento de identidad">
+                <input v-model="form.dni" type="text" required maxlength="8" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu documento de identidad">
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Correo*</label>
-                <input v-model="form.email" type="email" required class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ingresa tu correo">
+                <input v-model="form.email" type="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu correo">
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp*</label>
-                <input v-model="form.phone" type="tel" required maxlength="9" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ingresa tu número de celular">
+                <input v-model="form.phone" type="tel" required maxlength="9" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu número de celular">
               </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
-                    <select v-model="form.province" @change="onProvinceChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50">
+                    <select v-model="form.province" @change="onProvinceChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
                     <option value="">Selecciona provincia</option>
                     <option v-for="prov in provinces" :key="prov.id" :value="prov.name">{{ prov.name }}</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Ciudad*</label>
-                    <select v-model="form.city" @change="onCityChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50">
+                    <select v-model="form.city" @change="onCityChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
                     <option value="">Selecciona ciudad</option>
                     <option v-for="city in cities" :key="city.id" :value="city.name">{{ city.name }}</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Distrito*</label>
-                    <select v-model="form.district" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50">
+                    <select v-model="form.district" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
                     <option value="">Selecciona distrito</option>
                     <option v-for="district in districts" :key="district.id" :value="district.name">{{ district.name }}</option>
                     </select>
@@ -91,10 +91,8 @@
               <Icon name="heroicons:trash" class="w-5 h-5" />
             </button>
           </div>
-          <NuxtLink to="/cart" class="text-primary text-sm hover:underline">Agregar productos</NuxtLink>
-          <div class="text-xs text-gray-500 mt-2">
-            *Cada producto tiene su cantidad mínima de compra (MOQ)
-          </div>
+          <NuxtLink to="/cart" class="text-blue-500 text-sm hover:underline">Agregar productos</NuxtLink>
+       
         </div>
       </div>
       <!-- Columna derecha -->
