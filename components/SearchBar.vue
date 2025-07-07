@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full max-w-xl">
+  <div class="relative w-full ">
     <input 
       type="text" 
       placeholder="Escribe el nombre de lo que buscas" 
