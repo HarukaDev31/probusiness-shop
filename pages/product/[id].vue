@@ -20,13 +20,41 @@
           <div class="flex flex-row">
             <!-- Imágenes laterales -->
             <div class="flex flex-col space-y-4 relative">
-              <div v-for="(media, index) in visibleMediaItems" :key="index"
-                class="aspect-square overflow-hidden rounded-md cursor-pointer border-2 w-16 h-16 md:w-16 md:h-16 mx-auto"
-                :class="{ 'border-primary': activeMediaIndex === media.originalIndex }"
-                @mouseover="activeMediaIndex = media.originalIndex">
-                <NuxtImg v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
-                  class="w-full h-full object-contain" />
-                <video v-else :src="media.url" :alt="product.nombre" class="w-full h-full object-contain" muted loop></video>
+              <div class="relative max-h-[25em] flex justify-center">
+                <!-- Flecha arriba flotante -->
+                <div v-if="mediaItems.length > 5" 
+                     class="floating-button absolute top-0 z-10 w-8 h-8 bg-white/90 rounded-full shadow-md flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-white hover:shadow-lg hover:scale-110"
+                     @mouseenter="startAutoScrollUp"
+                     @mouseleave="stopAutoScroll">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                
+                <!-- Contenedor scrolleable -->
+                <div ref="thumbnailContainer" 
+                     class="flex flex-col space-y-4 max-h-[25em] overflow-y-auto scrollbar-hide pt-8 pb-8"
+                     :class="{ 'pr-2': mediaItems.length > 5 }"
+                     @scroll="handleScroll">
+                  <div v-for="(media, index) in mediaItems" :key="index"
+                    class="flex-shrink-0 aspect-square overflow-hidden rounded-md cursor-pointer border-2 w-16 h-16 md:w-16 md:h-16"
+                    :class="{ 'border-primary': activeMediaIndex === index }"
+                    @mouseover="activeMediaIndex = index">
+                    <NuxtImg v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
+                      class="w-full h-full object-contain" />
+                    <video v-else :src="media.url" :alt="product.nombre" class="w-full h-full object-contain" muted loop></video>
+                  </div>
+                </div>
+                
+                <!-- Flecha abajo flotante -->
+                <div v-if="mediaItems.length > 5" 
+                     class="floating-button absolute bottom-0 z-10 w-8 h-8 bg-white/90 rounded-full shadow-md flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-white hover:shadow-lg hover:scale-110"
+                     @mouseenter="startAutoScrollDown"
+                     @mouseleave="stopAutoScroll">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                </div>
               </div>
             </div>
             <!-- Imagen principal con overlay relativo -->
@@ -117,9 +145,9 @@
   <!-- Panel lateral de carrito -->
   <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40" @click.self="showCartPanel = false">
     <div class="bg-white w-full max-w-md h-full shadow-xl p-8 flex flex-col" @click.stop>
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-bold">Selecciona la cantidad de tu interés</h2>
-        <button @click="showCartPanel = false" class="text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+      <div class="flex flex-col justify-between items-start mb-6">
+        <h2 class="text-lg font-bold">Selecciona la cantidad de tu interés</h2>
+        <span>  Pedido mínimo de importación s/3.000</span>
       </div>
 
               <div class="mb-4">
@@ -411,6 +439,10 @@ function handleCartQuantityInput() {
 const activeMediaIndex = ref(0);
 const currentPage = ref(0);
 const itemsPerPage = 10; // Número de miniaturas visibles
+const thumbnailContainer = ref(null);
+const autoScrollInterval = ref(null);
+const isScrollingUp = ref(false);
+const isScrollingDown = ref(false);
 const cleanHtmlContent = (htmlString) => {
   if (!htmlString) return '';
 
@@ -533,6 +565,49 @@ const prevMedia = () => {
 
 const updatePage = () => {
   currentPage.value = Math.floor(activeMediaIndex.value / itemsPerPage);
+};
+
+// Funciones de auto-scroll
+const startAutoScrollUp = () => {
+  if (autoScrollInterval.value) return;
+  isScrollingUp.value = true;
+  autoScrollInterval.value = setInterval(() => {
+    if (thumbnailContainer.value) {
+      thumbnailContainer.value.scrollBy({
+        top: -120,
+        behavior: 'smooth'
+      });
+    }
+  }, 100);
+};
+
+const startAutoScrollDown = () => {
+  if (autoScrollInterval.value) return;
+  isScrollingDown.value = true;
+  autoScrollInterval.value = setInterval(() => {
+    if (thumbnailContainer.value) {
+      thumbnailContainer.value.scrollBy({
+        top: 120,
+        behavior: 'smooth'
+      });
+    }
+  }, 100);
+};
+
+const stopAutoScroll = () => {
+  if (autoScrollInterval.value) {
+    clearInterval(autoScrollInterval.value);
+    autoScrollInterval.value = null;
+  }
+  isScrollingUp.value = false;
+  isScrollingDown.value = false;
+};
+
+const handleScroll = () => {
+  // Detener auto-scroll si el usuario hace scroll manual
+  if (autoScrollInterval.value) {
+    stopAutoScroll();
+  }
 };
 
 // Debe estar en el scope superior para ser accesible en todo el componente
@@ -672,6 +747,13 @@ watch(() => product.value, () => {
   currentPage.value = 0;
 }, { immediate: true });
 
+// Limpiar intervalo al desmontar
+onUnmounted(() => {
+  if (autoScrollInterval.value) {
+    clearInterval(autoScrollInterval.value);
+  }
+});
+
 // Cargar video cuando cambia el media activo
 watch(() => activeMedia.value, async (newMedia) => {
   if (newMedia && newMedia.type === 'video' && isAlibabaVideo(newMedia.url)) {
@@ -745,5 +827,54 @@ table tr:hover {
   padding: 0 !important;
   width: auto !important;
   height: auto !important;
+}
+
+/* Ocultar barra de scroll */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Estilos para las flechas flotantes */
+.floating-arrow {
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.floating-arrow:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  transform: scale(1.05);
+}
+
+/* Animaciones personalizadas para los botones flotantes */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  50% {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.floating-button {
+  animation: float 3s ease-in-out infinite;
+}
+
+.floating-button:hover {
+  animation: glow 2s ease-in-out infinite;
 }
 </style>

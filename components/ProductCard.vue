@@ -9,7 +9,6 @@
         loading="lazy"
         class="absolute inset-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
       />
-      <!-- Eliminado el span de la categoría en la esquina superior derecha -->
     </div>
     <div class="p-4 flex flex-col flex-grow">
       <!--badge from category-->
