@@ -106,10 +106,11 @@
           </div>
           <button
             @click="handlePedido"
-            :disabled="!isFormValid"
-            class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
+            :disabled="!isFormValid || orderLoading"
+            class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
-            Enviar pedido
+            <div v-if="orderLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            {{ orderLoading ? 'Procesando...' : 'Enviar pedido' }}
           </button>
         </div>
         <div class="bg-white rounded-lg shadow-md p-8">
@@ -257,10 +258,11 @@
           <!-- Botón enviar pedido -->
           <button
             @click="handlePedido"
-            :disabled="!isFormValid"
-            class="w-full bg-[#FF5000] text-white font-semibold py-4 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
+            :disabled="!isFormValid || orderLoading"
+            class="w-full bg-[#FF5000] text-white font-semibold py-4 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            Enviar pedido
+            <div v-if="orderLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            {{ orderLoading ? 'Procesando...' : 'Enviar pedido' }}
           </button>
           
           <!-- Datos importantes -->
@@ -361,6 +363,7 @@ import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart'
 import { storeToRefs } from 'pinia'
 import { ref, onMounted, computed } from 'vue'
+import { useOrders } from '~/composables/useOrders'
 
 const { $formatPrice } = useNuxtApp();
 const router = useRouter();
@@ -368,6 +371,9 @@ const router = useRouter();
 const cartStore = useCartStore();
 const savedMessage = ref(false)
 const mobileSummaryOpen = ref(false)
+
+// Usar el composable de órdenes
+const { createOrder, loading: orderLoading, error: orderError, clearError } = useOrders()
 
 const toggleMobileSummary = () => {
   mobileSummaryOpen.value = !mobileSummaryOpen.value;
@@ -494,14 +500,32 @@ const isFormValid = computed(() =>
   form.value.city.trim() &&
   form.value.district.trim()
 )
-function handlePedido() {
+async function handlePedido() {
   // Validación del monto mínimo solo al enviar el pedido
   if (cartTotal.value < 3000) {
     showMinAlert.value = true
     return
   }
-  // Aquí va tu lógica para enviar el pedido
-  showSuccess.value = true
+
+  // Limpiar errores previos
+  clearError()
+
+  try {
+    // Crear el pedido usando el composable
+    const result = await createOrder(form.value, cartItems.value, cartTotal.value)
+
+    if (result.success) {
+      // Limpiar el carrito después de un pedido exitoso
+      cartStore.clearCart();
+      showSuccess.value = true;
+    } else {
+      alert(result.message || 'Error al procesar el pedido. Por favor, inténtalo de nuevo.');
+    }
+
+  } catch (error) {
+    console.error('Error al enviar pedido:', error);
+    alert('Error al procesar el pedido. Por favor, inténtalo de nuevo.');
+  }
 }
 
 const handleSubmit = () => {
