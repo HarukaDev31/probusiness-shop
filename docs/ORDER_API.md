@@ -279,3 +279,36 @@ Si se configuran webhooks, el sistema enviará notificaciones a las siguientes U
   - `X-RateLimit-Limit`: Límite de requests
   - `X-RateLimit-Remaining`: Requests restantes
   - `X-RateLimit-Reset`: Tiempo de reset en segundos 
+
+#### Obtener Pedidos del Cliente
+```http
+GET /api/orders/my-orders
+Authorization: Bearer {token}
+```
+
+**Response (200)**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "ORD-2024-001",
+      "orderNumber": "250624001",
+      "status": "pending",
+      "total": 4300.00,
+      "orderDate": "2024-06-25T10:30:00.000Z",
+      "estimatedDelivery": "2024-08-25T10:30:00.000Z",
+      "items": [
+        {
+          "productId": 123,
+          "name": "Camisetas de Algodón Premium",
+          "price": 25.50,
+          "quantity": 100,
+          "total": 2550.00,
+          "image": "https://s.alicdn.com/image.jpg"
+        }
+      ]
+    }
+  ]
+}
+``` 

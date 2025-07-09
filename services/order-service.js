@@ -64,12 +64,11 @@ class OrderService {
 
   /**
    * Obtener pedidos del usuario
-   * @param {string} customerId - ID del cliente
    * @returns {Promise<Object>} Lista de pedidos
    */
-  async getCustomerOrders(customerId) {
+  async getCustomerOrders() {
     try {
-      const response = await apiClient.api(`/orders/customer/${customerId}`)
+      const response = await apiClient.api('/orders/my-orders')
 
       return {
         success: true,

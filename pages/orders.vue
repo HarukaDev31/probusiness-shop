@@ -186,10 +186,7 @@ onMounted(() => {
 async function loadOrders() {
   clearError()
   
-  // En un caso real, obtendrías el customerId del usuario logueado
-  const customerId = localStorage.getItem('user_id') || 'demo-customer-id'
-  
-  const result = await getCustomerOrders(customerId)
+  const result = await getCustomerOrders()
   
   if (!result.success) {
     console.error('Error al cargar pedidos:', result.message)

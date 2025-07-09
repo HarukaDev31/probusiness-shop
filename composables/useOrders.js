@@ -61,15 +61,14 @@ export function useOrders() {
 
   /**
    * Obtener pedidos del cliente
-   * @param {string} customerId - ID del cliente
    * @returns {Promise<Object>} Resultado de la operación
    */
-  const getCustomerOrders = async (customerId) => {
+  const getCustomerOrders = async () => {
     loading.value = true
     error.value = null
 
     try {
-      const response = await orderService.getCustomerOrders(customerId)
+      const response = await orderService.getCustomerOrders()
       
       if (response.success) {
         orders.value = response.data
