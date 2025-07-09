@@ -1,15 +1,15 @@
 <template>
   <div class="py-8">
     <div class="container-custom max-w-[1440px] mx-auto">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8">
         <button
           v-for="category in categories"
           :key="category.id"
-          class="bg-white rounded-xl shadow flex flex-row items-stretch min-h-[260px] h-[320px] relative overflow-hidden outline-none group transition-all duration-300 p-0"
+          class="bg-white rounded-xl shadow flex flex-row items-stretch min-h-[220px] md:min-h-[260px] h-[220px] md:h-[260px] relative overflow-hidden outline-none group transition-all duration-300 p-0"
           @click="$router.push(`/category/${category.slug}`)"
           type="button"
         >
-          <div class="flex flex-col justify-between flex-1 pl-8 py-6">
+          <div class="flex flex-col justify-between flex-1 pl-8 py-10">
             <div class="font-bold text-2xl md:text-3xl text-left mb-2">{{ category.name }}</div>
             <span class="text-primary text-sm font-medium hover:underline mt-auto block text-left">
               Ver más+

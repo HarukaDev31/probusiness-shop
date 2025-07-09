@@ -197,7 +197,7 @@
       </div>
 
       <!-- Barra de búsqueda para móvil -->
-      <div class="flex sm:flex md:flex lg:hidden px-4 pb-2 col-span-4 mt-2 md:mt-0" v-if="isMobile">
+      <div class="flex sm:flex md:flex lg:hidden px-4 pb-2 col-span-4 mt-4 md:mt-0" v-if="isMobile">
         <div class="flex items-center bg-white rounded shadow overflow-hidden w-full">
           <input type="text" placeholder="Escribe el nombre de lo que buscas"
             class="flex-1 px-3 py-2 text-sm outline-none" />

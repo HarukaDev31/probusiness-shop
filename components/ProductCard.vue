@@ -11,9 +11,7 @@
       </NuxtLink>
       
       <!-- Wishlist button -->
-      <div class="absolute top-2 right-2 z-10">
-        <WishlistButton :product="product" />
-      </div>
+      
     </div>
     <div class="p-4 flex flex-col flex-grow">
       <!--badge from category-->
