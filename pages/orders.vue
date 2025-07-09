@@ -186,6 +186,7 @@ async function loadOrders() {
   clearError()
   
   const result = await getCustomerOrders()
+  console.log(result)
   orders.value = result.data
   
   if (!result.success) {
