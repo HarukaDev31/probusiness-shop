@@ -63,10 +63,10 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useCartStore } from '~/stores/cart';
-import { orderService } from '../../services/order-service';
+import orderService from '../../services/order-service';
 const router = useRouter();
 const cartStore = useCartStore();
-const { cartItems } = storeToRefs(cartStore);
+const { cartItems, cartTotal } = storeToRefs(cartStore);
 
 const getCartItemImage = (item) => {
   // Si hay media array y tiene elementos, usar la primera imagen
@@ -93,24 +93,36 @@ onMounted(() => {
 });
 
 const handleSubmit = async () => {
-  //call service to create order with checkoutInfo and cartItems if success redirect to success page else show error message 
   try {
-    const orderData = {
-      ...checkoutInfo.value,
-      items: cartItems.value.map(item => ({
-        id: item.id,
-        quantity: item.quantity
-      }))
-    };
-    const { response, success } = await orderService.createOrder(orderData);
-    if (success) {
+    // Preparar datos del pedido usando el servicio
+    const orderData = orderService.prepareOrderData(checkoutInfo.value, cartItems.value, cartTotal.value)
+    
+    // Validar los datos antes de enviar
+    const validation = orderService.validateOrderData(orderData)
+    if (!validation.isValid) {
+      console.error('Errores de validación:', validation.errors)
+      alert('Por favor, completa todos los campos correctamente.')
+      return
+    }
+
+    // Enviar el pedido usando el servicio
+    const response = await orderService.createOrder(orderData)
+
+    if (response.success) {
       handleSuccess();
+    } else {
+      // Mostrar errores específicos si los hay
+      if (response.errors && response.errors.length > 0) {
+        const errorMessages = response.errors.map(error => error.message).join('\n')
+        alert(`Error al procesar el pedido:\n${errorMessages}`)
+      } else {
+        alert(response.message || 'Error al procesar el pedido. Por favor, inténtalo de nuevo.')
+      }
     }
   } catch (error) {
-    console.error('Error creating order:', error);
-    alert('Error creating order. Please try again later.');
+    console.error('Error al enviar pedido:', error);
+    alert('Error al procesar el pedido. Por favor, inténtalo de nuevo.');
   }
-;
 };
 const handleSuccess = () => {
   router.push('/checkout/success');
