@@ -75,7 +75,6 @@ class OrderService {
         data: response
       }
     } catch (error) {
-      console.error('Error al obtener pedidos:', error)
       
       return {
         success: false,
