@@ -22,10 +22,7 @@
             <p class="text-red-600 mt-1">{{ error }}</p>
           </div>
         </div>
-        <button 
-          @click="loadOrders" 
-          class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-        >
+        <button @click="loadOrders" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
           Intentar de nuevo
         </button>
       </div>
@@ -35,10 +32,8 @@
         <Icon name="heroicons:shopping-bag" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h3 class="text-xl font-semibold text-gray-800 mb-2">No tienes pedidos aún</h3>
         <p class="text-gray-600 mb-6">Realiza tu primer pedido para verlo aquí</p>
-        <NuxtLink 
-          to="/" 
-          class="inline-flex items-center bg-[#FF5000] text-white px-6 py-3 rounded-lg hover:bg-[#e04a00] transition"
-        >
+        <NuxtLink to="/"
+          class="inline-flex items-center bg-[#FF5000] text-white px-6 py-3 rounded-lg hover:bg-[#e04a00] transition">
           <Icon name="heroicons:shopping-cart" class="w-5 h-5 mr-2" />
           Ir a la tienda
         </NuxtLink>
@@ -46,11 +41,7 @@
 
       <!-- Orders List -->
       <div v-else class="space-y-6">
-        <div 
-          v-for="order in orders" 
-          :key="order.id" 
-          class="bg-white rounded-lg shadow-md overflow-hidden"
-        >
+        <div v-for="order in orders" :key="order.id" class="bg-white rounded-lg shadow-md overflow-hidden">
           <!-- Order Header -->
           <div class="p-6 border-b border-gray-100">
             <div class="flex justify-between items-start">
@@ -71,10 +62,7 @@
                   {{ $formatPrice(order.total) }}
                 </div>
                 <div class="mt-2">
-                  <span 
-                    :class="getStatusClass(order.status)"
-                    class="px-3 py-1 rounded-full text-xs font-semibold"
-                  >
+                  <span :class="getStatusClass(order.status)" class="px-3 py-1 rounded-full text-xs font-semibold">
                     {{ getStatusText(order.status) }}
                   </span>
                 </div>
@@ -86,16 +74,8 @@
           <div class="p-6">
             <h4 class="font-semibold text-gray-800 mb-4">Productos</h4>
             <div class="space-y-3">
-              <div 
-                v-for="item in order.items" 
-                :key="item.id"
-                class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
-              >
-                <img 
-                  :src="item.image" 
-                  :alt="item.name"
-                  class="w-12 h-12 rounded object-cover"
-                />
+              <div v-for="item in order.items" :key="item.id" class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                <img :src="item.image" :alt="item.name" class="w-12 h-12 rounded object-cover" />
                 <div class="flex-1">
                   <h5 class="font-medium text-gray-800">{{ item.name }}</h5>
                   <p class="text-sm text-gray-500">
@@ -120,17 +100,12 @@
                 </p>
               </div>
               <div class="flex gap-2">
-                <button 
-                  @click="viewOrderDetails(order.id)"
-                  class="px-4 py-2 text-[#FF5000] border border-[#FF5000] rounded hover:bg-[#FF5000] hover:text-white transition"
-                >
+                <button @click="viewOrderDetails(order.id)"
+                  class="px-4 py-2 text-[#FF5000] border border-[#FF5000] rounded hover:bg-[#FF5000] hover:text-white transition">
                   Ver detalles
                 </button>
-                <button 
-                  v-if="order.status === 'pending'"
-                  @click="cancelOrder(order.id)"
-                  class="px-4 py-2 text-red-600 border border-red-600 rounded hover:bg-red-600 hover:text-white transition"
-                >
+                <button v-if="order.status === 'pending'" @click="cancelOrder(order.id)"
+                  class="px-4 py-2 text-red-600 border border-red-600 rounded hover:bg-red-600 hover:text-white transition">
                   Cancelar
                 </button>
               </div>
@@ -141,11 +116,8 @@
 
       <!-- Load More Button -->
       <div v-if="hasOrders && hasMoreOrders" class="text-center mt-8">
-        <button 
-          @click="loadMoreOrders"
-          :disabled="isLoading"
-          class="bg-[#FF5000] text-white px-6 py-3 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
-        >
+        <button @click="loadMoreOrders" :disabled="isLoading"
+          class="bg-[#FF5000] text-white px-6 py-3 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50">
           {{ isLoading ? 'Cargando...' : 'Cargar más pedidos' }}
         </button>
       </div>
@@ -159,15 +131,15 @@ import { useOrders } from '~/composables/useOrders'
 const { $formatPrice } = useNuxtApp()
 const orders = ref([])
 // Usar el composable de órdenes
-const { 
-  loading: isLoading, 
-  error, 
-  hasOrders, 
-  hasError, 
-  getCustomerOrders, 
-  getOrderDetails, 
+const {
+  loading: isLoading,
+  error,
+  hasOrders,
+  hasError,
+  getCustomerOrders,
+  getOrderDetails,
   cancelOrder: cancelOrderAction,
-  clearError 
+  clearError
 } = useOrders()
 
 // Estado para paginación
@@ -184,13 +156,17 @@ onMounted(() => {
  */
 async function loadOrders() {
   clearError()
-  
-  const result = await getCustomerOrders()
-  console.log(result)
-  orders.value = result.data
-  
-  if (!result.success) {
-    console.error('Error al cargar pedidos:', result.message)
+
+  try {
+    const result = await getCustomerOrders()
+    console.log(result)
+    orders.value = result.data
+
+    if (!result.success) {
+      console.error('Error al cargar pedidos:', result.message)
+    }
+  } catch (error) {
+    console.error('Error al cargar pedidos:', error)
   }
 }
 
@@ -208,7 +184,7 @@ async function loadMoreOrders() {
  */
 async function viewOrderDetails(orderId) {
   const result = await getOrderDetails(orderId)
-  
+
   if (result.success) {
     // Aquí podrías navegar a una página de detalles o abrir un modal
     console.log('Detalles del pedido:', result.data)
@@ -223,7 +199,7 @@ async function viewOrderDetails(orderId) {
 async function cancelOrder(orderId) {
   if (confirm('¿Estás seguro de que quieres cancelar este pedido?')) {
     const result = await cancelOrderAction(orderId, 'Cancelado por el cliente')
-    
+
     if (result.success) {
       alert('Pedido cancelado exitosamente')
       // Recargar la lista de pedidos
@@ -246,7 +222,7 @@ function getStatusClass(status) {
     delivered: 'bg-green-100 text-green-800',
     cancelled: 'bg-red-100 text-red-800'
   }
-  
+
   return statusClasses[status] || 'bg-gray-100 text-gray-800'
 }
 
@@ -262,7 +238,7 @@ function getStatusText(status) {
     delivered: 'Entregado',
     cancelled: 'Cancelado'
   }
-  
+
   return statusTexts[status] || 'Desconocido'
 }
-</script> 
+</script>
