@@ -45,7 +45,7 @@
         <div class="p-4 border-t border-gray-200 bg-gray-50">
           <div class="flex items-center justify-between mb-4">
             <span class="font-semibold">Total:</span>
-            <span class="font-bold text-lg">{{ formatPrice(cartTotal) }}</span>
+            <span class="font-bold text-lg">{{ $formatPrice(cartTotal) }}</span>
           </div>
           <div class="flex gap-2">
             <button
@@ -84,9 +84,7 @@ function togglePreviewCart() {
   navigateTo('/cart'); 
 }
 
-function formatPrice(price) {
-  return `S/${price.toFixed(2)}`;
-}
+const { $formatPrice } = useNuxtApp();
 
 // Cerrar el carrito cuando se presiona ESC
 onMounted(() => {

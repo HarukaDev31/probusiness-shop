@@ -42,7 +42,7 @@
           <h3 class="text-lg font-bold mb-6">Resumen del pedido</h3>
           <div class="flex justify-between items-center mb-6">
             <span class="text-gray-600">Pagar en soles:</span>
-            <span class="text-2xl font-bold text-gray-800">S/ {{ selectedTotal.toFixed(2) }}</span>
+            <span class="text-2xl font-bold text-gray-800">{{ $formatPrice(selectedTotal) }}</span>
           </div>
             <button
             class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
@@ -100,11 +100,11 @@
     <div class="flex flex-col gap-3 mb-2 text-left">
       <div>
         Tu pedido actual:
-        <b>s/{{ selectedTotal.toFixed(2) }}</b>
+        <b>{{ $formatPrice(selectedTotal) }}</b>
       </div>
       <div>
         Importe pendiente:
-        <b class="text-[#FF5000]">s/{{ (3000 - selectedTotal).toFixed(2) }}</b>
+        <b class="text-[#FF5000]">{{ $formatPrice(3000 - selectedTotal) }}</b>
       </div>
     </div>
     <div class="border-t border-gray-200 pt-4"></div>
@@ -121,6 +121,8 @@
 import { storeToRefs } from 'pinia';
 import { ref, computed } from 'vue'
 import { useCartStore } from '~/stores/cart';
+
+const { $formatPrice } = useNuxtApp();
 
 const router = useRouter(); 
 const cartStore = useCartStore();

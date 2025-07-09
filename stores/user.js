@@ -12,17 +12,18 @@ export const useUserStore = defineStore('user', {
       this.setUser({
         name: data.user.name,
         email: data.user.email,
-        token: data.api_token
+        token: data.access_token
       })
       return data
     },
     
     async registerUser(userData) {
       const data = await authService.register(userData)
+      console.log(data.access_token)
       this.setUser({
         name: data.user.name,
         email: data.user.email,
-        token: data.api_token
+        token: data.access_token
       })
       return data
     },

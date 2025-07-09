@@ -1,10 +1,10 @@
-# Nuxt 3 Minimal Starter
+# ProBusiness Shop
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Tienda online desarrollada con Nuxt 3 para la venta de productos de importación.
 
 ## Setup
 
-Make sure to install the dependencies:
+### 1. Instalar dependencias
 
 ```bash
 # yarn
@@ -17,9 +17,24 @@ npm install
 pnpm install
 ```
 
+### 2. Configurar variables de entorno
+
+Crea un archivo `.env` en la raíz del proyecto:
+
+```env
+# API Configuration
+API_URL=http://localhost:8000/api
+AUTH_API_URL=http://localhost:8000/api
+
+# Environment
+NODE_ENV=development
+```
+
+Para más detalles sobre la configuración, consulta [docs/ENVIRONMENT_SETUP.md](docs/ENVIRONMENT_SETUP.md).
+
 ## Development Server
 
-Start the development server on http://localhost:3000
+Inicia el servidor de desarrollo en http://localhost:3000:
 
 ```bash
 npm run dev
@@ -27,16 +42,34 @@ npm run dev
 
 ## Production
 
-Build the application for production:
+Construye la aplicación para producción:
 
 ```bash
 npm run build
 ```
 
-Locally preview production build:
+Vista previa local de la build de producción:
 
 ```bash
 npm run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Características
+
+- 🛍️ Catálogo de productos con categorías
+- 🔍 Búsqueda de productos
+- ❤️ Lista de deseos
+- 🛒 Carrito de compras
+- 👤 Autenticación de usuarios
+- 📱 Diseño responsive
+- 💰 Formateo de precios en soles peruanos
+
+## Tecnologías
+
+- **Frontend**: Nuxt 3, Vue 3, Tailwind CSS
+- **Estado**: Pinia
+- **Autenticación**: JWT
+- **Imágenes**: Nuxt Image
+- **Iconos**: Nuxt Icon
+
+Consulta la [documentación de Nuxt 3](https://nuxt.com/docs/getting-started/introduction) para más información.

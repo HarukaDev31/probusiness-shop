@@ -77,6 +77,22 @@
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
                         placeholder="correo@ejemplo.com" required />
                 </div>
+                <div>
+                    <label class="block text-gray-600 mb-1" for="whatsapp">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.67.15-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.363.71.306 1.263.489 1.695.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                            </svg>
+                            WhatsApp
+                        </span>
+                    </label>
+                    <input id="whatsapp" v-model="registerData.whatsapp" type="tel"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
+                        placeholder="+51 999 999 999" 
+                        @input="registerData.whatsapp = formatWhatsApp($event.target.value)"
+                        required />
+                    <p class="text-xs text-gray-500 mt-1">(*) Incluye el código de país (+51 para Perú)</p>
+                </div>
                 <div class="relative">
                     <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
                     <input id="password" v-model="registerData.password" :type="showPassword ? 'text' : 'password'"
@@ -175,6 +191,7 @@ const registerData = ref({
     nombre: '',
     apellido: '',
     email: '',
+    whatsapp: '',
     password: ''
 })
 
@@ -182,17 +199,42 @@ const showForgot = ref(false)
 const forgotEmail = ref('')
 const forgotLoading = ref(false)
 
+// Función para formatear el número de WhatsApp
+const formatWhatsApp = (value) => {
+    // Remover todos los caracteres no numéricos excepto el +
+    let cleaned = value.replace(/[^\d+]/g, '')
+    
+    // Asegurar que empiece con +
+    if (!cleaned.startsWith('+')) {
+        cleaned = '+' + cleaned
+    }
+    
+    // Limitar a 15 dígitos (código de país + número)
+    if (cleaned.length > 16) {
+        cleaned = cleaned.substring(0, 16)
+    }
+    
+    return cleaned
+}
+
 
 
 async function handleRegister() {
     // Validaciones
-    if (!registerData.value.nombre || !registerData.value.apellido || !registerData.value.email || !registerData.value.password) {
+    if (!registerData.value.nombre || !registerData.value.apellido || !registerData.value.email || !registerData.value.whatsapp || !registerData.value.password) {
         $modal.showError('Por favor completa todos los campos obligatorios', 'Campos Requeridos')
         return
     }
     
     if (registerData.value.password.length < 6) {
         $modal.showWarning('La contraseña debe tener al menos 6 caracteres', 'Contraseña Inválida')
+        return
+    }
+    
+    // Validar formato de WhatsApp
+    const whatsappRegex = /^\+[1-9]\d{1,14}$/
+    if (!whatsappRegex.test(registerData.value.whatsapp)) {
+        $modal.showWarning('Por favor ingresa un número de WhatsApp válido con código de país (ej: +51 999 999 999)', 'WhatsApp Inválido')
         return
     }
     
@@ -214,7 +256,7 @@ async function handleRegister() {
 function closeRegister() {
     showRegister.value = false
     loading.value = false
-    registerData.value = { nombre: '', apellido: '', email: '', password: '' }
+    registerData.value = { nombre: '', apellido: '', email: '', whatsapp: '', password: '' }
     showPassword.value = false
 }
 function handleForgot() {

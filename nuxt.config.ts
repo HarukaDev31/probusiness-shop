@@ -24,44 +24,6 @@ export default defineNuxtConfig({
   experimental: {
     payloadExtraction: true // Extrae carga útil para páginas estáticas
   },
-  image:{
-    screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      xxl: 1536,
-      '2xl': 1536
-    },
-    provider: 'ipx',
-
-    // Si tienes tu propio servidor de imágenes, puedes usar:
-    // provider: 'custom',
-    // custom: {
-    //   baseURL: 'https://tu-servidor-imagenes.com'
-    // }
-    // Domains that are allowed to be optimized
-    
-    // Adjust image quality
-    quality: 80,
-    
-    // Enable format auto-detection (webp, avif, etc.)
-    format: ['webp']
-    
-    // Para deshabilitar completamente la optimización:
-    // provider: false
-
-  },
-  compression: {
-    // Opciones del módulo
-    algorithm: 'gzip',
-    threshold: 1024, // Comprimir archivos mayores a 1KB
-    test: /\.(js|css|html|json|svg)$/,
-    filename: '[path][base].gz',
-    compressionOptions: { level: 9 },
-    deleteOriginalAssets: false
-  },
   app: {
     head: {
       title: 'ProBusiness - Tienda Online',
@@ -83,7 +45,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiUrl: process.env.API_URL || 'http://localhost:3000'
+      apiUrl: process.env.API_URL || 'http://localhost:8000/api',
+      authApiUrl: process.env.AUTH_API_URL || 'http://localhost:8000/api'
     }
   }
 })

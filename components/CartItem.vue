@@ -36,7 +36,7 @@
     </div>
     <!-- Precio -->
     <div class="w-28 text-right font-semibold text-gray-800 text-base">
-      s/{{ (item.price * item.quantity).toFixed(2) }}
+      {{ $formatPrice(item.price * item.quantity) }}
     </div>
     <!-- Eliminar -->
     <button @click="removeItem" class="ml-2 text-red-500 hover:text-red-600 flex items-center justify-center">
@@ -46,8 +46,10 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useCartStore } from '~/stores/cart';
+
+const { $formatPrice } = useNuxtApp();
 
 const props = defineProps({
   item: {

@@ -57,6 +57,7 @@ const destacadasGroups = computed(() => {
 });
 
 onMounted(async () => {
+  await categoryStore.fetchCategories();
   await productStore.fetchProducts();
   isLoadingProducts.value = false;
 });

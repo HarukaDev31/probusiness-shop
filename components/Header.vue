@@ -282,16 +282,23 @@
           </button>
           <div v-show="userMenuOpen"
             class="absolute top-[15px] right-0 mt-3 min-w-[200px] bg-white shadow-xl rounded-xl z-30 py-2 px-0 animate-fade-in border border-gray-100">
-            <NuxtLink to="/wishlist"
+            <button @mousedown.prevent="goToWishlist"
               class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 transition text-base">
-              <Icon name="heroicons:heart" class="w-5 h-5" />
+              <div class="relative">
+                <Icon name="heroicons:heart" class="w-5 h-5" />
+                <span v-if="wishlistCount > 0" 
+                      class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {{ wishlistCount }}
+                </span>
+              </div>
               Lista de deseos
-            </NuxtLink>
-            <NuxtLink to="/orders"
+            </button>
+            <button @mousedown.prevent="goToOrders"
+           
               class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 transition text-base">
               <Icon name="heroicons:cube" class="w-5 h-5" />
               Pedidos
-            </NuxtLink>
+            </button>
             <button @mousedown.prevent="logout"
               class="flex items-center gap-3 px-5 py-3 w-full text-left text-gray-700 hover:bg-gray-50 transition text-base">
               <Icon name="heroicons:arrow-left-on-rectangle" class="w-5 h-5" />
@@ -389,6 +396,7 @@
 import { storeToRefs } from 'pinia';
 import { useCategoryStore } from '~/stores/category';
 import { useUserStore } from '~/stores/user'
+import { useWishlistStore } from '~/stores/wishlist'
 import { onMounted, watchEffect, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useScreenSize } from '~/composables/useScreenSize';
@@ -396,6 +404,8 @@ const { isMobile, isTablet, isDesktop } = useScreenSize();
 const categoryStore = useCategoryStore();
 const { categories } = storeToRefs(categoryStore);
 const userStore = useUserStore()
+const wishlistStore = useWishlistStore();
+const { wishlistCount } = storeToRefs(wishlistStore);
 onMounted(() => {
   userStore.syncFromLocalStorage()
   window.addEventListener('storage', userStore.syncFromLocalStorage)
@@ -474,7 +484,9 @@ const handleResize = () => {
 
 // Ensure categories are loaded and set up resize listener
 onMounted(() => {
-  categoryStore.fetchCategories();
+  
+  // Cargar lista de deseos si el usuario está autenticado
+  
   window.addEventListener('resize', handleResize);
 });
 
@@ -482,6 +494,12 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize);
 });
+const goToWishlist = () => {
+  router.push('/wishlist')
+}
+const goToOrders = () => {
+  router.push('/orders')
+}
 </script>
 <style scoped>
 /* Oculta la barra de scroll pero permite desplazamiento */

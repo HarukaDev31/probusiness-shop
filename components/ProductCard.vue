@@ -1,33 +1,37 @@
 <template>
-  <NuxtLink class="product-card flex flex-col h-full"
-  :to="`/product/${product.id}`"
-  >
+  <div class="product-card flex flex-col h-full">
     <div class="relative pb-[100%] overflow-hidden relative">
-      <NuxtImg  
-        :src="getProductImage()" 
-        :alt="product.nombre"
-        loading="lazy"
-        class="absolute inset-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
-      />
+      <NuxtLink :to="`/product/${product.id}`">
+        <NuxtImg  
+          :src="getProductImage()" 
+          :alt="product.nombre"
+          loading="lazy"
+          class="absolute inset-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
+        />
+      </NuxtLink>
+      
+      <!-- Wishlist button -->
+      <div class="absolute top-2 right-2 z-10">
+        <WishlistButton :product="product" />
+      </div>
     </div>
     <div class="p-4 flex flex-col flex-grow">
       <!--badge from category-->
  
-      <h3 :class="getTitleClass()" class="font-semibold mb-2 line-clamp-2">{{ product.nombre }}</h3>
+      <NuxtLink :to="`/product/${product.id}`">
+        <h3 :class="getTitleClass()" class="font-semibold mb-2 line-clamp-2 hover:text-[#FF5000] transition-colors">{{ product.nombre }}</h3>
+      </NuxtLink>
       <div class="text-sm text-gray-500 mb-2">Orden mínima: {{ product.moq }}</div>
-      <div class="text-2xl font-bold text-black mt-auto ">S/{{ product.precio }}</div>
-      <!-- <button 
-        @click="addToCart"
-        class="mt-3 btn w-full"
-      >
-        Añadir al carrito
-      </button> -->
+      <div class="text-2xl font-bold text-black mt-auto ">{{ $formatPrice(product.precio) }}</div>
     </div>
-  </NuxtLink>
+
+    </div>
 </template>
 
 <script setup>
 import { useCartStore } from '~/stores/cart';
+
+const { $formatPrice } = useNuxtApp();
 
 const props = defineProps({
   product: {

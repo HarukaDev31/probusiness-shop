@@ -86,12 +86,12 @@
                 <button @click="increaseQuantity(item)" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
               </div>
             </div>
-            <div class="font-semibold">s/{{ (item.price * item.quantity).toFixed(2) }}</div>
+            <div class="font-semibold">{{ $formatPrice(item.price * item.quantity) }}</div>
             <button @click="removeItem(item.id)" class="text-red-500 hover:text-red-700">
               <Icon name="heroicons:trash" class="w-5 h-5" />
             </button>
           </div>
-          <NuxtLink to="/cart" class="text-blue-500 text-sm hover:underline">Agregar productos</NuxtLink>
+          <NuxtLink to="/" class="text-blue-500 text-sm hover:underline">Agregar productos</NuxtLink>
        
         </div>
       </div>
@@ -101,7 +101,7 @@
           <h3 class="text-lg font-bold mb-6">Resumen del pedido</h3>
           <div class="flex justify-between items-center mb-6">
             <span class="text-gray-600">Pagar en soles:</span>
-            <span class="text-2xl font-bold text-gray-800">s/{{ cartTotal.toFixed(2) }}</span>
+            <span class="text-2xl font-bold text-gray-800">{{ $formatPrice(cartTotal) }}</span>
           </div>
           <button
             @click="handlePedido"
@@ -154,11 +154,11 @@
     <div class="flex flex-col gap-2 mb-2 text-left">
       <div>
         Tu pedido actual:
-        <b>s/{{ cartTotal.toFixed(2) }}</b>
+        <b>{{ $formatPrice(cartTotal) }}</b>
       </div>
       <div>
         Importe pendiente:
-        <b class="text-[#FF5000]">s/{{ (3000 - cartTotal).toFixed(2) }}</b>
+        <b class="text-[#FF5000]">{{ $formatPrice(3000 - cartTotal) }}</b>
       </div>
     </div>
     <div class="text-xs text-gray-500 mt-3">
@@ -206,7 +206,9 @@
 import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart'
 import { storeToRefs } from 'pinia'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+
+const { $formatPrice } = useNuxtApp();
 const router = useRouter();
 //add middleware to check if cart is empty
 const cartStore = useCartStore();

@@ -1,42 +1,68 @@
+import { apiClient } from '~/utils/api-client'
+
 class ProductService {
     async getProducts() {
-        const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?per_category=10&all_categories=true`);
-        const data = await response.json();
-        return data.data;
-    }
-    async getProductsByCategory(categorySlug, currentPage = 1) {
-        const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?category=${categorySlug}&per_category=50&current_page=${currentPage}`);
-        const data = await response.json();
-        return {
-            data: data.data,
-            total: data.meta?.total
+        try {
+            const data = await apiClient.api('/products?per_category=10&all_categories=true')
+            return data.data
+        } catch (error) {
+            console.error('Error al obtener productos:', error)
+            throw new Error(error.message || 'Error de conexión con el servidor')
         }
     }
+    
+    async getProductsByCategory(categorySlug, currentPage = 1) {
+        try {
+            const data = await apiClient.api(`/products?category=${categorySlug}&per_category=50&current_page=${currentPage}`)
+            return {
+                data: data.data,
+                total: data.meta?.total
+            }
+        } catch (error) {
+            console.error('Error al obtener productos por categoría:', error)
+            throw new Error(error.message || 'Error de conexión con el servidor')
+        }
+    }
+    
     async getProductById(id) {
-        const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products/${id}`);
-        const data = await response.json();
-        return data.data;
+        try {
+            const data = await apiClient.api(`/products/${id}`)
+            return data.data
+        } catch (error) {
+            console.error('Error al obtener producto:', error)
+            throw new Error(error.message || 'Error de conexión con el servidor')
+        }
     }
+    
     async getRelatedProducts(category) {
-        const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?category=${category}&per_category=10`);
-        const data = await response.json();
-        return data.data;
+        try {
+            const data = await apiClient.api(`/products?category=${category}&per_category=10`)
+            return data.data
+        } catch (error) {
+            console.error('Error al obtener productos relacionados:', error)
+            throw new Error(error.message || 'Error de conexión con el servidor')
+        }
     }
+    
     async getProductBySupplierId(supplierId) {
-        const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?supplier=${supplierId}&per_category=10`);
-        const data = await response.json();
-        return data.data;
+        try {
+            const data = await apiClient.api(`/products?supplier=${supplierId}&per_category=10`)
+            return data.data
+        } catch (error) {
+            console.error('Error al obtener productos por proveedor:', error)
+            throw new Error(error.message || 'Error de conexión con el servidor')
+        }
     }
+    
     async searchProducts(searchTerm, currentPage = 1) {
-        const { public: { apiUrl } } = useRuntimeConfig();
-        const response = await fetch(`${apiUrl}/products?search=${searchTerm}&per_category=50&current_page=${currentPage}`);
-        const data = await response.json();
-        return { data: data.data, total: data.meta.total };
+        try {
+            const data = await apiClient.api(`/products?search=${searchTerm}&per_category=50&current_page=${currentPage}`)
+            return { data: data.data, total: data.meta.total }
+        } catch (error) {
+            console.error('Error al buscar productos:', error)
+            throw new Error(error.message || 'Error de conexión con el servidor')
+        }
     }
 }
-export const productService = new ProductService();
+
+export const productService = new ProductService()

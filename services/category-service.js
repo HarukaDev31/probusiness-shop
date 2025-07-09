@@ -1,13 +1,16 @@
+import { apiClient } from '~/utils/api-client'
+
 class CategoryService {
   
   async getCategories() {
-    //get runtimeConfig variable
-    const { public: { apiUrl } } = useRuntimeConfig();
-
-    const response = await fetch(`${apiUrl}/categories`);
-    
-    const data = await response.json();
-    return data.data;
+    try {
+      const data = await apiClient.api('/categories')
+      return data.data
+    } catch (error) {
+      console.error('Error al obtener categorías:', error)
+      throw new Error(error.message || 'Error de conexión con el servidor')
+    }
   }
 }
-export const categoryService = new CategoryService();
+
+export const categoryService = new CategoryService()
