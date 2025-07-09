@@ -1,23 +1,56 @@
 <template>
-  <div class="flex items-center py-4 border-b border-gray-200 gap-2">
+  <div class="flex items-start py-4 border-b border-gray-200 gap-2">
     <!-- Checkbox -->
-    <input type="checkbox" class="form-checkbox w-5 h-5 accent-[#FF5000] mt-1" v-model="isSelected" />
+    <input type="checkbox" class="form-checkbox w-5 h-5 accent-[#FF5000] mt-1 flex-shrink-0" v-model="isSelected" />
+    
     <!-- Imagen -->
-    <div class="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-4">
+    <div class="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-3">
       <NuxtImg :src="getItemImage()" :alt="item.name || item.nombre" class="w-full h-full object-contain" />
     </div>
-    <!-- Nombre -->
+    
+    <!-- Contenido principal -->
     <div class="flex-1 min-w-0">
+      <!-- Nombre del producto -->
       <h3 
-        class="text-base font-medium text-gray-900 break-words whitespace-normal leading-tight cursor-pointer hover:text-[#FF5000] transition-colors" 
-        style="word-break: break-word;"
+        class="text-sm md:text-base font-medium text-gray-900 leading-tight cursor-pointer hover:text-[#FF5000] transition-colors mb-2" 
+        style="word-break: break-word; line-height: 1.3;"
         @click="goToProduct(item.id)"
       >
         {{ item.name || item.nombre }}
       </h3>
+      
+      <!-- Controles de cantidad en mobile -->
+      <div class="flex items-center justify-between md:hidden">
+        <div class="flex items-center gap-1 bg-[#F5F8FB] rounded-lg border border-gray-200 px-1">
+          <button 
+            @click="decreaseQuantity" 
+            :disabled="inputQuantity <= getProductMOQ(props.item)"
+            :class="inputQuantity <= getProductMOQ(props.item) ? 'w-6 h-6 flex items-center justify-center text-sm text-gray-400 rounded cursor-not-allowed' : 'w-6 h-6 flex items-center justify-center text-sm text-gray-700 hover:bg-gray-200 rounded'"
+          >
+            -
+          </button>
+          <input 
+            type="number" 
+            :min="getProductMOQ(props.item)" 
+            v-model.number="inputQuantity" 
+            @input="validateInputQuantity"
+            class="w-10 text-center bg-transparent outline-none border-none text-sm font-semibold" 
+          />
+          <button @click="increaseQuantity" class="w-6 h-6 flex items-center justify-center text-sm text-gray-700 hover:bg-gray-200 rounded">+</button>
+        </div>
+        <div class="text-right">
+          <div class="font-semibold text-gray-800 text-sm">
+            {{ $formatPrice(item.price * item.quantity) }}
+          </div>
+          <div class="text-xs text-gray-500">
+            {{ $formatPrice(item.price) }} c/u
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- Controles de cantidad -->
-    <div class="flex items-center gap-1 mx-2 bg-[#F5F8FB] rounded-lg border border-gray-200 px-1">
+    
+    <!-- Controles de cantidad en desktop -->
+    <div class="hidden md:flex items-center gap-1 mx-2 bg-[#F5F8FB] rounded-lg border border-gray-200 px-1">
       <button 
         @click="decreaseQuantity" 
         :disabled="inputQuantity <= getProductMOQ(props.item)"
@@ -34,13 +67,15 @@
       />
       <button @click="increaseQuantity" class="w-8 h-8 flex items-center justify-center text-xl text-gray-700 hover:bg-gray-200 rounded">+</button>
     </div>
-    <!-- Precio -->
-    <div class="w-28 text-right font-semibold text-gray-800 text-base">
+    
+    <!-- Precio en desktop -->
+    <div class="hidden md:block w-28 text-right font-semibold text-gray-800 text-base">
       {{ $formatPrice(item.price * item.quantity) }}
     </div>
+    
     <!-- Eliminar -->
-    <button @click="removeItem" class="ml-2 text-red-500 hover:text-red-600 flex items-center justify-center">
-      <Icon name="heroicons:trash" class="w-6 h-6" />
+    <button @click="removeItem" class="text-red-500 hover:text-red-600 flex items-center justify-center flex-shrink-0">
+      <Icon name="heroicons:trash" class="w-5 h-5 md:w-6 md:h-6" />
     </button>
   </div>
 </template>
