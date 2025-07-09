@@ -31,7 +31,7 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!hasOrders" class="bg-white rounded-lg shadow-md p-12 text-center">
+      <div v-else-if="orders.length === 0" class="bg-white rounded-lg shadow-md p-12 text-center">
         <Icon name="heroicons:shopping-bag" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h3 class="text-xl font-semibold text-gray-800 mb-2">No tienes pedidos aún</h3>
         <p class="text-gray-600 mb-6">Realiza tu primer pedido para verlo aquí</p>
