@@ -1,10 +1,8 @@
-import { $fetch } from 'ofetch'
+import { apiClient } from '~/utils/api-client'
 
 class OrderService {
   constructor() {
-    this.baseURL = process.env.NODE_ENV === 'production' 
-      ? 'https://tienda.probusiness.pe/api' 
-      : 'http://localhost:3000/api'
+    // Ya no necesitamos baseURL porque apiClient maneja las URLs
   }
 
   /**
@@ -14,12 +12,9 @@ class OrderService {
    */
   async createOrder(orderData) {
     try {
-      const response = await $fetch(`${this.baseURL}/orders`, {
+      const response = await apiClient.api('/orders', {
         method: 'POST',
-        body: orderData,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        body: JSON.stringify(orderData)
       })
 
       return {
@@ -30,7 +25,7 @@ class OrderService {
       console.error('Error al crear pedido:', error)
       
       // Manejar diferentes tipos de errores
-      if (error.status === 400) {
+      if (error.message.includes('400')) {
         return {
           success: false,
           message: 'Datos de entrada inválidos',
@@ -38,7 +33,7 @@ class OrderService {
         }
       }
       
-      if (error.status === 422) {
+      if (error.message.includes('422')) {
         return {
           success: false,
           message: 'Error de validación',
@@ -46,14 +41,14 @@ class OrderService {
         }
       }
       
-      if (error.status === 429) {
+      if (error.message.includes('429')) {
         return {
           success: false,
           message: 'Demasiados pedidos. Intenta de nuevo en 1 minuto.'
         }
       }
       
-      if (error.status === 500) {
+      if (error.message.includes('500')) {
         return {
           success: false,
           message: 'Error interno del servidor. Intenta de nuevo más tarde.'
@@ -74,12 +69,7 @@ class OrderService {
    */
   async getCustomerOrders(customerId) {
     try {
-      const response = await $fetch(`${this.baseURL}/orders/customer/${customerId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      const response = await apiClient.api(`/orders/customer/${customerId}`)
 
       return {
         success: true,
@@ -103,12 +93,7 @@ class OrderService {
    */
   async getOrderDetails(orderId) {
     try {
-      const response = await $fetch(`${this.baseURL}/orders/${orderId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      const response = await apiClient.api(`/orders/${orderId}`)
 
       return {
         success: true,
@@ -133,13 +118,7 @@ class OrderService {
    */
   async updateOrderStatus(orderId, status) {
     try {
-      const response = await $fetch(`${this.baseURL}/orders/${orderId}/status`, {
-        method: 'PATCH',
-        body: { status },
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      const response = await apiClient.patch(`/orders/${orderId}/status`, { status })
 
       return {
         success: true,
@@ -164,13 +143,7 @@ class OrderService {
    */
   async cancelOrder(orderId, reason = 'Cancelado por el cliente') {
     try {
-      const response = await $fetch(`${this.baseURL}/orders/${orderId}/cancel`, {
-        method: 'POST',
-        body: { reason },
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      const response = await apiClient.post(`/orders/${orderId}/cancel`, { reason })
 
       return {
         success: true,
