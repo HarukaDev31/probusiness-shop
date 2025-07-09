@@ -11,6 +11,11 @@ export default defineNuxtConfig({
     '@nuxt/image',
 
   ],
+  nitro: {
+    experimental: {
+      wasm: true
+    }
+  },
   vite: {
     build: {
       minify: 'terser',
@@ -47,6 +52,15 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.API_URL || 'http://localhost:8000/api',
       authApiUrl: process.env.AUTH_API_URL || 'http://localhost:8000/api'
+    }
+  },
+  image: {
+    provider: 'ipx',
+    ipx: {
+      modifiers: {
+        format: 'webp',
+        quality: '80'
+      }
     }
   }
 })
