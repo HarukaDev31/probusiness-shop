@@ -151,7 +151,59 @@
           <!-- Panel lateral de carrito -->
           <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40"
             @click.self="showCartPanel = false">
-            <div class="bg-white w-full h-[70%] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
+            <!-- Mobile: desde abajo -->
+            <div class="md:hidden bg-white w-full h-[70%] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
+              <div class="flex flex-col justify-between items-start mb-6">
+                <h2 class="text-lg font-bold">Selecciona la cantidad de tu interés</h2>
+                <span> Pedido mínimo de importación s/3.000</span>
+              </div>
+
+              <div class="mb-4">
+                <h3 class="font-semibold mb-2">Cantidades</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity"
+                    class="flex flex-col items-center">
+                    <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
+                    <div class="text-lg font-bold text-gray-800">{{ $formatPrice(price.price) }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="font-semibold">Cantidad</span>
+                  <div class="flex items-center gap-2">
+                    <button @click="cartQuantity = Math.max(getMinimumOrderQuantity() || 1, cartQuantity - 1)"
+                      :disabled="cartQuantity <= (getMinimumOrderQuantity() || 1)"
+                      class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl"
+                      :class="{ 'opacity-50 cursor-not-allowed': cartQuantity <= (getMinimumOrderQuantity() || 1) }">
+                      -
+                    </button>
+                    <input type="number" v-model.number="cartQuantity" :min="getMinimumOrderQuantity() || 1"
+                      class="w-16 text-center border border-gray-200 rounded px-2 py-1"
+                      @input="handleCartQuantityInput" />
+                    <button @click="cartQuantity++"
+                      class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl">+</button>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mb-6">
+                  <span class="font-semibold">Total</span>
+                  <span class="text-lg font-bold">{{ $formatPrice(getPrecioPuestoEnPeru() * cartQuantity) }}</span>
+                </div>
+                <div class="flex flex-col gap-3">
+                  <button v-if="!goToCart" @click="iniciarPedidoPanel"
+                    class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar
+                    pedido</button>
+                  <button v-if="goToCart"
+                    class="w-full border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition"
+                    @click="addToCartFromPanel">
+                    Agregar al carrito
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Desktop: desde la derecha -->
+            <div class="hidden md:block bg-white w-full max-w-md h-full shadow-xl p-8 flex flex-col" @click.stop>
               <div class="flex flex-col justify-between items-start mb-6">
                 <h2 class="text-lg font-bold">Selecciona la cantidad de tu interés</h2>
                 <span> Pedido mínimo de importación s/3.000</span>
