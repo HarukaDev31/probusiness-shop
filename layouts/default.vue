@@ -6,7 +6,7 @@
     >
       <slot />
     </main>
-    <Footer />
+    <Footer v-if="!hideFooter" />
     <!-- Loader global con fade -->
     <Transition name="fade">
       <div v-if="isNavigating" class="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60 pointer-events-none">
@@ -20,10 +20,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 const isNavigating = ref(false)
 const router = useRouter()
+const route = useRoute()
+
+// Ocultar footer en carrito y checkout
+const hideFooter = computed(() => {
+  const currentPath = route.path
+  return currentPath === '/cart' || currentPath.startsWith('/checkout')
+})
+
 let start, end
 onMounted(() => {
   start = router.beforeEach((to, from, next) => {

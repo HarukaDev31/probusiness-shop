@@ -61,25 +61,25 @@
               </div>
             </div>
             <!-- Imagen principal con overlay relativo -->
-            <div class="bg-white rounded-lg shadow-md p-6 flex-1 flex items-center justify-center ml-4 relative">
+            <div class="bg-white rounded-lg shadow-md flex-1 flex items-center justify-center ml-4 relative overflow-hidden">
               <!-- Corazón favoritos -->
-              <WishlistButton :product="product" class="w-full md:w-auto absolute top-5 right-5 " />
+              <WishlistButton :product="product" class="absolute top-4 right-4 z-20" />
 
               <!-- Flecha izquierda -->
               <button v-if="mediaItems.length > 1" @click="prevMedia"
-                class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-gray-100 transition">
+                class="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd"
                     d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd" />
                 </svg>
               </button>
-              <div class="aspect-square overflow-hidden rounded-md w-full relative flex items-center justify-center ">
+              <div class="w-full h-full relative flex items-center justify-center">
                 <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
-                  class="object-contain w-full h-full max-w-[350px] max-h-[350px] mx-auto" />
+                  class="object-cover w-full h-full" />
                 <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
                   <video :src="activeMedia.url" :alt="product.nombre"
-                    class="object-contain w-full h-full max-w-[350px] max-h-[350px] mx-auto" autoplay muted loop
+                    class="object-cover w-full h-full" autoplay muted loop
                     controls preload="metadata" @error="handleVideoError" @loadstart="handleVideoLoadStart"
                     crossorigin="anonymous">
                     <source :src="activeMedia.url" type="video/mp4">
@@ -87,7 +87,7 @@
                   </video>
                   <!-- Loading state -->
                   <div v-if="videoLoading"
-                    class="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-md">
+                    class="absolute inset-0 flex items-center justify-center bg-gray-100">
                     <div class="text-center p-4">
                       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
                       <p class="text-gray-600 text-sm">Cargando video...</p>
@@ -96,7 +96,7 @@
 
                   <!-- Fallback para videos bloqueados -->
                   <div v-if="videoError"
-                    class="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-md">
+                    class="absolute inset-0 flex items-center justify-center bg-gray-100">
                     <div class="text-center p-4">
                       <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
@@ -116,7 +116,7 @@
               </div>
               <!-- Flecha derecha -->
               <button v-if="mediaItems.length > 1" @click="nextMedia"
-                class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-gray-100 transition">
+                class="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd"
                     d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
@@ -131,7 +131,7 @@
           <h5 class="text-2xl font-bold text-gray-800 mb-4">Cantidades</h5>
           <!-- Tabla de precios horizontal -->
           <div v-if="product.prices_range && product.prices_range.length > 0" class="my-6">
-            <div class="grid grid-cols-4 gap-4 pt-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
               <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity"
                 class="flex flex-col items-center">
                 <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
@@ -139,8 +139,8 @@
               </div>
             </div>
           </div>
-          <!-- Botones -->
-          <div class="flex flex-col md:flex-row gap-4 mb-6 py-8">
+          <!-- Botones Desktop -->
+          <div class="hidden md:flex flex-col md:flex-row gap-4 mb-6 py-8">
             <button @click="iniciarPedidoMinimo"
               class="w-full md:w-1/2 border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition">Añadir
               al carrito</button>
@@ -151,7 +151,7 @@
           <!-- Panel lateral de carrito -->
           <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40"
             @click.self="showCartPanel = false">
-            <div class="bg-white w-full max-w-md h-full shadow-xl p-8 flex flex-col" @click.stop>
+            <div class="bg-white w-full h-[70%] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
               <div class="flex flex-col justify-between items-start mb-6">
                 <h2 class="text-lg font-bold">Selecciona la cantidad de tu interés</h2>
                 <span> Pedido mínimo de importación s/3.000</span>
@@ -159,7 +159,7 @@
 
               <div class="mb-4">
                 <h3 class="font-semibold mb-2">Cantidades</h3>
-                <div class="grid grid-cols-4 gap-2">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                   <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity"
                     class="flex flex-col items-center">
                     <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
@@ -300,6 +300,20 @@
     <div v-else class="text-center py-12">
       <p class="text-lg text-gray-500">Producto no encontrado.</p>
       <NuxtLink to="/" class="mt-4 btn inline-block">Volver al inicio</NuxtLink>
+    </div>
+
+    <!-- Botones fijos Mobile -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-40">
+      <div class="flex gap-3">
+        <button @click="iniciarPedidoMinimo"
+          class="flex-1 border border-gray-800 text-gray-900 font-semibold py-4 rounded-lg bg-white hover:bg-gray-100 transition">
+          Añadir al carrito
+        </button>
+        <button @click="openCartPanel"
+          class="flex-1 bg-[#FF5000] text-white font-semibold py-4 rounded-lg hover:bg-[#e04a00] transition">
+          Iniciar pedido
+        </button>
+      </div>
     </div>
   </div>
 </template>

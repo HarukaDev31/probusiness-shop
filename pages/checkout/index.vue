@@ -1,6 +1,7 @@
 <template>
   <div v-if="!showSuccess" class="min-h-screen bg-[#f5f8fb] flex flex-col">
-    <div class="flex-1 flex flex-col md:flex-row gap-8 p-6 md:p-12 max-w-[1200px] mx-auto w-full">
+    <!-- Vista Desktop -->
+    <div class="hidden md:flex flex-1 flex-col md:flex-row gap-8 p-6 md:p-12 max-w-[1200px] mx-auto w-full">
       <!-- Columna izquierda -->
       <div class="flex-1 flex flex-col">
         <div class="bg-white rounded-lg shadow-md p-8 mb-6">
@@ -132,6 +133,159 @@
         </div>
       </div>
     </div>
+
+    <!-- Vista Mobile -->
+    <div class="md:hidden flex flex-col h-screen">
+      <!-- Contenido principal -->
+      <div class="flex-1 overflow-y-auto p-4">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+          <h2 class="text-xl font-bold mb-4">Tus datos</h2>
+          <p class="text-xs text-gray-500 flex items-center gap-2 mb-4">
+            <Icon name="heroicons:lock-closed" class="w-4 h-4" />
+            Tu información personal está encriptada
+          </p>
+          <form @submit.prevent="handleSubmit" class="space-y-4">
+            <div class="grid grid-cols-1 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre y apellido*</label>
+                <input v-model="form.fullName" type="text" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tus nombres y apellidos">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">DNI/ID*</label>
+                <input v-model="form.dni" type="text" required maxlength="8" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu documento de identidad">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Correo*</label>
+                <input v-model="form.email" type="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu correo">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp*</label>
+                <input v-model="form.phone" type="tel" required maxlength="9" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu número de celular">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
+                    <select v-model="form.province" @change="onProvinceChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
+                    <option value="">Selecciona provincia</option>
+                    <option v-for="prov in provinces" :key="prov.id" :value="prov.name">{{ prov.name }}</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ciudad*</label>
+                    <select v-model="form.city" @change="onCityChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
+                    <option value="">Selecciona ciudad</option>
+                    <option v-for="city in cities" :key="city.id" :value="city.name">{{ city.name }}</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Distrito*</label>
+                    <select v-model="form.district" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
+                    <option value="">Selecciona distrito</option>
+                    <option v-for="district in districts" :key="district.id" :value="district.name">{{ district.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <button
+              type="button"
+              class="w-full bg-[#FF5000] text-white font-semibold p-3 rounded mt-4"
+              @click="guardarDatos"
+            >
+              Guardar
+            </button>
+            <span v-if="savedMessage" class="text-green-600 font-semibold text-center block">¡Guardado!</span>
+          </form>
+        </div>
+        
+        <!-- Productos seleccionados -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-base font-bold mb-4">Productos seleccionados</h3>
+          <div v-for="item in cartItems" :key="item.id" class="flex items-center gap-4 mb-4">
+            <img :src="item.image" alt="" class="w-12 h-12 rounded object-cover" />
+            <div class="flex-1">
+              <div class="font-semibold cursor-pointer hover:text-[#FF5000] transition-colors" @click="goToProduct(item.id)">{{ item.name }}</div>
+              <div class="flex items-center gap-2 mt-2">
+                <button 
+                  @click="decreaseQuantity(item)" 
+                  :disabled="item.quantity <= getProductMOQ(item)"
+                  :class="item.quantity <= getProductMOQ(item) ? 'px-2 py-1 bg-gray-100 text-gray-400 rounded cursor-not-allowed' : 'px-2 py-1 bg-gray-200 rounded hover:bg-gray-300'"
+                >
+                  -
+                </button>
+                <input 
+                  type="number" 
+                  v-model.number="item.quantity" 
+                  :min="getProductMOQ(item)" 
+                  @input="validateQuantity(item)"
+                  class="w-12 text-center border rounded text-sm" 
+                />
+                <button @click="increaseQuantity(item)" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
+              </div>
+            </div>
+            <div class="font-semibold text-sm">{{ $formatPrice(item.price * item.quantity) }}</div>
+            <button @click="removeItem(item.id)" class="text-red-500 hover:text-red-700">
+              <Icon name="heroicons:trash" class="w-4 h-4" />
+            </button>
+          </div>
+          <NuxtLink to="/" class="text-blue-500 text-sm hover:underline">Agregar productos</NuxtLink>
+        </div>
+      </div>
+
+      <!-- Panel inferior colapsable -->
+      <div class="bg-white border-t border-gray-200">
+        <!-- Header del panel -->
+        <div class="p-4 border-b border-gray-100">
+          <button @click="toggleMobileSummary" class="w-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="text-gray-600">Resumen de pedido</span>
+            </div>
+            <Icon 
+              :name="mobileSummaryOpen ? 'heroicons:chevron-up' : 'heroicons:chevron-down'" 
+              class="w-5 h-5 text-gray-500 transition-transform"
+            />
+          </button>
+        </div>
+        
+        <!-- Contenido colapsable -->
+        <div v-if="mobileSummaryOpen" class="p-4 space-y-4">
+          <!-- Precio en soles -->
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Pagar en soles:</span>
+            <span class="text-xl font-bold text-gray-800">{{ $formatPrice(cartTotal) }}</span>
+          </div>
+          
+          <!-- Botón enviar pedido -->
+          <button
+            @click="handlePedido"
+            :disabled="!isFormValid"
+            class="w-full bg-[#FF5000] text-white font-semibold py-4 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
+          >
+            Enviar pedido
+          </button>
+          
+          <!-- Datos importantes -->
+          <div class="bg-gray-50 rounded-lg p-4">
+            <h4 class="text-sm font-bold mb-3">Datos importantes:</h4>
+            <ul class="space-y-3 text-xs">
+              <li class="flex items-start gap-2">
+                <Icon name="heroicons:currency-dollar" class="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <div>
+                  <span class="font-semibold">Sobre el precio</span><br>
+                  <span class="text-gray-500">Es puesto en Perú, incluye todo.</span>
+                </div>
+              </li>
+              <li class="flex items-start gap-2">
+                <Icon name="heroicons:clock" class="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <div>
+                  <span class="font-semibold">Tiempo de entrega</span><br>
+                  <span class="text-gray-500">Se tiene que realizar la importación, la entrega es en 2 meses</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- Modal de alerta de monto mínimo -->
 <div
@@ -213,6 +367,11 @@ const router = useRouter();
 //add middleware to check if cart is empty
 const cartStore = useCartStore();
 const savedMessage = ref(false)
+const mobileSummaryOpen = ref(false)
+
+const toggleMobileSummary = () => {
+  mobileSummaryOpen.value = !mobileSummaryOpen.value;
+}
 const { cartItems, cartTotal } = storeToRefs(cartStore); // <-- agrega cartTotal aquí
 if (cartItems.value.length === 0) {
     router.push('/cart');

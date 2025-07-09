@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen bg-[#f5f8fb] flex flex-col">
-    <div class="flex-1 flex flex-col md:flex-row gap-8 p-6 md:p-12 max-w-[1200px] mx-auto w-full">
+    <!-- Vista Desktop -->
+    <div class="hidden md:flex flex-1 flex-col md:flex-row gap-8 p-6 md:p-12 max-w-[1200px] mx-auto w-full">
       <!-- Columna productos -->
       <div class="flex-1 flex flex-col">
         <div class="bg-white rounded-lg shadow-md p-8">
@@ -74,6 +75,54 @@
               </div>
             </li>
           </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista Mobile -->
+    <div class="md:hidden flex flex-col h-screen">
+      <!-- Contenido principal -->
+      <div class="flex-1 overflow-y-auto p-4">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+          <h2 class="text-xl font-bold mb-4">Tus productos</h2>
+          <div v-if="cartItems.length === 0" class="text-center py-8">
+            <p class="text-gray-500 mb-4">No hay artículos seleccionados.</p>
+            <NuxtLink to="/" class="btn px-6 py-3">Continuar comprando</NuxtLink>
+          </div>
+          <template v-else>
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-4"
+            v-if="selectedItems.length === 0"
+            >
+              <span>No hay artículos seleccionados.</span>
+              <button class="text-blue-500 hover:underline" @click="selectAll">Seleccionar todos</button>
+            </div>
+            <div v-if="selectedItems.length > 0">
+              <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                <button class="text-blue-500 hover:underline" @click="deselectAll">Anular selección</button>
+              </div>
+            </div>
+            <div>
+              <CartItem v-for="item in cartItems" :key="item.id" :item="item" :showCheckbox="true" />
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Panel inferior fijo -->
+      <div class="bg-white border-t border-gray-200 p-4">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-gray-600">Total:</span>
+          <span class="text-xl font-bold text-gray-800">{{ $formatPrice(selectedTotal) }}</span>
+        </div>
+        <button
+          @click="goToCheckout"
+          :disabled="selectedItems.length === 0"
+          class="w-full bg-[#FF5000] text-white font-semibold py-4 rounded-lg hover:bg-[#e04a00] transition disabled:opacity-50"
+        >
+          Continuar ({{ selectedItems.length }} productos)
+        </button>
+        <div v-if="selectedItems.length === 0" class="text-xs text-red-500 mt-2 text-center">
+          Selecciona al menos un producto
         </div>
       </div>
     </div>
