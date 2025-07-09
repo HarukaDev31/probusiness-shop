@@ -157,10 +157,9 @@
 import { useOrders } from '~/composables/useOrders'
 
 const { $formatPrice } = useNuxtApp()
-
+const orders = ref([])
 // Usar el composable de órdenes
 const { 
-  orders, 
   loading: isLoading, 
   error, 
   hasOrders, 
@@ -187,6 +186,7 @@ async function loadOrders() {
   clearError()
   
   const result = await getCustomerOrders()
+  orders.value = result.data
   
   if (!result.success) {
     console.error('Error al cargar pedidos:', result.message)
