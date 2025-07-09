@@ -72,6 +72,7 @@ export function useOrders() {
       
       if (response.success) {
         orders.value = response.data
+        console.log(orders.value,response)
         return {
           success: true,
           data: response.data
