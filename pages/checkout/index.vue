@@ -408,9 +408,6 @@ const toggleMobileSummary = () => {
   mobileSummaryOpen.value = !mobileSummaryOpen.value;
 }
 const { cartItems, cartTotal } = storeToRefs(cartStore); // <-- agrega cartTotal aquí
-if (cartItems.value.length === 0) {
-    router.push('/cart');
-}
 const { checkoutItems } = storeToRefs(cartStore)
 
 function guardarDatos() {
@@ -534,6 +531,12 @@ const isFormValid = computed(() =>
   form.value.district.trim()
 )
 async function handlePedido() {
+  // Validar que el carrito no esté vacío
+  if (!cartItems.value || cartItems.value.length === 0) {
+    router.push('/cart');
+    return;
+  }
+  
   // Validación del monto mínimo solo al enviar el pedido
   if (cartTotal.value < 3000) {
     showMinAlert.value = true
@@ -573,6 +576,12 @@ const closeSuccessModal = () => {
     router.push('/');
 };
 onMounted(() => {
+    // Validar que el carrito no esté vacío
+    if (cartItems.value && cartItems.value.length === 0) {
+        router.push('/cart');
+        return;
+    }
+    
     const savedInfo = localStorage.getItem('checkoutInfo');
     if (savedInfo) {
         form.value = JSON.parse(savedInfo);
