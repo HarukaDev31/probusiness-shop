@@ -562,6 +562,9 @@ const addToCartFromPanel = () => {
   }
 };
 
+// SEO
+const { setProductSEO } = useSEO();
+
 // Ensure data is loaded
 onMounted(async () => {
   await productStore.fetchProductById(productId);
@@ -570,6 +573,11 @@ onMounted(async () => {
     await productStore.fetchProductBySupplierId(product.value.supplier_id);
   }
   loading.value = false;
+  
+  // Configurar SEO para el producto
+  if (product.value) {
+    setProductSEO(product.value);
+  }
 });
 
 // Reset quantity when product changes

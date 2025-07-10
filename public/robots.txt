@@ -1,1 +1,20 @@
+User-agent: *
+Allow: /
 
+# Sitemap
+Sitemap: https://tienda.probusiness.pe/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /checkout/
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important pages
+Allow: /cart
+Allow: /wishlist
+Allow: /search
+Allow: /category/
+Allow: /product/
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
