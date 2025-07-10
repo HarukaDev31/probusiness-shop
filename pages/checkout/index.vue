@@ -322,34 +322,63 @@
     </div>
   </div>
 </div>
-<!-- Sección de confirmación de pedido -->
+<!-- Sección de confirmación de pedido con animación Rappi -->
 <div
   v-if="showSuccess"
   class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+  @click.self="closeSuccessModal"
 >
-  <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-10 text-center relative">
+  <!-- Confeti animado -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div v-for="i in 50" :key="i" 
+      class="confetti absolute w-2 h-2 rounded-full"
+      :style="{
+        left: Math.random() * 100 + '%',
+        animationDelay: Math.random() * 3 + 's',
+        animationDuration: (Math.random() * 2 + 2) + 's',
+        backgroundColor: confettiColors[Math.floor(Math.random() * confettiColors.length)]
+      }">
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-10 text-center relative transform transition-all duration-500 scale-100 animate-bounce-in">
+    <!-- Icono animado de éxito -->
     <div class="flex flex-col items-center mb-6">
-      <div class="w-16 h-16 flex items-center justify-center rounded-full bg-green-100 mb-4">
-        <svg width="40" height="40" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="12" fill="#22C55E"/>
-          <path d="M8 12.5l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <div class="success-icon-container mb-6">
+        <div class="success-icon-bg">
+          <svg class="success-check" width="40" height="40" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="12" fill="#22C55E"/>
+            <path d="M8 12.5l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
       </div>
-      <h2 class="text-2xl font-bold mb-2">¡Pedido confirmado!</h2>
-      <div class="font-semibold mb-2">Nº Pedido: {{ orderNumber }}</div>
-      <p class="text-gray-600 mb-2">
-        Nuestro equipo de Pro Business se pondrá en contacto con usted a la brevedad posible.<br>
-        <br>
+      
+      <!-- Título con animación de escritura -->
+      <h2 class="text-3xl font-bold mb-4 text-gray-800 typing-animation">¡Pedido confirmado!</h2>
+      
+      <!-- Número de pedido con efecto de resaltado -->
+      <div class="order-number-container mb-4">
+        <span class="text-sm text-gray-500">Nº Pedido:</span>
+        <div class="order-number-display">{{ orderNumber }}</div>
+      </div>
+      
+      <!-- Mensaje con fade in -->
+      <p class="text-gray-600 mb-6 fade-in-text">
+        Nuestro equipo de Pro Business se pondrá en contacto con usted a la brevedad posible.
+        <br><br>
         Envíanos un WhatsApp.
       </p>
     </div>
+    
     <div class="border-t my-6"></div>
+    
+    <!-- Botón de WhatsApp con animación -->
     <a
       href="https://wa.me/51999999999?text=Hola,%20acabo%20de%20realizar%20un%20pedido%20en%20ProBusiness"
       target="_blank"
-      class="inline-flex items-center justify-center bg-[#FF5000] text-white font-semibold px-6 py-3 rounded hover:bg-[#e04a00] transition"
+      class="whatsapp-button inline-flex items-center justify-center bg-[#FF5000] text-white font-semibold px-8 py-4 rounded-xl hover:bg-[#e04a00] transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
     >
-      <svg class="mr-2" width="22" height="22" fill="none" viewBox="0 0 24 24">
+      <svg class="mr-3" width="22" height="22" fill="none" viewBox="0 0 24 24">
         <path fill="#fff" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.67.15-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.363.71.306 1.263.489 1.695.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z"/>
       </svg>
       Hablemos por WhatsApp
@@ -439,6 +468,9 @@ const showMinAlert = ref(false)
 const showSuccess = ref(false)
 const orderNumber = ref('')
 
+// Colores para el confeti
+const confettiColors = ['#FF5000', '#22C55E', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899']
+
 const provinciasData = [
   {
     name: 'Lima',
@@ -517,7 +549,7 @@ async function handlePedido() {
 
     if (result.success) {
       // Guardar el número de pedido que devuelve el backend
-      orderNumber.value = result.data.orderNumber || result.data.order_number || 'N/A';
+      orderNumber.value = result.data.order_id || result.data.order_id || 'N/A';
       // Limpiar el carrito después de un pedido exitoso
       cartStore.clearCart();
       showSuccess.value = true;
@@ -534,6 +566,11 @@ async function handlePedido() {
 const handleSubmit = () => {
     localStorage.setItem('checkoutInfo', JSON.stringify(form.value));
     router.push('/checkout/review');
+};
+
+const closeSuccessModal = () => {
+    showSuccess.value = false;
+    router.push('/');
 };
 onMounted(() => {
     const savedInfo = localStorage.getItem('checkoutInfo');
@@ -571,6 +608,163 @@ input[type="radio"]:checked::after {
   height: 10px;
   background-color: #e67e22; /* Color del círculo */
   border-radius: 50%; /* Forma circular */
+}
+
+/* Animaciones tipo Rappi */
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes successIconPulse {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes orderNumberGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 80, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 80, 0, 0.6);
+  }
+}
+
+/* Clases de animación */
+.animate-bounce-in {
+  animation: bounceIn 0.8s ease-out;
+}
+
+.confetti {
+  animation: confettiFall linear infinite;
+}
+
+.success-icon-container {
+  position: relative;
+}
+
+.success-icon-bg {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: successIconPulse 1s ease-out;
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+}
+
+.success-check {
+  animation: successIconPulse 1.2s ease-out 0.3s both;
+}
+
+.typing-animation {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 1.5s steps(20, end), fadeIn 0.8s ease-out;
+}
+
+.fade-in-text {
+  animation: fadeIn 1s ease-out 0.8s both;
+}
+
+.order-number-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.order-number-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #FF5000;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FF5000, #e04a00);
+  color: white;
+  border-radius: 0.75rem;
+  animation: orderNumberGlow 2s ease-in-out infinite;
+}
+
+.whatsapp-button {
+  animation: fadeIn 1s ease-out 1.2s both;
+}
+
+/* Efectos hover mejorados */
+.whatsapp-button:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 80, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .order-number-display {
+    font-size: 1.25rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .success-icon-bg {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .success-check {
+    width: 35px;
+    height: 35px;
+  }
 }
 
 </style>
