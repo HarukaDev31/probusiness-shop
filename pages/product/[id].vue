@@ -392,21 +392,6 @@
           </table>
         </div>
         <br>
-        <h1 class="text-2xl font-bold mb-4">Embalaje y entrega</h1>
-        <div class="overflow-x-auto">
-          <table class="w-full border-separate border-spacing-0 text-sm">
-            <tbody>
-              <tr v-for="(value, key) in parsedPackaging" :key="key">
-                <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 font-semibold bg-gray-50 min-w-[120px]">{{
-                  key }}</td>
-                <td class="border border-[#e5e7eb] px-4 py-2 text-gray-700 whitespace-pre-line align-top min-w-[120px]">
-                  {{ value }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <br>
-
         <h1 class="text-2xl font-bold mb-4">Descripción de producto de proveedor</h1>
         <div v-html="cleanHtmlContent(product.product_details)" class="descripcion-html text-gray-700 mt-4"
           v-if="product.product_details"></div>

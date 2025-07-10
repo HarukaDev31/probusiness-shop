@@ -32,3 +32,27 @@ body {
   color: #333;
 }
 
+/* Ocultar spinners de inputs number en todos los navegadores */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Para Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Para Edge */
+input[type="number"]::-ms-clear,
+input[type="number"]::-ms-expand {
+  display: none;
+}
+

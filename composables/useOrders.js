@@ -52,7 +52,8 @@ export function useOrders() {
       error.value = err.message
       return {
         success: false,
-        message: err.message
+        message: err.message,
+        status: err.status
       }
     } finally {
       loading.value = false

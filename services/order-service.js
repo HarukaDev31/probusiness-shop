@@ -22,7 +22,6 @@ class OrderService {
         data: response
       }
     } catch (error) {
-      console.error('Error al crear pedido:', error)
       
       // Manejar diferentes tipos de errores
       if (error.message.includes('400')) {
@@ -44,6 +43,7 @@ class OrderService {
       if (error.message.includes('429')) {
         return {
           success: false,
+          status: 429,
           message: 'Demasiados pedidos. Intenta de nuevo en 1 minuto.'
         }
       }
@@ -51,12 +51,22 @@ class OrderService {
       if (error.message.includes('500')) {
         return {
           success: false,
+          status: 500,
           message: 'Error interno del servidor. Intenta de nuevo más tarde.'
+        }
+      }
+      // if 401 no esta logueado
+      if (error.message.includes('Unauthorized')) {
+        return {
+          success: false,
+          status: 401,
+          message: 'No estás logueado. Por favor, inicia sesión para continuar.'
         }
       }
       
       return {
         success: false,
+        status: 500,
         message: 'Error de conexión. Verifica tu conexión a internet.'
       }
     }

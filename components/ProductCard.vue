@@ -17,10 +17,10 @@
       <!--badge from category-->
  
       <NuxtLink :to="`/product/${product.id}`">
-        <h3 :class="getTitleClass()" class="font-semibold mb-2 line-clamp-2 hover:text-[#FF5000] transition-colors">{{ product.nombre }}</h3>
+        <h3 class="font-semibold mb-2 line-clamp-2 hover:text-[#FF5000] transition-colors h-12 flex items-start">{{ truncateName(product.nombre) }}</h3>
       </NuxtLink>
       <div class="text-sm text-gray-500 mb-2">Orden mínima: {{ product.moq }}</div>
-      <div class="text-2xl font-bold text-black mt-auto ">{{ $formatPrice(product.precio) }}</div>
+      <div class="text-2xl font-bold text-black mt-auto">{{ $formatPrice(product.precio) }}</div>
     </div>
 
     </div>
@@ -53,21 +53,14 @@ const getProductImage = () => {
   return props.product.main_image_url || '/images/logo.png';
 };
 
-const getTitleClass = () => {
-  const titleLength = props.product.nombre?.length || 0;
-  
-  if (titleLength > 80) {
-    return 'text-sm'; // Muy largo
-  } else if (titleLength > 50) {
-    return 'text-base'; // Largo
-  } else if (titleLength > 30) {
-    return 'text-lg'; // Mediano
-  } else {
-    return 'text-xl'; // Corto
-  }
-};
+
 
 const addToCart = () => {
   cartStore.addItem(props.product);
+};
+
+const truncateName = (name) => {
+  if (!name) return '';
+  return name.length > 50 ? name.substring(0, 50) + '...' : name;
 };
 </script>

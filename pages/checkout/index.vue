@@ -68,7 +68,7 @@
           <div v-for="item in cartItems" :key="item.id" class="flex items-center gap-4 mb-4">
             <img :src="item.image" alt="" class="w-14 h-14 rounded object-cover" />
             <div class="flex-1">
-              <div class="font-semibold cursor-pointer hover:text-[#FF5000] transition-colors" @click="goToProduct(item.id)">{{ item.name }}</div>
+              <div class="font-semibold cursor-pointer hover:text-[#FF5000] transition-colors" @click="goToProduct(item.id)">{{ truncateName(item.name) }}</div>
               <div class="flex items-center gap-2 mt-2">
                 <button 
                   @click="decreaseQuantity(item)" 
@@ -204,7 +204,7 @@
           <div v-for="item in cartItems" :key="item.id" class="flex items-center gap-4 mb-4">
             <img :src="item.image" alt="" class="w-12 h-12 rounded object-cover" />
             <div class="flex-1">
-              <div class="font-semibold cursor-pointer hover:text-[#FF5000] transition-colors" @click="goToProduct(item.id)">{{ item.name }}</div>
+              <div class="font-semibold cursor-pointer hover:text-[#FF5000] transition-colors" @click="goToProduct(item.id)">{{ truncateName(item.name) }}</div>
               <div class="flex items-center gap-2 mt-2">
                 <button 
                   @click="decreaseQuantity(item)" 
@@ -384,7 +384,9 @@
       Hablemos por WhatsApp
     </a>
   </div>
-</div>
+  </div>
+  
+
 </template>
 
 <script setup>
@@ -397,6 +399,7 @@ import { useCartStore } from '~/stores/cart'
 
 import { ref, onMounted, computed } from 'vue'
 import { useOrders } from '~/composables/useOrders'
+import { useModal } from '~/composables/useModal'
 
 const { $formatPrice } = useNuxtApp();
 const router = useRouter();
@@ -404,6 +407,9 @@ const router = useRouter();
 const cartStore = useCartStore();
 const savedMessage = ref(false)
 const mobileSummaryOpen = ref(false)
+
+// Usar el composable de modal
+const { showError } = useModal()
 
 // Usar el composable de órdenes
 const { createOrder, loading: orderLoading, error: orderError, clearError } = useOrders()
@@ -464,6 +470,11 @@ function removeItem(productId) {
 function goToProduct(productId) {
   router.push(`/product/${productId}`);
 }
+
+const truncateName = (name) => {
+  if (!name) return '';
+  return name.length > 50 ? name.substring(0, 50) + '...' : name;
+};
 // Arrays reactivos para selects
 
 const showMinAlert = ref(false)
@@ -562,12 +573,17 @@ async function handlePedido() {
       cartStore.clearCart();
       showSuccess.value = true;
     } else {
-      alert(result.message || 'Error al procesar el pedido. Por favor, inténtalo de nuevo.');
+      if (result.status === 401) {
+        showError('Tu sesión ha expirado. Por favor, inicia sesión para continuar.')
+      
+      } else {
+        // Mostrar otros errores con modal
+        showError(result.message || 'Error al procesar el pedido. Por favor, inténtalo de nuevo.')
+      }
     }
 
   } catch (error) {
-    console.error('Error al enviar pedido:', error);
-    alert('Error al procesar el pedido. Por favor, inténtalo de nuevo.');
+    showError('Error al procesar el pedido. Por favor, inténtalo de nuevo.')
   }
 }
 

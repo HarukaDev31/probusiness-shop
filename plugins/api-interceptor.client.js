@@ -44,7 +44,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       // Verificar si la respuesta es 401
       if (response.status === 401) {
         handleUnauthorized()
-        throw new Error('Unauthorized')
+        throw new Error('Unauthorized',{status:401} )
       }
       
       return response
