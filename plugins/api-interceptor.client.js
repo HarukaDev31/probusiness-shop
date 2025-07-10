@@ -1,5 +1,5 @@
-export default defineNuxtPlugin(() => {
-  const { $modal } = useNuxtApp()
+export default defineNuxtPlugin((nuxtApp) => {
+  const { $modal } = nuxtApp
   const userStore = useUserStore()
   const router = useRouter()
 

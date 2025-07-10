@@ -122,7 +122,9 @@ export const useCartStore = defineStore('cart', {
 
     // getter
   },
-    persist: true
-  
-
+  persist: {
+    key: 'cart-storage',
+    storage: process.client ? localStorage : null,
+    paths: ['items', 'selectedIds', 'checkoutItems']
+  }
 });
