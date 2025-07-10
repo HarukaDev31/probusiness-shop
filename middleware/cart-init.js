@@ -3,7 +3,16 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // Solo ejecuta en el cliente
   if (process.client) {
     try {
-      // Esperar a que Pinia esté disponible
+      // Esperar un poco para que Nuxt esté completamente inicializado
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      // Verificar que Pinia esté disponible
+      if (typeof window !== 'undefined' && window.$pinia) {
+        // Esperar a que Pinia esté completamente inicializado
+        await new Promise(resolve => setTimeout(resolve, 200))
+      }
+      
+      // Importar el store de forma dinámica
       const { useCartStore } = await import('~/stores/cart')
       const cartStore = useCartStore()
       
