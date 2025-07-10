@@ -1,3 +1,5 @@
+import { ref, onUnmounted, nextTick } from 'vue'
+
 export const useScreenSize = () => {
   const isMobile = ref(false)
   const isTablet = ref(false)
@@ -7,7 +9,7 @@ export const useScreenSize = () => {
 
   // Función para actualizar el estado del viewport
   const updateViewport = () => {
-    if (process.client) {
+    if (process.client && typeof window !== 'undefined') {
       windowWidth.value = window.innerWidth
       windowHeight.value = window.innerHeight
       
@@ -20,14 +22,19 @@ export const useScreenSize = () => {
 
   // Inicializar en el cliente
   if (process.client) {
-    updateViewport()
-    
-    // Escuchar cambios de tamaño de ventana
-    window.addEventListener('resize', updateViewport)
-    
-    // Limpiar listener al desmontar
-    onUnmounted(() => {
-      window.removeEventListener('resize', updateViewport)
+    // Usar nextTick para asegurar que el DOM esté listo
+    nextTick(() => {
+      updateViewport()
+      
+      // Escuchar cambios de tamaño de ventana
+      if (typeof window !== 'undefined') {
+        window.addEventListener('resize', updateViewport)
+        
+        // Limpiar listener al desmontar
+        onUnmounted(() => {
+          window.removeEventListener('resize', updateViewport)
+        })
+      }
     })
   }
 

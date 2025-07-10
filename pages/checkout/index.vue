@@ -394,7 +394,7 @@ definePageMeta({
 
 import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart'
-import { storeToRefs } from 'pinia'
+
 import { ref, onMounted, computed } from 'vue'
 import { useOrders } from '~/composables/useOrders'
 
@@ -411,8 +411,9 @@ const { createOrder, loading: orderLoading, error: orderError, clearError } = us
 const toggleMobileSummary = () => {
   mobileSummaryOpen.value = !mobileSummaryOpen.value;
 }
-const { cartItems, cartTotal } = storeToRefs(cartStore); // <-- agrega cartTotal aquí
-const { checkoutItems } = storeToRefs(cartStore)
+const cartItems = computed(() => cartStore.cartItems)
+const cartTotal = computed(() => cartStore.cartTotal)
+const checkoutItems = computed(() => cartStore.checkoutItems)
 
 function guardarDatos() {
   localStorage.setItem('checkoutInfo', JSON.stringify(form.value));

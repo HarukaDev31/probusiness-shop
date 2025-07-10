@@ -171,7 +171,6 @@ definePageMeta({
   middleware: ['cart-init']
 })
 
-import { storeToRefs } from 'pinia';
 import { ref, computed } from 'vue'
 import { useCartStore } from '~/stores/cart';
 
@@ -179,7 +178,9 @@ const { $formatPrice } = useNuxtApp();
 
 const router = useRouter(); 
 const cartStore = useCartStore();
-const { cartItems, cartTotal, cartItemCount } = storeToRefs(cartStore);
+const cartItems = computed(() => cartStore.cartItems)
+const cartTotal = computed(() => cartStore.cartTotal)
+const cartItemCount = computed(() => cartStore.cartItemCount)
 const selectedItems = computed(() => cartStore.cartItems.filter(item => cartStore.selectedIds.includes(item.id)))
 const selectedTotal = computed(() => selectedItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0))
 const showMinAlert = ref(false)

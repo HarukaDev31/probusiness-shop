@@ -65,12 +65,13 @@ definePageMeta({
   middleware: ['cart-init']
 })
 
-import { storeToRefs } from 'pinia';
+
 import { useCartStore } from '~/stores/cart';
 import orderService from '../../services/order-service';
 const router = useRouter();
 const cartStore = useCartStore();
-const { cartItems, cartTotal } = storeToRefs(cartStore);
+const cartItems = computed(() => cartStore.cartItems)
+const cartTotal = computed(() => cartStore.cartTotal)
 
 const getCartItemImage = (item) => {
   // Si hay media array y tiene elementos, usar la primera imagen

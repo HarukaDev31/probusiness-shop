@@ -69,11 +69,11 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { storeToRefs } from 'pinia';
+
 import { useCartStore } from '~/stores/cart';
 
 const cartStore = useCartStore();
-const { cartItemCount } = storeToRefs(cartStore);
+const cartItemCount = computed(() => cartStore.cartItemCount)
 const previewCart = ref(false);
 
 const cartItems = computed(() => cartStore.cartItems);
