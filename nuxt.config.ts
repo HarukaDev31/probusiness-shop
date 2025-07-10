@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/image',
   ],
+  // router: {
+  //   middleware: ['loading']
+  // },
   app: {
     head: {
       title: 'ProBusiness - Tienda Online | Productos de Importación',

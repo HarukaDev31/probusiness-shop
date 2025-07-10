@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen flex sm:flex-col-reverse md:flex-row justify-between items-center bg-gray-50 py-8 px-10"
+    <div class="min-h-screen flex sm:flex-col-reverse md:flex-row justify-between items-center bg-gray-50 py-4 sm:py-8 px-4 sm:px-10"
         style="background-image: url('https://intranet.probusiness.pe/assets/tienda/fondo_auth.webp'); background-size: cover; background-position: center;">
         <svg width="177" height="52" viewBox="0 0 177 52" fill="none" xmlns="http://www.w3.org/2000/svg"
             class="sm:self-center md:self-end sm:mt-4">
@@ -55,26 +55,26 @@
             </defs>
         </svg>
 
-        <div class="w-full max-w-md bg-white rounded-md shadow-lg p-8 ">
+        <div class="w-full max-w-md sm:max-w-lg md:max-w-md bg-white rounded-md shadow-lg p-6 sm:p-8 mx-4 sm:mx-0">
 
-            <h2 class="text-2xl font-semibold text-center mb-6 border-b border-gray-200 pb-4">Registrarme</h2>
-            <form @submit.prevent="handleRegister" class="space-y-5">
+            <h2 class="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6 border-b border-gray-200 pb-3 sm:pb-4">Registrarme</h2>
+            <form @submit.prevent="handleRegister" class="space-y-4 sm:space-y-5">
                 <div>
                     <label class="block text-gray-600 mb-1" for="nombre">Nombres</label>
                     <input id="nombre" v-model="registerData.nombre" type="text"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
+                        class="w-full px-4 py-3 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
                         placeholder="Ingresa tus nombres" required />
                 </div>
                 <div>
                     <label class="block text-gray-600 mb-1" for="apellido">Apellidos</label>
                     <input id="apellido" v-model="registerData.apellido" type="text"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
+                        class="w-full px-4 py-3 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
                         placeholder="Ingresa tus apellidos" required />
                 </div>
                 <div>
                     <label class="block text-gray-600 mb-1" for="email">Correo electrónico</label>
                     <input id="email" v-model="registerData.email" type="email"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
+                        class="w-full px-4 py-3 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
                         placeholder="correo@ejemplo.com" required />
                 </div>
                 <div>
@@ -87,7 +87,7 @@
                         </span>
                     </label>
                     <input id="whatsapp" v-model="registerData.whatsapp" type="tel"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
+                        class="w-full px-4 py-3 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
                         placeholder="+51 999 999 999" 
                         @input="registerData.whatsapp = formatWhatsApp($event.target.value)"
                         required />
@@ -96,10 +96,10 @@
                 <div class="relative">
                     <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
                     <input id="password" v-model="registerData.password" :type="showPassword ? 'text' : 'password'"
-                        class="w-full px-4 py-2 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
+                        class="w-full px-4 py-3 sm:py-2 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
                         placeholder="••••••••" required />
                     <button type="button" @click="showPassword = !showPassword"
-                        class="absolute right-3 top-8 text-gray-400 hover:text-gray-600">
+                        class="absolute right-3 top-10 sm:top-8 text-gray-400 hover:text-gray-600">
                         <svg v-if="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                         </svg>
@@ -111,31 +111,31 @@
                     <p class="text-xs text-gray-500 mt-1">(*) La contraseña debe tener al menos 6 caracteres.</p>
                 </div>
                 <button type="submit" :disabled="loading"
-                    class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold text-lg hover:bg-orange-600 transition disabled:opacity-60">
+                    class="w-full bg-orange-500 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg hover:bg-orange-600 transition disabled:opacity-60">
                     <span v-if="loading"
                         class="animate-spin h-5 w-5 mr-3 border-t-2 border-white rounded-full"></span>
                     Crear cuenta
                 </button>
             </form>
-            <div class="flex items-center my-6">
+            <div class="flex items-center my-4 sm:my-6">
                 <div class="flex-grow h-px bg-gray-200"></div>
-                <span class="mx-3 text-gray-400">o</span>
+                <span class="mx-3 text-gray-400 text-sm">o</span>
                 <div class="flex-grow h-px bg-gray-200"></div>
             </div>
             <!-- Registro -->
 
             <!-- add Al registrarte aceptas nuestra política de privacidad y términos y condiciones-->
-            <div class="text-xs text-center text-gray-500 mt-4 text-left">
+            <div class="text-xs text-center text-gray-500 mt-4 text-left px-2">
                 Al registrarte aceptas nuestra <a href="#" class="text-blue-600 underline">Política de Privacidad</a> y
                 los <a href="#" class="text-blue-600 underline">Términos y Condiciones</a>.
             </div>
-            <div class="flex items-center my-6">
+            <div class="flex items-center my-4 sm:my-6">
                 <div class="flex-grow h-px bg-gray-200"></div>
                 <span class="mx-3 text-xs text-gray-400">¿Ya tienes una cuenta?</span>
                 <div class="flex-grow h-px bg-gray-200"></div>
             </div>
             <div class="text-center">
-                <NuxtLink to="/login" class="text-red-500 font-semibold hover:underline">Iniciar sesión</NuxtLink>
+                <NuxtLink to="/login" class="text-red-500 font-semibold hover:underline py-2 px-4 block">Iniciar sesión</NuxtLink>
             </div>
        
             <!-- Modal de Recuperar Contraseña -->

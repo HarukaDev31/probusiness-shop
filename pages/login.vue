@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex sm:flex-col-reverse md:flex-row justify-between items-center bg-gray-50 py-8 px-10"
+  <div class="min-h-screen flex sm:flex-col-reverse md:flex-row justify-between items-center bg-gray-50 py-4 sm:py-8 px-4 sm:px-10"
     style="background-image: url('https://intranet.probusiness.pe/assets/tienda/fondo_auth.webp'); background-size: cover; background-position: center;">
     <svg width="177" height="52" viewBox="0 0 177 52" fill="none" xmlns="http://www.w3.org/2000/svg"
       class="sm:self-center md:self-end sm:mt-4">
@@ -55,22 +55,22 @@
       </defs>
     </svg>
 
-    <div class="w-full max-w-md bg-white rounded-md shadow-lg p-8 ">
+    <div class="w-full max-w-md sm:max-w-lg md:max-w-md bg-white rounded-md shadow-lg p-6 sm:p-8 mx-4 sm:mx-0">
 
-      <h2 class="text-2xl font-semibold text-center mb-6 border-b border-gray-200 pb-4">Iniciar sesión</h2>
-      <form @submit.prevent="handleLogin" class="space-y-5">
+      <h2 class="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6 border-b border-gray-200 pb-3 sm:pb-4">Iniciar sesión</h2>
+      <form @submit.prevent="handleLogin" class="space-y-4 sm:space-y-5">
         <div>
           <label class="block text-gray-600 mb-1" for="email">Correo</label>
           <input id="email" v-model="loginData.email" type="email"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
+            class="w-full px-4 py-3 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
             placeholder="correo@ejemplo.com" />
         </div>
         <div class="relative">
           <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
           <input id="password" v-model="loginData.password" :type="showPassword ? 'text' : 'password'"
-            class="w-full px-4 py-2 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9]"
+            class="w-full px-4 py-3 sm:py-2 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
             placeholder="••••••••" />
-          <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-8 text-gray-400 hover:text-gray-600">
+          <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-10 sm:top-8 text-gray-400 hover:text-gray-600">
             <svg v-if="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
             </svg>
@@ -86,7 +86,7 @@
           </div>
         </div>
         <button type="submit" :disabled="loginLoading"
-          class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold text-lg hover:bg-orange-600 transition disabled:opacity-60">
+          class="w-full bg-orange-500 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg hover:bg-orange-600 transition disabled:opacity-60">
           <span v-if="loginLoading" class="animate-spin h-5 w-5 mr-3 border-t-2 border-white rounded-full"></span>
           Ingresar
         </button>
@@ -94,22 +94,22 @@
         <div v-if="loginSuccess" class="text-green-500 text-sm text-center mt-2">¡Has iniciado sesión exitosamente!
         </div>
       </form>
-      <div class="flex items-center my-6">
+      <div class="flex items-center my-4 sm:my-6">
         <div class="flex-grow h-px bg-gray-200"></div>
-        <span class="mx-3 text-gray-400">o</span>
+        <span class="mx-3 text-gray-400 text-sm">o</span>
         <div class="flex-grow h-px bg-gray-200"></div>
       </div>
       <!-- Registro -->
-      <div class="text-center mb-6">
-        <span class="text-gray-600">¿Aún no tienes una cuenta?</span>
+      <div class="text-center mb-4 sm:mb-6">
+        <span class="text-gray-600 text-sm sm:text-base">¿Aún no tienes una cuenta?</span>
       </div>
       <div class="text-center">
         <button @click="goToRegister()"
-          class="ml-2 text-black-500 border w-full border-black rounded-lg px-4 py-2 font-semibold hover:underline">Registrarme</button>
+          class="ml-2 text-black-500 border w-full border-black rounded-lg px-4 py-3 sm:py-2 font-semibold hover:underline">Registrarme</button>
 
       </div>
       <!-- add Al registrarte aceptas nuestra política de privacidad y términos y condiciones-->
-      <div class="text-xs text-center text-gray-500 mt-4 text-left">
+      <div class="text-xs text-center text-gray-500 mt-4 text-left px-2">
         Al registrarte aceptas nuestra <a href="#" class="text-blue-600 underline">Política de Privacidad</a> y los <a
           href="#" class="text-blue-600 underline">Términos y Condiciones</a>.
       </div>

@@ -28,15 +28,15 @@ export const useSEO = () => {
   const setProductSEO = (product) => {
     if (!product) return
     
-    const title = `${product.name} | ProBusiness`
-    const description = product.description || `Compra ${product.name} al mejor precio. Envío a todo Perú.`
+    const title = `${product.nombre} | ProBusiness`
+    const description = product.description || `Compra ${product.nombre} al mejor precio. Envío a todo Perú.`
     const image = product.image || product.main_image_url || '/images/logo.png'
     const url = `https://tienda.probusiness.pe/product/${product.id}`
     
     setSEO({
       title,
       description,
-      keywords: `${product.name}, ${product.category_name || 'producto'}, importación, Perú`,
+      keywords: `${product.nombre}, ${product.category_name || 'producto'}, importación, Perú`,
       image,
       url,
       type: 'product'

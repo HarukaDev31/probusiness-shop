@@ -7,12 +7,8 @@
       <slot />
     </main>
     <Footer v-if="!hideFooter" />
-    <!-- Loader global con fade -->
-    <Transition name="fade">
-      <div v-if="isNavigating" class="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60 pointer-events-none">
-        <span class="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></span>
-      </div>
-    </Transition>
+    <!-- Loader global con logo -->
+    <GlobalLoader />
     
     <!-- Modal Global -->
     <GlobalModal 
@@ -26,34 +22,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useModal } from '~/composables/useModal'
 
-const isNavigating = ref(false)
-const router = useRouter()
 const route = useRoute()
 const modal = useModal()
+const loading = useLoadingStore()
 
 // Ocultar footer en carrito y checkout
 const hideFooter = computed(() => {
   const currentPath = route.path
   return currentPath === '/cart' || currentPath.startsWith('/checkout')
-})
-
-let start, end
-onMounted(() => {
-  start = router.beforeEach((to, from, next) => {
-    isNavigating.value = true
-    next()
-  })
-  end = router.afterEach(() => {
-    isNavigating.value = false
-  })
-})
-onUnmounted(() => {
-  if (start) start()
-  if (end) end()
 })
 </script>
 
