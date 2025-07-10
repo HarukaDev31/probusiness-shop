@@ -336,7 +336,7 @@
         </svg>
       </div>
       <h2 class="text-2xl font-bold mb-2">¡Pedido confirmado!</h2>
-      <div class="font-semibold mb-2">Nº Pedido: 25JUN0001</div>
+      <div class="font-semibold mb-2">Nº Pedido: {{ orderNumber }}</div>
       <p class="text-gray-600 mb-2">
         Nuestro equipo de Pro Business se pondrá en contacto con usted a la brevedad posible.<br>
         <br>
@@ -437,6 +437,7 @@ function goToProduct(productId) {
 
 const showMinAlert = ref(false)
 const showSuccess = ref(false)
+const orderNumber = ref('')
 
 const provinciasData = [
   {
@@ -515,6 +516,8 @@ async function handlePedido() {
     const result = await createOrder(form.value, cartItems.value, cartTotal.value)
 
     if (result.success) {
+      // Guardar el número de pedido que devuelve el backend
+      orderNumber.value = result.data.orderNumber || result.data.order_number || 'N/A';
       // Limpiar el carrito después de un pedido exitoso
       cartStore.clearCart();
       showSuccess.value = true;
