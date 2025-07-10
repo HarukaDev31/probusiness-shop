@@ -1,4 +1,4 @@
-import { ref, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 export const useScreenSize = () => {
   const isMobile = ref(false)
@@ -20,10 +20,9 @@ export const useScreenSize = () => {
     }
   }
 
-  // Inicializar en el cliente
+  // Solo inicializar en el cliente usando onMounted
   if (process.client) {
-    // Usar nextTick para asegurar que el DOM esté listo
-    nextTick(() => {
+    onMounted(() => {
       updateViewport()
       
       // Escuchar cambios de tamaño de ventana
