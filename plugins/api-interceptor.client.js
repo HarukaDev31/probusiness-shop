@@ -3,15 +3,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   let userStore
   let router
   
-  // Esperar a que la app esté montada para acceder a los stores
-  nuxtApp.hook('app:mounted', () => {
+  // Solo inicializar en el cliente
+  if (process.client) {
     try {
       userStore = useUserStore()
       router = useRouter()
     } catch (error) {
       console.warn('Stores not available:', error)
     }
-  })
+  }
 
   // Función para manejar errores 401
   const handleUnauthorized = () => {
