@@ -268,7 +268,7 @@ class OrderService {
   }
 
   /**
-   * Generar número de pedido único
+   * Generar número de pedido único (DEPRECATED - Usar orderNumber del backend)
    * @returns {string} Número de pedido generado
    */
   generateOrderNumber() {
@@ -310,7 +310,6 @@ class OrderService {
           image: item.image
         })),
         total: cartTotal,
-        orderNumber: this.generateOrderNumber(),
         orderDate: new Date().toISOString(),
         status: 'pending'
       },
