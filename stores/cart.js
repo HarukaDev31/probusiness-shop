@@ -122,21 +122,5 @@ export const useCartStore = defineStore('cart', {
 
     // getter
   },
-  persist: {
-    key: 'cart-storage',
-    storage: process.client ? localStorage : null,
-    paths: ['items', 'selectedIds', 'checkoutItems'],
-    beforeRestore: (context) => {
-      // Validar que los datos sean válidos antes de restaurar
-      if (context.store.items && !Array.isArray(context.store.items)) {
-        context.store.items = []
-      }
-      if (context.store.selectedIds && !Array.isArray(context.store.selectedIds)) {
-        context.store.selectedIds = []
-      }
-      if (context.store.checkoutItems && !Array.isArray(context.store.checkoutItems)) {
-        context.store.checkoutItems = []
-      }
-    }
-  }
+  persist: false
 });
