@@ -100,6 +100,7 @@
                 </p>
               </div>
               <div class="flex gap-2">
+                <!--
                 <button @click="viewOrderDetails(order.id)"
                   class="px-4 py-2 text-[#FF5000] border border-[#FF5000] rounded hover:bg-[#FF5000] hover:text-white transition">
                   Ver detalles
@@ -107,7 +108,7 @@
                 <button v-if="order.status === 'pending'" @click="cancelOrder(order.id)"
                   class="px-4 py-2 text-red-600 border border-red-600 rounded hover:bg-red-600 hover:text-white transition">
                   Cancelar
-                </button>
+                </button>-->
               </div>
             </div>
           </div>
@@ -159,8 +160,8 @@ async function loadOrders() {
 
   try {
     const result = await getCustomerOrders()
-    console.log(result)
-    orders.value = result.data
+    console.log(result.data.data)
+    orders.value = result.data.data
 
     if (!result.success) {
       console.error('Error al cargar pedidos:', result.message)

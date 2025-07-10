@@ -218,7 +218,7 @@ const registerData = ref({
   email: '',
   password: ''
 })
-
+const {showError} = useModal()
 const showForgot = ref(false)
 const forgotEmail = ref('')
 const forgotSuccess = ref(false)
@@ -241,7 +241,7 @@ async function handleRegister() {
       closeRegister()
     }, 2000)
   } catch (error) {
-    alert(error.message || 'Error al registrar usuario')
+    showError(error.message || 'Error al registrar usuario')
   } finally {
     loading.value = false
   }
@@ -280,9 +280,11 @@ const handleLogin = async () => {
       }, 2000)
     } else {
       loginError.value = data.message || 'Credenciales incorrectas'
+      showError(loginError.value||'Credenciales incorrectas')
     }
   } catch (error) {
     loginError.value = error.message || 'Error de conexión con el servidor'
+    showError(loginError.value||'Error de conexión con el servidor')
   } finally {
     loginLoading.value = false
   }

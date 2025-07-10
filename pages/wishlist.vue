@@ -2,9 +2,40 @@
   <div class="min-h-screen bg-[#f5f8fb]">
     <div class="container-custom py-8">
       <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">Mi Lista de Deseos</h1>
-        <p class="text-gray-600">Guarda tus productos favoritos para comprarlos más tarde</p>
+      <div class="mb-8 flex flex-row items-center justify-between">
+        <div class="flex items-center gap-3">
+          <h1 class="text-3xl font-bold text-gray-800">Lista de deseos</h1>
+          <Icon name="heroicons:heart" class="w-8 h-8 " />
+        </div>
+
+        <!-- Controles de vista -->
+        <div v-if="wishlistItems.length > 0" class="flex items-center gap-4">
+          <span class="text-gray-500 text-sm">Ver</span>
+          <div class="flex items-center bg-gray-100 rounded-lg p-1">
+            <button @click="viewMode = 'grid'"
+              :class="viewMode === 'grid' ? 'bg-white shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+              class="p-2 rounded-md transition-all duration-200" title="Vista de cuadrícula">
+              <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="4.09091" height="4.09091" rx="0.818182" :fill="viewMode === 'grid' ? '#FF500B' : '#7E7E7E'" />
+                <rect y="4.9082" width="4.09091" height="4.09091" rx="0.818182" :fill="viewMode === 'grid' ? '#FF500B' : '#7E7E7E'" />
+                <rect x="4.90918" width="4.09091" height="4.09091" rx="0.818182" :fill="viewMode === 'grid' ? '#FF500B' : '#7E7E7E'" />
+                <rect x="4.90918" y="4.9082" width="4.09091" height="4.09091" rx="0.818182" :fill="viewMode === 'grid' ? '#FF500B' : '#7E7E7E'" />
+              </svg>
+            </button>
+            <button @click="viewMode = 'list'"
+              :class="viewMode === 'list' ? 'bg-white shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+              class="p-2 rounded-md transition-all duration-200" title="Vista de lista">
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" width="9" height="2" rx="1" :fill="viewMode === 'list' ? '#FF500B' : '#7E7E7E'" />
+                <rect width="2" height="2" rx="1" :fill="viewMode === 'list' ? '#FF500B' : '#7E7E7E'" />
+                <rect y="3" width="2" height="2" rx="1" :fill="viewMode === 'list' ? '#FF500B' : '#7E7E7E'" />
+                <rect y="6" width="2" height="2" rx="1" :fill="viewMode === 'list' ? '#FF500B' : '#7E7E7E'" />
+                <rect x="3" y="3" width="9" height="2" rx="1" :fill="viewMode === 'list' ? '#FF500B' : '#7E7E7E'" />
+                <rect x="3" y="6" width="9" height="2" rx="1" :fill="viewMode === 'list' ? '#FF500B' : '#7E7E7E'" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Loading state -->
@@ -28,8 +59,8 @@
         </NuxtLink>
       </div>
 
-      <!-- Wishlist items -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Wishlist items - Vista GRID -->
+      <div v-else-if="viewMode === 'grid'" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         <div 
           v-for="item in wishlistItems" 
           :key="item.id" 
@@ -37,7 +68,7 @@
         >
           <!-- Product image -->
           <div class="relative">
-            <NuxtLink :to="`/product/${item.id}`">
+            <NuxtLink :to="`/product/${item?.product?.id}`">
               <img 
                 :src="item.product?.main_image_url || '/images/logo.png'" 
                 :alt="item.product?.nombre"
@@ -57,38 +88,71 @@
 
           <!-- Product info -->
           <div class="p-4">
-            <NuxtLink :to="`/product/${item.id}`">
+            <NuxtLink :to="`/product/${item?.product?.id}`">
               <h3 class="font-semibold text-gray-800 mb-2 line-clamp-2 hover:text-[#FF5000] transition-colors">
                 {{ item.product?.nombre }}
               </h3>
             </NuxtLink>
             
             <div class="flex items-center justify-between mb-3">
-              <span class="text-xl font-bold text-gray-800">{{ $formatPrice(item.price) }}</span>
+              <span class="text-xl font-bold text-gray-800">{{ $formatPrice(getPrecioPuestoEnPeru(item?.product)) }}</span>
             </div>
 
-            <!-- Action buttons -->
-            <div class="flex gap-2">
+            <!-- MOQ info -->
+            <div class="text-sm text-gray-500 mb-3">
+              Orden mínima: {{ getMinimumOrderQuantity(item.product) || 1 }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wishlist items - Vista LISTA -->
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div 
+          v-for="item in wishlistItems" 
+          :key="item.id" 
+          class="bg-white rounded-lg shadow-sm border p-4 flex items-center gap-4"
+        >
+          <!-- Product image -->
+          <div class="relative">
+            <NuxtLink :to="`/product/${item?.product?.id}`">
+              <img 
+                :src="item.product?.main_image_url || '/images/logo.png'" 
+                :alt="item.product?.nombre"
+                class="w-20 h-20 object-cover rounded-lg"
+              />
+            </NuxtLink>
+          </div>
+
+          <!-- Product info -->
+          <div class="flex-1">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <NuxtLink :to="`/product/${item.id}`">
+                  <h3 class="font-semibold text-gray-800 mb-2 hover:text-[#FF5000] transition-colors">
+                    {{ item.product?.nombre }}
+                  </h3>
+                </NuxtLink>
+                
+                <div class="flex flex-col gap-1">
+                  <span class="text-xl font-bold text-gray-800">{{ $formatPrice(getPrecioPuestoEnPeru(item?.product)) }}</span>
+                  <span class="text-sm text-gray-500">Orden mínima: {{ getMinimumOrderQuantity(item.product) || 1 }}</span>
+                </div>
+              </div>
+
+              <!-- Remove from wishlist button -->
               <button 
-                @click="addToCart(item)"
-                class="flex-1 bg-[#FF5000] text-white py-2 px-4 rounded-lg font-semibold hover:bg-[#e04a00] transition-colors"
+                @click="removeFromWishlist(item.id)"
+                class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-50 transition-colors"
+                title="Remover de lista de deseos"
               >
-                Agregar al carrito
+                <Icon name="heroicons:x-mark" class="w-4 h-4 text-gray-600" />
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Clear all button -->
-      <div v-if="wishlistItems.length > 0" class="mt-8 text-center">
-        <button 
-          @click="clearWishlist"
-          class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          Limpiar lista de deseos
-        </button>
-      </div>
     </div>
   </div>
 </template>
@@ -96,17 +160,60 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useWishlistStore } from '~/stores/wishlist'
-import { useCartStore } from '~/stores/cart'
 
 // Middleware de autenticación
 definePageMeta({
   middleware: 'auth'
 })
+
 const { $formatPrice } = useNuxtApp();
 const wishlistStore = useWishlistStore()
-const cartStore = useCartStore()
 
 const { items: wishlistItems, loading } = storeToRefs(wishlistStore)
+const viewMode = ref('grid')
+const getPrecioPuestoEnPeru = (product) => {
+  console.log(product);
+  const precios = JSON.parse(product.prices_range || '[]');
+  console.log(precios);
+  const minPrice = precios[0].price;
+  return minPrice;
+};
+// Función para obtener el MOQ (Minimum Order Quantity)
+function getMinimumOrderQuantity(product) {
+  try {
+    const prices = JSON.parse(product.prices_range || '[]');
+    if (!prices.length) return 1;
+    let minQty = Infinity;
+    for (const price of prices) {
+      const quantityRange = price.quantity.trim();
+      // Caso 1: Rango "20 - 59 conjuntos"
+      const rangeMatch = quantityRange.match(/^(\d+)\s*-\s*(\d+)/);
+      if (rangeMatch) {
+        const start = parseInt(rangeMatch[1]);
+        if (start < minQty) minQty = start;
+        continue;
+      }
+      // Caso 2: Mínimo ">= 180 conjuntos"
+      const minMatch = quantityRange.match(/^>=\s*(\d+)/);
+      if (minMatch) {
+        const start = parseInt(minMatch[1]);
+        if (start < minQty) minQty = start;
+        continue;
+      }
+      // Caso 3: Cantidad fija "100 conjuntos"
+      const fixedMatch = quantityRange.match(/^(\d+)/);
+      if (fixedMatch) {
+        const start = parseInt(fixedMatch[1]);
+        if (start < minQty) minQty = start;
+        continue;
+      }
+    }
+    return isFinite(minQty) ? minQty : 1;
+  } catch (error) {
+    console.error('Error calculating minimum order quantity:', error);
+    return 1;
+  }
+}
 
 // Cargar lista de deseos al montar el componente
 onMounted(async () => {
@@ -126,33 +233,6 @@ const removeFromWishlist = async (productId) => {
   }
 }
 
-// Función para agregar al carrito
-const addToCart = (item) => {
-  cartStore.addItem({
-    id: item.id,
-    name: item.name,
-    price: item.price,
-    quantity: 1,
-    image: item.image
-  })
-  
-  // Opcional: remover de lista de deseos después de agregar al carrito
-  // removeFromWishlist(item.id)
-}
-
-// Función para limpiar toda la lista
-const clearWishlist = async () => {
-  if (confirm('¿Estás seguro de que quieres limpiar toda tu lista de deseos?')) {
-    try {
-      const success = await wishlistStore.clearWishlist()
-      if (success) {
-        console.log('Lista de deseos limpiada')
-      }
-    } catch (error) {
-      console.error('Error al limpiar lista de deseos:', error)
-    }
-  }
-}
 </script>
 
 <style scoped>

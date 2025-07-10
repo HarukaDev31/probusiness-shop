@@ -15,16 +15,25 @@
     </Transition>
     
     <!-- Modal Global -->
-    <GlobalModal />
+    <GlobalModal 
+      :is-open="modal.isOpen.value" 
+      :modal-config="modal.modalConfig.value"
+      @confirm="modal.confirm"
+      @cancel="modal.cancel"
+      @hide="modal.hideModal"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useModal } from '~/composables/useModal'
+
 const isNavigating = ref(false)
 const router = useRouter()
 const route = useRoute()
+const modal = useModal()
 
 // Ocultar footer en carrito y checkout
 const hideFooter = computed(() => {

@@ -13,15 +13,25 @@
       </Transition>
       
       <!-- Modal Global -->
-      <GlobalModal />
+      <GlobalModal 
+        :is-open="modal.isOpen.value" 
+        :modal-config="modal.modalConfig.value"
+        @confirm="modal.confirm"
+        @cancel="modal.cancel"
+        @hide="modal.hideModal"
+      />
     </div>
   </template>
   
   <script setup>
   import { ref, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useModal } from '~/composables/useModal'
+  
   const isNavigating = ref(false)
   const router = useRouter()
+  const modal = useModal()
+  
   let start, end
   onMounted(() => {
     start = router.beforeEach((to, from, next) => {

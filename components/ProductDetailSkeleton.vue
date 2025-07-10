@@ -16,7 +16,7 @@
           <div class="flex flex-col space-y-4 relative">
             <div class="relative max-h-[25em] flex justify-center">
               <!-- Thumbnails skeleton -->
-              <div class="flex flex-col space-y-4 max-h-[25em] overflow-y-auto scrollbar-hide pt-8 pb-8">
+              <div class="flex flex-col space-y-4 max-h-[25em]  pt-8 pb-8">
                 <div v-for="i in 5" :key="i" class="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-md animate-pulse"></div>
               </div>
             </div>

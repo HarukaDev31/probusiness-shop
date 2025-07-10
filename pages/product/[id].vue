@@ -15,7 +15,9 @@
         <!-- Columna galería + nombre -->
         <div class="col-span-12 md:col-span-6">
           <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-4">{{ product.nombre }}</h1>
-          <div class="flex flex-row">
+          
+          <!-- Vista Desktop -->
+          <div class="hidden md:flex flex-row">
             <!-- Imágenes laterales -->
             <div class="flex flex-col space-y-4 relative">
               <div class="relative max-h-[25em] flex justify-center">
@@ -125,16 +127,74 @@
               </button>
             </div>
           </div>
+
+          <!-- Vista Mobile -->
+          <div class="md:hidden">
+            <!-- Slider principal -->
+            <div class="relative bg-white rounded-lg shadow-md overflow-hidden">
+              <div class="w-full h-64 relative flex items-center justify-center">
+                <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
+                  class="object-cover w-full h-full" />
+                <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
+                  <video :src="activeMedia.url" :alt="product.nombre"
+                    class="object-cover w-full h-full" autoplay muted loop
+                    controls preload="metadata" @error="handleVideoError" @loadstart="handleVideoLoadStart"
+                    crossorigin="anonymous">
+                    <source :src="activeMedia.url" type="video/mp4">
+                    Tu navegador no soporta el elemento de video.
+                  </video>
+                  <!-- Loading state -->
+                  <div v-if="videoLoading"
+                    class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                    <div class="text-center p-4">
+                      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                      <p class="text-gray-600 text-sm">Cargando video...</p>
+                    </div>
+                  </div>
+
+                  <!-- Fallback para videos bloqueados -->
+                  <div v-if="videoError"
+                    class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                    <div class="text-center p-4">
+                      <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                      </svg>
+                      <p class="text-gray-600 text-sm">Video no disponible</p>
+                      <p class="text-gray-400 text-xs mt-1">El contenido está protegido por Alibaba</p>
+                      <button @click="loadVideo(activeMedia.url)"
+                        class="mt-2 px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary-dark transition">
+                        Reintentar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Contador y Wishlist en la parte inferior -->
+              <div class="absolute bottom-4 left-0 right-0 flex justify-between items-center px-4">
+                <!-- Contador de imágenes -->
+                <div class="bg-black/50 text-white px-2 py-1 rounded text-sm">
+                  {{ activeMediaIndex + 1 }} / {{ mediaItems.length }}
+                </div>
+                
+                <!-- Corazón favoritos -->
+                <WishlistButton :product="product" />
+              </div>
+            </div>
+          </div>
         </div>
         <!-- Panel derecho -->
         <div class="bg-white rounded-lg shadow-md p-6 col-span-12 md:col-span-6">
           <h5 class="text-2xl font-bold text-gray-800 mb-4">Cantidades</h5>
           <!-- Tabla de precios horizontal -->
           <div v-if="product.prices_range && product.prices_range.length > 0" class="my-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+            <div class="flex overflow-x-auto gap-4 pt-4 pb-2">
               <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity"
-                class="flex flex-col items-center">
-                <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
+                class="flex flex-col items-center flex-shrink-0 min-w-[120px]">
+                <div class="text-xs text-gray-500 mb-1 text-center break-words">{{ price.quantity }}</div>
                 <div class="text-2xl font-bold text-gray-800">{{ $formatPrice(price.price) }}</div>
               </div>
             </div>
@@ -160,10 +220,10 @@
 
               <div class="mb-4">
                 <h3 class="font-semibold mb-2">Cantidades</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div class="flex overflow-x-auto gap-4 pb-2">
                   <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity"
-                    class="flex flex-col items-center">
-                    <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
+                    class="flex flex-col items-center flex-shrink-0 min-w-[120px]">
+                    <div class="text-xs text-gray-500 mb-1 text-center break-words">{{ price.quantity }}</div>
                     <div class="text-lg font-bold text-gray-800">{{ $formatPrice(price.price) }}</div>
                   </div>
                 </div>
@@ -211,10 +271,10 @@
 
               <div class="mb-4">
                 <h3 class="font-semibold mb-2">Cantidades</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div class="flex overflow-x-auto gap-4 pb-2">
                   <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity"
-                    class="flex flex-col items-center">
-                    <div class="text-xs text-gray-500 mb-1 whitespace-nowrap">{{ price.quantity }}</div>
+                    class="flex flex-col items-center flex-shrink-0 min-w-[120px]">
+                    <div class="text-xs text-gray-500 mb-1 text-center break-words">{{ price.quantity }}</div>
                     <div class="text-lg font-bold text-gray-800">{{ $formatPrice(price.price) }}</div>
                   </div>
                 </div>
@@ -302,11 +362,11 @@
       <!-- Related Products -->
       <div class="mt-16">
         <h2 class="text-2xl font-bold mb-6">Otras Recomendaciones para tu negocio</h2>
-        <Swiper :modules="[Navigation]" :slides-per-view="4" :space-between="16" :breakpoints="{
-          640: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
-          1280: { slidesPerView: 4 }
-        }" navigation class="!pb-10">
+        <Swiper :modules="[Navigation]" :slides-per-view="2" :space-between="16" :breakpoints="{
+          640: { slidesPerView: 2, navigation: false },
+          1024: { slidesPerView: 3, navigation: false },
+          1280: { slidesPerView: 4, navigation: true }
+        }" :navigation="false" class="!pb-10">
           <SwiperSlide v-for="relatedProduct in relatedProducts" :key="relatedProduct.id">
             <ProductCard :product="relatedProduct" />
           </SwiperSlide>

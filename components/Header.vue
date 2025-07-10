@@ -43,7 +43,9 @@
                 d="M15.0406 15.4202C18.6416 15.4202 21.5609 12.4361 21.5609 8.75504C21.5609 5.07395 18.6416 2.08984 15.0406 2.08984C11.4395 2.08984 8.52026 5.07395 8.52026 8.75504C8.52026 12.4361 11.4395 15.4202 15.0406 15.4202Z"
                 stroke="#272A30" stroke-width="2.60812" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <span class="font-medium">{{ userName ? userName : 'Iniciar sesión' }}</span>
+            <span class="font-medium"
+            @click="userName ? '' : $router.push('/login')"
+            >{{ userName ? userName : 'Iniciar sesión' }}</span>
           </div>
 
           <!-- Categorías desplegable -->

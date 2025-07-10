@@ -1,18 +1,19 @@
 import { ref } from 'vue'
 
-export const useModal = () => {
-  const isOpen = ref(false)
-  const modalConfig = ref({
-    title: '',
-    message: '',
-    type: 'info', // 'success', 'error', 'warning', 'info'
-    confirmText: 'Aceptar',
-    cancelText: 'Cancelar',
-    showCancel: false,
-    onConfirm: null,
-    onCancel: null
-  })
+// Estado global del modal
+const isOpen = ref(false)
+const modalConfig = ref({
+  title: '',
+  message: '',
+  type: 'info',
+  confirmText: 'Aceptar',
+  cancelText: 'Cancelar',
+  showCancel: false,
+  onConfirm: null,
+  onCancel: null
+})
 
+export const useModal = () => {
   const showModal = (config) => {
     modalConfig.value = {
       ...modalConfig.value,
@@ -39,7 +40,6 @@ export const useModal = () => {
     hideModal()
   }
 
-  // Métodos de conveniencia para diferentes tipos de alertas
   const showSuccess = (message, title = 'Éxito') => {
     showModal({
       title,
