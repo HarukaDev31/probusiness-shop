@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@nuxt/icon',
+    '@nuxt/image',
   ],
   app: {
     head: {
