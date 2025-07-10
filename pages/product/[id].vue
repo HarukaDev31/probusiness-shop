@@ -132,7 +132,10 @@
           <div class="md:hidden">
             <!-- Slider principal -->
             <div class="relative bg-white rounded-lg shadow-md overflow-hidden">
-              <div class="w-full h-64 relative flex items-center justify-center">
+              <div class="w-full h-64 relative flex items-center justify-center"
+                   @touchstart="handleTouchStart"
+                   @touchmove="handleTouchMove"
+                   @touchend="handleTouchEnd">
                 <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
                   class="object-cover w-full h-full" />
                 <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
@@ -184,6 +187,8 @@
                 <WishlistButton :product="product" />
               </div>
             </div>
+            
+
           </div>
         </div>
         <!-- Panel derecho -->
@@ -599,6 +604,13 @@ const thumbnailContainer = ref(null);
 const autoScrollInterval = ref(null);
 const isScrollingUp = ref(false);
 const isScrollingDown = ref(false);
+
+// Variables para el swipe en mobile
+const touchStartX = ref(0);
+const touchStartY = ref(0);
+const touchEndX = ref(0);
+const touchEndY = ref(0);
+const minSwipeDistance = 50; // Distancia mínima para considerar un swipe
 const cleanHtmlContent = (htmlString) => {
   if (!htmlString) return '';
 
@@ -764,6 +776,39 @@ const handleScroll = () => {
   if (autoScrollInterval.value) {
     stopAutoScroll();
   }
+};
+
+// Funciones para el swipe en mobile
+const handleTouchStart = (event) => {
+  touchStartX.value = event.touches[0].clientX;
+  touchStartY.value = event.touches[0].clientY;
+};
+
+const handleTouchMove = (event) => {
+  touchEndX.value = event.touches[0].clientX;
+  touchEndY.value = event.touches[0].clientY;
+};
+
+const handleTouchEnd = () => {
+  if (!touchStartX.value || !touchEndX.value) return;
+  
+  const distanceX = touchStartX.value - touchEndX.value;
+  const distanceY = Math.abs(touchStartY.value - touchEndY.value);
+  
+  // Verificar que el swipe sea más horizontal que vertical
+  if (Math.abs(distanceX) > distanceY && Math.abs(distanceX) > minSwipeDistance) {
+    if (distanceX > 0) {
+      // Swipe hacia la izquierda - siguiente imagen
+      nextMedia();
+    } else {
+      // Swipe hacia la derecha - imagen anterior
+      prevMedia();
+    }
+  }
+  
+  // Resetear valores
+  touchStartX.value = 0;
+  touchEndX.value = 0;
 };
 
 // Debe estar en el scope superior para ser accesible en todo el componente
