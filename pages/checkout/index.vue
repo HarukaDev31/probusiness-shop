@@ -388,6 +388,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: ['cart-init']
+})
+
 import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart'
 import { storeToRefs } from 'pinia'

@@ -61,6 +61,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: ['cart-init']
+})
+
 import { storeToRefs } from 'pinia';
 import { useCartStore } from '~/stores/cart';
 import orderService from '../../services/order-service';

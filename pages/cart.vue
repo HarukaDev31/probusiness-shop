@@ -167,6 +167,10 @@
 
 
 <script setup>
+definePageMeta({
+  middleware: ['cart-init']
+})
+
 import { storeToRefs } from 'pinia';
 import { ref, computed } from 'vue'
 import { useCartStore } from '~/stores/cart';
