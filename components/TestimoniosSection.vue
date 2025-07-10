@@ -13,7 +13,17 @@
               :src="testimonio.thumbnail"
               :alt="testimonio.nombre"
               class="object-cover w-full h-full"
+              @error="handleImageError"
+              @load="handleImageLoad"
             />
+            <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+              <div class="text-gray-500 text-center">
+                <svg class="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                </svg>
+                <p class="text-sm">{{ testimonio.nombre }}</p>
+              </div>
+            </div>
             <button
               class="absolute inset-0 flex items-center justify-center focus:outline-none"
               @click="openModal(testimonio.tiktokUrl)"
@@ -59,7 +69,7 @@ const testimonios = [
   {
     id: 2,
     nombre: 'IMPORTADOR ARIEL MEDINA',
-    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/ocPZlilDABqllAyBIRaiEFYEEA8AMtxAZAPBW~tplv-photomode-zoomcover:720:720.avif?dr=14555&x-expires=1751724000&x-signature=SNhWZ5UTwTAZIBV3nPzbea%2BfQ1U%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva&ftpl=1 1x, https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/ocPZlilDABqllAyBIRaiEFYEEA8AMtxAZAPBW~tplv-photomode-zoomcover:720:720.avif?dr=14555&x-expires=1751724000&x-signature=SNhWZ5UTwTAZIBV3nPzbea%2BfQ1U%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva&ftpl=1 2x',
+    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/ocPZlilDABqllAyBIRaiEFYEEA8AMtxAZAPBW~tplv-photomode-zoomcover:720:720.avif?dr=14555&x-expires=1751724000&x-signature=SNhWZ5UTwTAZIBV3nPzbea%2BfQ1U%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7501137755292962056'
   },
   {
@@ -85,14 +95,25 @@ const testimonios = [
 
 const showModal = ref(false);
 const modalTiktokUrl = ref('');
+const imageLoaded = ref(false);
 
 function openModal(url) {
   modalTiktokUrl.value = url;
   showModal.value = true;
 }
+
 function closeModal() {
   showModal.value = false;
   modalTiktokUrl.value = '';
+}
+
+function handleImageError(event) {
+  console.error('Error loading image:', event.target.src);
+  imageLoaded.value = false;
+}
+
+function handleImageLoad() {
+  imageLoaded.value = true;
 }
 </script>
 
