@@ -2,7 +2,11 @@ import { defineNuxtPlugin } from '#app'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  if (nuxtApp.$pinia) {
-    nuxtApp.$pinia.use(piniaPluginPersistedstate)
+  try {
+    if (nuxtApp.$pinia && typeof nuxtApp.$pinia.use === 'function') {
+      nuxtApp.$pinia.use(piniaPluginPersistedstate)
+    }
+  } catch (error) {
+    console.warn('Pinia plugin not available:', error)
   }
 })

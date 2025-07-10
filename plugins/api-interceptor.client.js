@@ -1,18 +1,36 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const { $modal } = nuxtApp
-  const userStore = useUserStore()
-  const router = useRouter()
+  let userStore
+  let router
+  
+  try {
+    userStore = useUserStore()
+    router = useRouter()
+  } catch (error) {
+    console.warn('Stores not available during SSR:', error)
+    return
+  }
 
   // Función para manejar errores 401
   const handleUnauthorized = () => {
-    // Limpiar datos del usuario
-    userStore.logout()
-    
-    // Mostrar mensaje al usuario
-    $modal.showWarning('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', 'Sesión Expirada')
-    
-    // Redirigir al login
-    router.push('/login')
+    try {
+      // Limpiar datos del usuario
+      if (userStore && typeof userStore.logout === 'function') {
+        userStore.logout()
+      }
+      
+      // Mostrar mensaje al usuario
+      if ($modal && typeof $modal.showWarning === 'function') {
+        $modal.showWarning('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', 'Sesión Expirada')
+      }
+      
+      // Redirigir al login
+      if (router && typeof router.push === 'function') {
+        router.push('/login')
+      }
+    } catch (error) {
+      console.warn('Error handling unauthorized:', error)
+    }
   }
 
   // Interceptar fetch globalmente
