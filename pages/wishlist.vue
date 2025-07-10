@@ -158,7 +158,7 @@
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia'
+
 import { useWishlistStore } from '~/stores/wishlist'
 
 // Middleware de autenticación
@@ -169,7 +169,8 @@ definePageMeta({
 const { $formatPrice } = useNuxtApp();
 const wishlistStore = useWishlistStore()
 
-const { items: wishlistItems, loading } = storeToRefs(wishlistStore)
+const wishlistItems = computed(() => wishlistStore.items)
+const loading = computed(() => wishlistStore.loading)
 const viewMode = ref('grid')
 const getPrecioPuestoEnPeru = (product) => {
   console.log(product);

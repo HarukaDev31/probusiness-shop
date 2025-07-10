@@ -395,7 +395,7 @@
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia';
+
 import { useCategoryStore } from '~/stores/category';
 import { useUserStore } from '~/stores/user'
 import { useWishlistStore } from '~/stores/wishlist'
@@ -404,10 +404,10 @@ import { useRouter } from 'vue-router'
 import { useScreenSize } from '~/composables/useScreenSize';
 const { isMobile, isTablet, isDesktop } = useScreenSize();
 const categoryStore = useCategoryStore();
-const { categories } = storeToRefs(categoryStore);
+const categories = computed(() => categoryStore.categories)
 const userStore = useUserStore()
 const wishlistStore = useWishlistStore();
-const { wishlistCount } = storeToRefs(wishlistStore);
+const wishlistCount = computed(() => wishlistStore.wishlistCount)
 onMounted(() => {
   userStore.syncFromLocalStorage()
   window.addEventListener('storage', userStore.syncFromLocalStorage)

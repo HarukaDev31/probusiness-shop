@@ -19,11 +19,11 @@
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia';
+
 import { useCategoryStore } from '~/stores/category';
 
 const categoryStore = useCategoryStore();
-const { categories } = storeToRefs(categoryStore);
+const categories = computed(() => categoryStore.categories)
 
 const currentYear = computed(() => new Date().getFullYear());
 

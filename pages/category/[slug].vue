@@ -129,7 +129,7 @@
   </template>
 
 <script setup>
-import { storeToRefs } from 'pinia';
+
 import { useCategoryStore } from '~/stores/category';
 import { useProductStore } from '~/stores/product';
 
@@ -176,8 +176,8 @@ const slug = route.params.slug;
 const categoryStore = useCategoryStore();
 const productStore = useProductStore();
 
-const { categories } = storeToRefs(categoryStore);
-const { products } = storeToRefs(productStore);
+const categories = computed(() => categoryStore.categories)
+const products = computed(() => productStore.products)
 const loading = ref(true);
 const loadingMore = ref(false);
 const viewMode = ref('grid');

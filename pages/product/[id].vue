@@ -494,7 +494,7 @@ const goToCart = ref(false)
 const productStore = useProductStore();
 const cartStore = useCartStore();
 
-const { products } = storeToRefs(productStore);
+const products = computed(() => productStore.products)
 const loading = ref(true);
 const quantity = ref(1);
 const currentMainImage = ref('');

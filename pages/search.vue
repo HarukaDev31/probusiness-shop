@@ -42,14 +42,14 @@
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia';
+
 import { useProductStore } from '~/stores/product';
 
 const route = useRoute();
 const searchQuery = computed(() => route.query.q || '');
 
 const productStore = useProductStore();
-const { products } = storeToRefs(productStore);
+const products = computed(() => productStore.products)
 const loading = ref(true);
 const loadingMore = ref(false);
 const searchResults = computed(() => {

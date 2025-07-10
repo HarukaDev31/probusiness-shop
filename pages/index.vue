@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia';
+
 import { onUnmounted } from 'vue';
 import { useCategoryStore } from '~/stores/category';
 import { useProductStore } from '~/stores/product';
@@ -38,8 +38,8 @@ import ImportadoresSection from '~/components/ImportadoresSection.vue';
 
 const categoryStore = useCategoryStore();
 const productStore = useProductStore();
-const { categories } = storeToRefs(categoryStore);
-const { products } = storeToRefs(productStore);
+const categories = computed(() => categoryStore.categories)
+const products = computed(() => productStore.products)
 const isLoadingProducts = ref(true);
 const getProductsByCategory = (categoryId) => {
   return products.value.filter(product => product.category_id === categoryId);
