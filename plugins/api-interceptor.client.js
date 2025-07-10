@@ -3,13 +3,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   let userStore
   let router
   
-  try {
-    userStore = useUserStore()
-    router = useRouter()
-  } catch (error) {
-    console.warn('Stores not available during SSR:', error)
-    return
-  }
+  // Esperar a que la app esté montada para acceder a los stores
+  nuxtApp.hook('app:mounted', () => {
+    try {
+      userStore = useUserStore()
+      router = useRouter()
+    } catch (error) {
+      console.warn('Stores not available:', error)
+    }
+  })
 
   // Función para manejar errores 401
   const handleUnauthorized = () => {
