@@ -21,6 +21,15 @@ export default defineNuxtConfig({
       ]
     },
   },
+  image: {
+    provider: 'ipx',
+    ipx: {
+      modifiers: {
+        format: 'webp',
+        quality: '80'
+      }
+    }
+  },
   runtimeConfig: {
     public: {
       apiUrl: process.env.API_URL || 'http://localhost:8000/api',
