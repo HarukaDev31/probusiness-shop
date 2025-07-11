@@ -21,7 +21,7 @@
       <!--Sidebar Menu (Mobile & Desktop)-->
       <Transition name="mobile-menu">
         <div v-if="mobileMenuOpen" class="fixed top-0 left-0 bg-white h-full shadow-lg z-[9999] overflow-y-auto"
-             :class="isMobile ? 'w-4/5' : 'w-80'">
+          :class="isMobile ? 'w-4/5' : 'w-80'">
           <!-- Header del menú lateral -->
           <div class="flex justify-between items-center p-4 border-b border-gray-100">
             <h3 class="font-semibold text-gray-800">Todas las categorías</h3>
@@ -45,9 +45,7 @@
                 d="M15.0406 15.4202C18.6416 15.4202 21.5609 12.4361 21.5609 8.75504C21.5609 5.07395 18.6416 2.08984 15.0406 2.08984C11.4395 2.08984 8.52026 5.07395 8.52026 8.75504C8.52026 12.4361 11.4395 15.4202 15.0406 15.4202Z"
                 stroke="#272A30" stroke-width="2.60812" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <span class="font-medium"
-            @click="userName ? '' : $router.push('/login')"
-            >{{ userName ? userName : 'Iniciar sesión' }}</span>
+            <span class="font-medium" @click="userName ? '' : $router.push('/login')">{{ userName ? userName : 'Iniciar sesión' }}</span>
           </div>
 
           <!-- Categorías desplegable -->
@@ -79,8 +77,7 @@
             </button>
             <Transition name="dropdown">
               <div v-if="socialMobileOpen" class="bg-gray-50 overflow-hidden">
-                <a v-for="social in socialMedia" :key="social.name" :href="social.url"
-                  target="_blank"
+                <a v-for="social in socialMedia" :key="social.name" :href="social.url" target="_blank"
                   class="group flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 hover:text-secondary transition-all duration-200 transform hover:translate-x-1">
                   <Icon :name="social.icon"
                     class="w-5 h-5 mr-3 transition-transform duration-200 group-hover:scale-110" />
@@ -92,7 +89,8 @@
 
           <!-- Enlaces adicionales -->
           <div class="p-4">
-            <NuxtLink to="/account" class="flex items-center gap-3 py-3 text-gray-700 hover:bg-gray-50 transition text-base border-b border-gray-100">
+            <NuxtLink to="/account"
+              class="flex items-center gap-3 py-3 text-gray-700 hover:bg-gray-50 transition text-base border-b border-gray-100">
               <Icon name="heroicons:user-circle" class="w-5 h-5" />
               Mi cuenta
             </NuxtLink>
@@ -174,7 +172,7 @@
           </defs>
         </svg>
       </NuxtLink>
-      <CartButton  v-if="isMobile" class="flex justify-end"/>
+      <CartButton v-if="isMobile" class="flex justify-end" />
       <!-- Barra de búsqueda para tablet -->
       <div class="flex sm:flex md:flex lg:hidden px-4 col-span-2 items-center" v-if="isTablet">
         <div class="flex items-center bg-white rounded shadow overflow-hidden w-full">
@@ -291,20 +289,26 @@
           </button>
           <div v-show="userMenuOpen"
             class="absolute top-[15px] right-0 mt-3 min-w-[200px] bg-white shadow-xl rounded-xl z-30 py-2 px-0 animate-fade-in border border-gray-100">
-            
+            <button @mousedown.prevent="goToMyAccount"
+              class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 transition text-base">
+              <div class="relative">
+                <Icon name="heroicons:user-circle" class="w-5 h-5" />
+              </div>
+                              Mi Cuenta
+
+            </button>
             <button @mousedown.prevent="goToWishlist"
               class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 transition text-base">
               <div class="relative">
                 <Icon name="heroicons:heart" class="w-5 h-5" />
-                <span v-if="wishlistCount > 0" 
-                      class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span v-if="wishlistCount > 0"
+                  class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {{ wishlistCount }}
                 </span>
               </div>
               Lista de deseos
             </button>
             <button @mousedown.prevent="goToOrders"
-           
               class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 transition text-base">
               <Icon name="heroicons:cube" class="w-5 h-5" />
               Pedidos
@@ -357,15 +361,14 @@
           <!-- Botón fijo a la izquierda -->
           <div class="flex-shrink-0">
             <div class="relative">
-              <button 
-                @click="toggleCategoriesMenu"
+              <button @click="toggleCategoriesMenu"
                 class="nav-link py-3 px-8 flex items-center w-full h-full min-w-[120px] justify-center">
                 Todas las categorías
                 <Icon name="heroicons:chevron-right" class="w-4 h-4 ml-1" />
               </button>
             </div>
           </div>
-          
+
           <!-- Categorías scrolleables -->
           <div class="flex-1 overflow-x-auto scrollbar-hide">
             <ul class="flex flex-nowrap items-center gap-2">
@@ -399,22 +402,21 @@
 
     </nav>
   </header>
-  
+
   <!-- Sidebar fuera del header para evitar problemas de overflow -->
   <Transition name="mobile-menu">
-    <div v-if="mobileMenuOpen" class="fixed top-0 left-0 bg-white h-full shadow-lg z-[9999] overflow-y-auto border-2 border-red-500"
-         :class="isMobile ? 'w-4/5' : 'w-80'"
-         style="transform: translateX(0);"
-         @mounted="console.log('Sidebar mounted')">
+    <div v-if="mobileMenuOpen"
+      class="fixed top-0 left-0 bg-white h-full shadow-lg z-[9999] overflow-y-auto border-2 border-red-500"
+      :class="isMobile ? 'w-4/5' : 'w-80'" style="transform: translateX(0);" @mounted="console.log('Sidebar mounted')">
       <!-- Header del menú lateral -->
       <div class="flex justify-between items-center p-4 border-b border-gray-100">
         <h3 class="font-semibold text-gray-800">Todas las categorías</h3>
         <button @click="closeMobileMenu" class="p-2">
           <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="15.0437" y="0.302734" width="1" height="20.8517" rx="0.5"
-              transform="rotate(45 15.0437 0.302734)" fill="#CCCCCC" />
-            <rect x="15.3162" y="14.9961" width="1" height="20.7454" rx="0.5"
-              transform="rotate(135 15.3162 14.9961)" fill="#CCCCCC" />
+            <rect x="15.0437" y="0.302734" width="1" height="20.8517" rx="0.5" transform="rotate(45 15.0437 0.302734)"
+              fill="#CCCCCC" />
+            <rect x="15.3162" y="14.9961" width="1" height="20.7454" rx="0.5" transform="rotate(135 15.3162 14.9961)"
+              fill="#CCCCCC" />
           </svg>
         </button>
       </div>
@@ -429,9 +431,7 @@
             d="M15.0406 15.4202C18.6416 15.4202 21.5609 12.4361 21.5609 8.75504C21.5609 5.07395 18.6416 2.08984 15.0406 2.08984C11.4395 2.08984 8.52026 5.07395 8.52026 8.75504C8.52026 12.4361 11.4395 15.4202 15.0406 15.4202Z"
             stroke="#272A30" stroke-width="2.60812" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        <span class="font-medium"
-        @click="userName ? '' : $router.push('/login')"
-        >{{ userName ? userName : 'Iniciar sesión' }}</span>
+        <span class="font-medium" @click="userName ? '' : $router.push('/login')">{{ userName ? userName : 'Iniciar sesión' }}</span>
       </div>
 
       <!-- Categorías desplegable -->
@@ -465,8 +465,7 @@
           <div v-if="socialMobileOpen" class="bg-gray-50 overflow-hidden">
             <a v-for="social in socialMedia" :key="social.name" :href="social.url"
               class="group flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 hover:text-secondary transition-all duration-200 transform hover:translate-x-1">
-              <Icon :name="social.icon"
-                class="w-5 h-5 mr-3 transition-transform duration-200 group-hover:scale-110" />
+              <Icon :name="social.icon" class="w-5 h-5 mr-3 transition-transform duration-200 group-hover:scale-110" />
               {{ social.name }}
             </a>
           </div>
@@ -475,12 +474,11 @@
 
       <!-- Enlaces adicionales -->
       <div class="p-4">
-        <NuxtLink to="/account"
-        @click="closeMobileMenu"
-        class="flex items-center gap-3 py-3 text-gray-700 hover:bg-gray-50 transition text-base border-b border-gray-100">
-              <Icon name="heroicons:user-circle" class="w-5 h-5" />
-              Mi cuenta
-            </NuxtLink> 
+        <NuxtLink to="/account" @click="closeMobileMenu"
+          class="flex items-center gap-3 py-3 text-gray-700 hover:bg-gray-50 transition text-base border-b border-gray-100">
+          <Icon name="heroicons:user-circle" class="w-5 h-5" />
+          Mi cuenta
+        </NuxtLink>
         <NuxtLink to="/wishlist" @click="closeMobileMenu"
           class="flex items-center gap-3 py-3 text-gray-700 hover:text-secondary transition">
           <Icon name="heroicons:heart" class="w-5 h-5" />
@@ -502,8 +500,8 @@
 
   <!-- Backdrop fuera del header -->
   <Transition name="mobile-menu">
-    <div v-if="mobileMenuOpen" @click="closeMobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-[9998]" 
-         @mousedown.prevent @click.stop></div>
+    <div v-if="mobileMenuOpen" @click="closeMobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-[9998]"
+      @mousedown.prevent @click.stop></div>
   </Transition>
 </template>
 
@@ -605,9 +603,9 @@ const handleResize = () => {
 
 // Ensure categories are loaded and set up resize listener
 onMounted(() => {
-  
+
   // Cargar lista de deseos si el usuario está autenticado
-  
+
   window.addEventListener('resize', handleResize);
 });
 
@@ -621,7 +619,9 @@ const goToWishlist = () => {
 const goToOrders = () => {
   router.push('/orders')
 }
-
+const goToMyAccount = () => {
+  router.push('/account')
+}
 
 </script>
 <style scoped>
@@ -655,6 +655,7 @@ const goToOrders = () => {
 
 /* Estilos específicos para desktop */
 @media (min-width: 1024px) {
+
   .mobile-menu-enter-active,
   .mobile-menu-leave-active {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);

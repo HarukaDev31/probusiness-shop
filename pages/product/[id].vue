@@ -210,8 +210,7 @@
               class="w-full md:w-1/2 border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition">Añadir
               al carrito</button>
             <button @click="openCartPanel"
-              class="w-full md:w-1/2 bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar
-              pedido</button>
+              class="w-full md:w-1/2 bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar pedido</button>
           </div>
           <!-- Panel lateral de carrito -->
           <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40"

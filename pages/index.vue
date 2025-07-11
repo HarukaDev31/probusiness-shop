@@ -48,7 +48,7 @@ const getProductsByCategory = (categoryId) => {
 // Agrupa las categorías en chunks de 3 para destacadas sin repetir
 const destacadasGroups = computed(() => {
   if (!categories.value || categories.value.length === 0) return [];
-  const shuffled = [...categories.value].sort(() => Math.random() - 0.5);
+  const shuffled = [...categories.value];
   const groups = [];
   for (let i = 0; i < shuffled.length; i += 3) {
     groups.push(shuffled.slice(i, i + 3));

@@ -139,8 +139,7 @@
                 <div class="flex-grow h-px bg-gray-200"></div>
             </div>
             <div class="text-center">
-                <NuxtLink to="/login" class="text-red-500 font-semibold hover:underline py-2 px-4 block">Iniciar sesión
-                </NuxtLink>
+                <NuxtLink to="/login" class="text-red-500 font-semibold hover:underline py-2 px-4 block">Iniciar sesión</NuxtLink>
             </div>
 
             <!-- Modal de Recuperar Contraseña -->
