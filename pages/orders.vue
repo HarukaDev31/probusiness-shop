@@ -99,11 +99,34 @@
 
           <!-- Accordion Detalle de Pedido -->
           <div v-if="openDetails[order.id]" class="px-6 pb-6">
-            <div v-if="loadingDetails[order.id]" class="py-6 text-center text-gray-500">Cargando detalle...</div>
-            <div v-else-if="orderDetails[order.id]?.error" class="py-6 text-center text-red-500">{{ orderDetails[order.id].message }}</div>
-            <div v-else-if="orderDetails[order.id]">
+            <div v-if="orderDetails[order.id]?.error" class="py-6 text-center text-red-500">{{ orderDetails[order.id].message }}</div>
+            <div v-else>
               <div class="overflow-x-auto rounded-lg border border-gray-200">
-                <table class="min-w-full bg-white">
+                <!-- Skeleton mientras carga -->
+                <div v-if="loadingDetails[order.id]">
+                  <div class="bg-gray-200 flex w-full">
+                    <div class="w-1/2 px-4 py-2 text-xl font-semibold">Descripción</div>
+                    <div class="w-1/4 px-4 py-2 text-xl font-semibold text-center">Cant.</div>
+                    <div class="w-1/4 px-4 py-2 text-xl font-semibold text-center">Precio</div>
+                  </div>
+                  <div>
+                    <div v-for="i in 3" :key="i" class="flex items-center gap-4 border-b last:border-b-0 animate-pulse">
+                      <div class="w-14 h-14 bg-gray-200 rounded ml-4" />
+                      <div class="flex-1">
+                        <div class="h-5 w-40 bg-gray-200 rounded mb-2" />
+                        <div class="h-4 w-24 bg-gray-100 rounded" />
+                      </div>
+                      <div class="w-1/4 flex justify-center">
+                        <div class="w-12 h-5 bg-gray-200 rounded" />
+                      </div>
+                      <div class="w-1/4 flex justify-center">
+                        <div class="w-20 h-5 bg-gray-200 rounded" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Tabla real -->
+                <table v-else class="min-w-full bg-white">
                   <thead>
                     <tr class="bg-gray-200">
                       <th class="text-left px-4 py-2 text-xl font-semibold">Descripción</th>
@@ -112,7 +135,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="item in orderDetails[order.id].items" :key="item.id" class="border-b last:border-b-0">
+                    <tr v-for="item in orderDetails[order.id].order.items" :key="item.id" class="border-b last:border-b-0">
                       <td class="flex items-center gap-4 px-4 py-3">
                         <img :src="item.image" :alt="item.name" class="w-14 h-14 rounded object-cover" />
                         <span class="font-bold text-lg text-gray-800">{{ item.name }}</span>
@@ -141,6 +164,7 @@
 
 <script setup>
 import { useOrders } from '~/composables/useOrders'
+import orderService from '~/services/order-service'
 
 const { $formatPrice } = useNuxtApp()
 const orders = ref([])
@@ -198,11 +222,15 @@ async function toggleOrderDetails(orderId) {
   openDetails.value[orderId] = !openDetails.value[orderId]
   if (openDetails.value[orderId] && !orderDetails.value[orderId]) {
     loadingDetails.value[orderId] = true
-    const result = await getOrderDetails(orderId)
-    if (result.success) {
-      orderDetails.value[orderId] = result.data
-    } else {
-      orderDetails.value[orderId] = { error: true, message: result.message }
+    try {
+      const result = await orderService.getOrderDetails(orderId)
+      if (result.success) {
+        orderDetails.value[orderId] = result.data.data
+      } else {
+        orderDetails.value[orderId] = { error: true, message: result.message }
+      }
+    } catch (e) {
+      orderDetails.value[orderId] = { error: true, message: 'Error inesperado al cargar el detalle' }
     }
     loadingDetails.value[orderId] = false
   }
