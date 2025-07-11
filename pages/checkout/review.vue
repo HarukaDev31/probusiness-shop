@@ -99,7 +99,13 @@ onMounted(() => {
 
 const handleSubmit = async () => {
   try {
-    // Preparar datos del pedido usando el servicio
+    //set city as departamento where id=checkoutInfo.value.departamento
+    const newCheckoutInfo = { ...checkoutInfo.value }
+    newCheckoutInfo.city = departamentos.value.find(d => d.value === newCheckoutInfo.departamento).label
+    newCheckoutInfo.province = provincias.value.find(p => p.value === newCheckoutInfo.provincia).label
+    newCheckoutInfo.district = distritos.value.find(d => d.value === newCheckoutInfo.distrito).label
+    checkoutInfo.value = newCheckoutInfo
+    console.log(checkoutInfo.value, 'checkoutInfo.value')
     const orderData = orderService.prepareOrderData(checkoutInfo.value, cartItems.value, cartTotal.value)
     
     // Validar los datos antes de enviar

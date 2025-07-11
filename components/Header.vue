@@ -92,6 +92,10 @@
 
           <!-- Enlaces adicionales -->
           <div class="p-4">
+            <NuxtLink to="/account" class="flex items-center gap-3 py-3 text-gray-700 hover:bg-gray-50 transition text-base border-b border-gray-100">
+              <Icon name="heroicons:user-circle" class="w-5 h-5" />
+              Mi cuenta
+            </NuxtLink>
             <NuxtLink to="/wishlist" @click="closeMobileMenu"
               class="flex items-center gap-3 py-3 text-gray-700 hover:text-secondary transition">
               <Icon name="heroicons:heart" class="w-5 h-5" />
@@ -287,6 +291,7 @@
           </button>
           <div v-show="userMenuOpen"
             class="absolute top-[15px] right-0 mt-3 min-w-[200px] bg-white shadow-xl rounded-xl z-30 py-2 px-0 animate-fade-in border border-gray-100">
+            
             <button @mousedown.prevent="goToWishlist"
               class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 transition text-base">
               <div class="relative">
@@ -470,6 +475,12 @@
 
       <!-- Enlaces adicionales -->
       <div class="p-4">
+        <NuxtLink to="/account"
+        @click="closeMobileMenu"
+        class="flex items-center gap-3 py-3 text-gray-700 hover:bg-gray-50 transition text-base border-b border-gray-100">
+              <Icon name="heroicons:user-circle" class="w-5 h-5" />
+              Mi cuenta
+            </NuxtLink> 
         <NuxtLink to="/wishlist" @click="closeMobileMenu"
           class="flex items-center gap-3 py-3 text-gray-700 hover:text-secondary transition">
           <Icon name="heroicons:heart" class="w-5 h-5" />

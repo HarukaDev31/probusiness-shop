@@ -218,14 +218,14 @@ class OrderService {
     }
 
     // Validar dirección
-    if (!customer.address?.province) {
-      errors.push({ field: 'customer.address.province', message: 'La provincia es requerida' })
+    if (!customer.address?.departamento_id) {
+      errors.push({ field: 'customer.address.departamento_id', message: 'El departamento es requerido' })
     }
-    if (!customer.address?.city) {
-      errors.push({ field: 'customer.address.city', message: 'La ciudad es requerida' })
+    if (!customer.address?.provincia_id) {
+      errors.push({ field: 'customer.address.provincia_id', message: 'La provincia es requerida' })
     }
-    if (!customer.address?.district) {
-      errors.push({ field: 'customer.address.district', message: 'El distrito es requerido' })
+    if (!customer.address?.distrito_id) {
+      errors.push({ field: 'customer.address.distrito_id', message: 'El distrito es requerido' })
     }
 
     // Validar order
@@ -305,9 +305,12 @@ class OrderService {
         email: customerData.email,
         phone: customerData.phone,
         address: {
-          province: customerData.province,
-          city: customerData.city,
-          district: customerData.district
+          departamento_id: customerData.departamento, // ID
+          provincia_id: customerData.provincia, // ID
+          distrito_id: customerData.distrito, // ID
+          departamento_label: customerData.departamento_label || '',
+          provincia_label: customerData.provincia_label || '',
+          distrito_label: customerData.distrito_label || ''
         }
       },
       order: {

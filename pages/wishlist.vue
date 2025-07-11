@@ -93,15 +93,15 @@
                 {{ item.product?.nombre }}
               </h3>
             </NuxtLink>
-            
+            <div class="text-sm text-gray-500 mb-3">
+              Orden mínima: {{ getMinimumOrderQuantity(item.product) || 1 }}
+            </div>
             <div class="flex items-center justify-between mb-3">
               <span class="text-xl font-bold text-gray-800">{{ $formatPrice(getPrecioPuestoEnPeru(item?.product)) }}</span>
             </div>
 
             <!-- MOQ info -->
-            <div class="text-sm text-gray-500 mb-3">
-              Orden mínima: {{ getMinimumOrderQuantity(item.product) || 1 }}
-            </div>
+            
           </div>
         </div>
       </div>
@@ -128,15 +128,16 @@
           <div class="flex-1">
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <NuxtLink :to="`/product/${item.id}`">
+                <NuxtLink :to="`/product/${item?.product?.id}`">
                   <h3 class="font-semibold text-gray-800 mb-2 hover:text-[#FF5000] transition-colors">
                     {{ item.product?.nombre }}
                   </h3>
                 </NuxtLink>
                 
                 <div class="flex flex-col gap-1">
+                  <span class="text-sm text-gray-500">Orden mínima: {{ getMinimumOrderQuantity(item?.product) || 1 }}</span>
+
                   <span class="text-xl font-bold text-gray-800">{{ $formatPrice(getPrecioPuestoEnPeru(item?.product)) }}</span>
-                  <span class="text-sm text-gray-500">Orden mínima: {{ getMinimumOrderQuantity(item.product) || 1 }}</span>
                 </div>
               </div>
 
@@ -173,14 +174,17 @@ const wishlistItems = computed(() => wishlistStore.items)
 const loading = computed(() => wishlistStore.loading)
 const viewMode = ref('grid')
 const getPrecioPuestoEnPeru = (product) => {
+  if (!product) return 0;
   console.log(product);
   const precios = JSON.parse(product.prices_range || '[]');
   console.log(precios);
+  if (!precios.length) return 0;
   const minPrice = precios[0].price;
   return minPrice;
 };
 // Función para obtener el MOQ (Minimum Order Quantity)
 function getMinimumOrderQuantity(product) {
+  if (!product) return 1;
   try {
     const prices = JSON.parse(product.prices_range || '[]');
     if (!prices.length) return 1;

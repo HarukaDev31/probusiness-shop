@@ -91,9 +91,9 @@
                     </label>
                     <input id="whatsapp" v-model="registerData.whatsapp" type="tel"
                         class="w-full px-4 py-3 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
-                        placeholder="+51 999 999 999"
+                        placeholder="999 999 999"
                         @input="registerData.whatsapp = formatWhatsApp($event.target.value)" required />
-                    <p class="text-xs text-gray-500 mt-1">(*) Incluye el código de país (+51 para Perú)</p>
+                    <p class="text-xs text-gray-500 mt-1">(*) Solo números (9 dígitos)</p>
                 </div>
                 <div class="relative">
                     <label class="block text-gray-600 mb-1" for="password">Contraseña</label>
@@ -207,17 +207,12 @@ const { showError, showSuccess } = useModal()
 
 // Función para formatear el número de WhatsApp
 const formatWhatsApp = (value) => {
-    // Remover todos los caracteres no numéricos excepto el +
-    let cleaned = value.replace(/[^\d+]/g, '')
+    // Remover todos los caracteres no numéricos (solo números)
+    let cleaned = value.replace(/[^\d]/g, '')
 
-    // Asegurar que empiece con +
-    if (!cleaned.startsWith('+')) {
-        cleaned = '+' + cleaned
-    }
-
-    // Limitar a 15 dígitos (código de país + número)
-    if (cleaned.length > 16) {
-        cleaned = cleaned.substring(0, 16)
+    // Limitar a 9 dígitos (número peruano sin código de país)
+    if (cleaned.length > 9) {
+        cleaned = cleaned.substring(0, 9)
     }
 
     return cleaned
@@ -238,9 +233,9 @@ async function handleRegister() {
     }
 
     // Validar formato de WhatsApp
-    const whatsappRegex = /^\+[1-9]\d{1,14}$/
+    const whatsappRegex = /^\d{9}$/
     if (!whatsappRegex.test(registerData.value.whatsapp)) {
-        showWarning('Por favor ingresa un número de WhatsApp válido con código de país (ej: +51 999 999 999)', 'WhatsApp Inválido')
+        showWarning('Por favor ingresa un número de WhatsApp válido de 9 dígitos', 'WhatsApp Inválido')
         return
     }
 

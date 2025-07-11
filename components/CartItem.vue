@@ -14,9 +14,9 @@
       <h3 
         class="text-sm md:text-base font-medium text-gray-900 leading-tight cursor-pointer hover:text-[#FF5000] transition-colors mb-2" 
         style="word-break: break-word; line-height: 1.3;"
-        @click="goToProduct(item.id)"
+        @click="goToProduct(item.product?.id || item.id)"
       >
-        {{ item.name || item.nombre }}
+        {{ item.name?.slice(0, 80) + '...' || item.nombre.slice(0, 80) + '...' }}
       </h3>
       
       <!-- Controles de cantidad en mobile -->
@@ -170,7 +170,9 @@ const removeItem = () => {
 };
 
 const goToProduct = (productId) => {
-  navigateTo(`/product/${productId}`);
+  if (productId) {
+    navigateTo(`/product/${productId}`);
+  }
 };
 const isSelected = computed({
   get() {

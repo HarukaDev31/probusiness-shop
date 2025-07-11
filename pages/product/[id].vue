@@ -14,7 +14,7 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
         <!-- Columna galería + nombre -->
         <div class="col-span-12 md:col-span-6">
-          <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-4">{{ product.nombre }}</h1>
+          <h1 class="text-xl font-bold text-gray-900 leading-tight mb-4">{{ product.nombre }}</h1>
           
           <!-- Vista Desktop -->
           <div class="hidden md:flex flex-row">
@@ -466,6 +466,7 @@ const getProductMOQ = computed(() => {
 });
 
 function openCartPanel() {
+  // Asegurar que cartQuantity tenga el MOQ correcto
   cartQuantity.value = getProductMOQ.value;
   showCartPanel.value = true;
 }
@@ -502,6 +503,13 @@ const product = computed(() => {
   return productToReturn;
 });
 
+// Watcher para inicializar cartQuantity con el MOQ cuando el producto cambie
+watch(() => product.value, (newProduct) => {
+  if (newProduct) {
+    cartQuantity.value = getProductMOQ.value;
+  }
+}, { immediate: true })
+
 const relatedProducts = computed(() => {
   if (!product.value) return [];
   return productStore.relatedProducts;
@@ -525,6 +533,7 @@ computed(() => {
 const iniciarPedidoMinimo = () => {
   //open cart panel
   goToCart.value = true;
+  cartQuantity.value = getProductMOQ.value;
   showCartPanel.value = true;
   /*if (product.value) {
     cartStore.addItem({

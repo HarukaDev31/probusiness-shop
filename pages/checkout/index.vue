@@ -402,7 +402,7 @@ import { useCartStore } from '~/stores/cart'
 import { ref, onMounted, computed } from 'vue'
 import { useOrders } from '~/composables/useOrders'
 import { useModal } from '~/composables/useModal'
-import { useLocationService } from '~/services/location-service'
+import { getDepartamentos, getProvincias, getDistritos } from '~/services/location-service'
 
 const { $formatPrice } = useNuxtApp();
 const router = useRouter();
@@ -411,8 +411,7 @@ const cartStore = useCartStore();
 const savedMessage = ref(false)
 const mobileSummaryOpen = ref(false)
 
-// Usar el servicio de ubicaciones
-const locationService = useLocationService()
+// Usar las funciones directamente en vez de locationService.getX
 
 // Usar el composable de modal
 const { showError } = useModal()
@@ -502,7 +501,7 @@ const loadDepartamentos = async () => {
   try {
     loading.value = true
     console.log('Cargando departamentos...')
-    const data = await locationService.getDepartamentos()
+    const data = await getDepartamentos()
     console.log('Departamentos cargados:', data)
     console.log('Tipo de datos:', typeof data, Array.isArray(data))
     departamentos.value = data || []
@@ -522,7 +521,7 @@ const loadProvincias = async (departamentoId) => {
     form.value.provincia = ''
     form.value.distrito = ''
     console.log('Cargando provincias para departamentoId:', departamentoId)
-    const data = await locationService.getProvincias(departamentoId)
+    const data = await getProvincias(departamentoId)
     console.log('Provincias cargadas:', data)
     provincias.value = data || []
     console.log('provincias.value después de asignar:', provincias.value)
@@ -540,7 +539,7 @@ const loadDistritos = async (provinciaId) => {
     loading.value = true
     form.value.distrito = ''
     console.log('Cargando distritos para provinciaId:', provinciaId)
-    const data = await locationService.getDistritos(provinciaId)
+    const data = await getDistritos(provinciaId)
     console.log('Distritos cargados:', data)
     distritos.value = data || []
     console.log('distritos.value después de asignar:', distritos.value)
@@ -610,7 +609,13 @@ async function handlePedido() {
   clearError()
 
   try {
-    // Crear el pedido usando el composable
+    // IDs
+    const departamentoObj = departamentos.value.find(d => d.value === form.value.departamento)
+    const provinciaObj = provincias.value.find(p => p.value === form.value.provincia)
+    const distritoObj = distritos.value.find(d => d.value === form.value.distrito)
+    form.value.departamento_label = departamentoObj ? departamentoObj.label : ''
+    form.value.provincia_label = provinciaObj ? provinciaObj.label : ''
+    form.value.distrito_label = distritoObj ? distritoObj.label : ''
     const result = await createOrder(form.value, cartItems.value, cartTotal.value)
 
     if (result.success) {
