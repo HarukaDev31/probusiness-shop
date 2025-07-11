@@ -1,10 +1,19 @@
 <template>
   <div class="min-h-screen bg-[#f5f8fb]">
     <div class="max-w-6xl mx-auto p-6">
-      <!-- Header -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-2">Mis Pedidos</h1>
-        <p class="text-gray-600">Historial de todos tus pedidos en ProBusiness</p>
+      <!-- Filtro de año y contador de pedidos -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white rounded-lg shadow-md p-6 mb-6 gap-4">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-lg text-gray-800">{{ orders.length }} pedidos</span>
+          <span class="text-gray-600">realizados en</span>
+          <select v-model="selectedYear" class="border border-gray-300 rounded px-3 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FF5000]">
+            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+          </select>
+        </div>
+        <div class="flex gap-2">
+          <button class="text-sm px-3 py-2 bg-[#FF5000] text-white rounded hover:bg-[#e04a00] transition">Últimos 30 días</button>
+          <button class="text-sm px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">Últimos 3 meses</button>
+        </div>
       </div>
 
       <!-- Loading State -->
@@ -40,76 +49,43 @@
       </div>
 
       <!-- Orders List -->
-      <div v-else class="space-y-6">
-        <div v-for="order in orders" :key="order.id" class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div v-else class="space-y-8">
+        <div v-for="order in orders" :key="order.id" class="bg-white rounded-2xl border border-gray-300 overflow-hidden">
           <!-- Order Header -->
-          <div class="p-6 border-b border-gray-100">
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="text-lg font-semibold text-gray-800">
-                  Pedido #{{ order.orderNumber }}
-                </h3>
-                <p class="text-sm text-gray-500 mt-1">
-                  {{ new Date(order.orderDate).toLocaleDateString('es-PE', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  }) }}
-                </p>
-              </div>
-              <div class="text-right">
-                <div class="text-2xl font-bold text-gray-800">
-                  {{ $formatPrice(order.total) }}
-                </div>
-                <div class="mt-2">
-                  <span :class="getStatusClass(order.status)" class="px-3 py-1 rounded-full text-xs font-semibold">
-                    {{ getStatusText(order.status) }}
-                  </span>
-                </div>
-              </div>
+          <div class="flex flex-col md:flex-row md:items-center justify-between bg-gray-100 px-6 py-4 border-b border-gray-200">
+            <div>
+              <div class="text-sm text-gray-500 font-medium">PEDIDO REALIZADO</div>
+              <div class="text-lg text-gray-800 font-semibold">{{ new Date(order.orderDate).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' }) }}</div>
+            </div>
+            <div class="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0">
+              <div class="text-sm text-gray-500 font-medium">TOTAL</div>
+              <div class="text-xl text-gray-800 font-bold">{{ $formatPrice(order.total) }}</div>
+            </div>
+            <div class="flex flex-col md:items-end">
+              <div class="text-sm text-gray-500 font-medium">N. PEDIDO</div>
+              <div class="text-lg text-gray-800 font-semibold">{{ order.orderNumber }}</div>
             </div>
           </div>
 
-          <!-- Order Items -->
-          <div class="p-6">
-            <h4 class="font-semibold text-gray-800 mb-4">Productos</h4>
-            <div class="space-y-3">
-              <div v-for="item in order.items" :key="item.id" class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                <img :src="item.image" :alt="item.name" class="w-12 h-12 rounded object-cover" />
-                <div class="flex-1">
-                  <h5 class="font-medium text-gray-800">{{ item.name }}</h5>
-                  <p class="text-sm text-gray-500">
-                    Cantidad: {{ item.quantity }} | Precio: {{ $formatPrice(item.price) }}
-                  </p>
-                </div>
-                <div class="text-right">
-                  <div class="font-semibold text-gray-800">
-                    {{ $formatPrice(item.total) }}
-                  </div>
-                </div>
+          <!-- Order Content -->
+          <div class="flex flex-col md:flex-row items-center gap-6 px-6 py-6">
+            <!-- Product Image -->
+            <div class="flex-shrink-0">
+              <img :src="order.items[0]?.image" :alt="order.items[0]?.name" class="w-20 h-20 rounded object-cover border border-gray-200" />
+            </div>
+            <!-- Product Info -->
+            <div class="flex-1 min-w-0">
+              <div class="font-bold text-lg text-gray-800 truncate">{{ order.items[0]?.name }}</div>
+              <div class="text-gray-600 text-sm mt-1 truncate">
+                {{ order.items.length > 1 ? `y ${order.items.length - 1} producto(s) más` : ' ' }}
               </div>
             </div>
-          </div>
-
-          <!-- Order Actions -->
-          <div class="p-6 bg-gray-50 border-t border-gray-100">
-            <div class="flex justify-between items-center">
-              <div class="text-sm text-gray-600">
-                <p v-if="order.estimatedDelivery">
-                  Entrega estimada: {{ new Date(order.estimatedDelivery).toLocaleDateString('es-PE') }}
-                </p>
-              </div>
-              <div class="flex gap-2">
-                <!--
-                <button @click="viewOrderDetails(order.id)"
-                  class="px-4 py-2 text-[#FF5000] border border-[#FF5000] rounded hover:bg-[#FF5000] hover:text-white transition">
-                  Ver detalles
-                </button>
-                <button v-if="order.status === 'pending'" @click="cancelOrder(order.id)"
-                  class="px-4 py-2 text-red-600 border border-red-600 rounded hover:bg-red-600 hover:text-white transition">
-                  Cancelar
-                </button>-->
-              </div>
+            <!-- Actions -->
+            <div class="flex flex-col gap-2 items-end min-w-[200px]">
+              <button class="w-full min-w-[180px] px-6 py-2 border border-[#FF5000] text-[#FF5000] rounded-lg font-medium hover:bg-[#FF5000] hover:text-white transition">Ver detalle de pedido</button>
+              <button :class="[getStatusClass(order.status), 'w-full min-w-[180px] px-6 py-2 rounded-lg font-medium border border-gray-300']">
+                {{ getStatusText(order.status) }}
+              </button>
             </div>
           </div>
         </div>
@@ -131,6 +107,11 @@ import { useOrders } from '~/composables/useOrders'
 
 const { $formatPrice } = useNuxtApp()
 const orders = ref([])
+
+// Filtro de año
+const years = ref([2025, 2024, 2023, 2022, 2021])
+const selectedYear = ref(years.value[0])
+
 // Usar el composable de órdenes
 const {
   loading: isLoading,
@@ -160,7 +141,6 @@ async function loadOrders() {
 
   try {
     const result = await getCustomerOrders()
-    console.log(result.data.data)
     orders.value = result.data.data
 
     if (!result.success) {
@@ -175,7 +155,6 @@ async function loadOrders() {
  * Cargar más pedidos (paginación)
  */
 async function loadMoreOrders() {
-  // Implementar lógica de paginación
   currentPage.value++
   // Aquí cargarías más pedidos
 }
@@ -203,7 +182,6 @@ async function cancelOrder(orderId) {
 
     if (result.success) {
       alert('Pedido cancelado exitosamente')
-      // Recargar la lista de pedidos
       await loadOrders()
     } else {
       alert('Error al cancelar el pedido: ' + result.message)
@@ -223,7 +201,6 @@ function getStatusClass(status) {
     delivered: 'bg-green-100 text-green-800',
     cancelled: 'bg-red-100 text-red-800'
   }
-
   return statusClasses[status] || 'bg-gray-100 text-gray-800'
 }
 
@@ -232,14 +209,13 @@ function getStatusClass(status) {
  */
 function getStatusText(status) {
   const statusTexts = {
-    pending: 'Pendiente',
+    pending: 'Pendiente pago',
     confirmed: 'Confirmado',
     processing: 'En proceso',
     shipped: 'Enviado',
     delivered: 'Entregado',
     cancelled: 'Cancelado'
   }
-
   return statusTexts[status] || 'Desconocido'
 }
 </script>
