@@ -85,10 +85,44 @@
             </div>
             <!-- Actions -->
             <div class="flex flex-col gap-2 items-end min-w-[200px]">
-              <button class="w-full min-w-[180px] px-6 py-2 border border-[#FF5000] text-[#FF5000] rounded-lg font-medium hover:bg-[#FF5000] hover:text-white transition">Ver detalle de pedido</button>
+              <button
+                class="w-full min-w-[180px] px-6 py-2 border border-[#FF5000] text-[#FF5000] rounded-lg font-medium hover:bg-[#FF5000] hover:text-white transition"
+                @click="toggleOrderDetails(order.id)"
+              >
+                {{ openDetails[order.id] ? 'Ocultar detalle' : 'Ver detalle de pedido' }}
+              </button>
               <button :class="[getStatusClass(order.status), 'w-full min-w-[180px] px-6 py-2 rounded-lg font-medium border border-gray-300']">
                 {{ getStatusText(order.status) }}
               </button>
+            </div>
+          </div>
+
+          <!-- Accordion Detalle de Pedido -->
+          <div v-if="openDetails[order.id]" class="px-6 pb-6">
+            <div v-if="loadingDetails[order.id]" class="py-6 text-center text-gray-500">Cargando detalle...</div>
+            <div v-else-if="orderDetails[order.id]?.error" class="py-6 text-center text-red-500">{{ orderDetails[order.id].message }}</div>
+            <div v-else-if="orderDetails[order.id]">
+              <div class="overflow-x-auto rounded-lg border border-gray-200">
+                <table class="min-w-full bg-white">
+                  <thead>
+                    <tr class="bg-gray-200">
+                      <th class="text-left px-4 py-2 text-xl font-semibold">Descripción</th>
+                      <th class="text-center px-4 py-2 text-xl font-semibold">Cant.</th>
+                      <th class="text-center px-4 py-2 text-xl font-semibold">Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in orderDetails[order.id].items" :key="item.id" class="border-b last:border-b-0">
+                      <td class="flex items-center gap-4 px-4 py-3">
+                        <img :src="item.image" :alt="item.name" class="w-14 h-14 rounded object-cover" />
+                        <span class="font-bold text-lg text-gray-800">{{ item.name }}</span>
+                      </td>
+                      <td class="text-center px-4 py-3 text-lg">{{ item.quantity }}</td>
+                      <td class="text-center px-4 py-3 text-lg">{{ $formatPrice(item.price) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -114,6 +148,11 @@ const orders = ref([])
 // Filtro de año y recientes
 const years = ref([2025, 2024, 2023, 2022, 2021])
 const selectedFilter = ref('last_30_days')
+
+// Estado de los accordions abiertos y detalles cargados
+const openDetails = ref({}) // { [orderId]: true/false }
+const orderDetails = ref({}) // { [orderId]: detalle }
+const loadingDetails = ref({}) // { [orderId]: true/false }
 
 // Usar el composable de órdenes
 const {
@@ -149,6 +188,23 @@ async function loadOrders() {
     }
   } catch (error) {
     console.error('Error al cargar pedidos:', error)
+  }
+}
+
+/**
+ * Toggle y cargar detalle de pedido (accordion)
+ */
+async function toggleOrderDetails(orderId) {
+  openDetails.value[orderId] = !openDetails.value[orderId]
+  if (openDetails.value[orderId] && !orderDetails.value[orderId]) {
+    loadingDetails.value[orderId] = true
+    const result = await getOrderDetails(orderId)
+    if (result.success) {
+      orderDetails.value[orderId] = result.data
+    } else {
+      orderDetails.value[orderId] = { error: true, message: result.message }
+    }
+    loadingDetails.value[orderId] = false
   }
 }
 
