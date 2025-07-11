@@ -74,18 +74,21 @@ class OrderService {
 
   /**
    * Obtener pedidos del usuario
+   * @param {Object} params - Parámetros opcionales (ej: filtro)
    * @returns {Promise<Object>} Lista de pedidos
    */
-  async getCustomerOrders() {
+  async getCustomerOrders(params = {}) {
     try {
-      const response = await apiClient.api('/orders/my-orders')
-
+      let url = '/orders/my-orders';
+      if (params.filter) {
+        url += `?filter=${encodeURIComponent(params.filter)}`;
+      }
+      const response = await apiClient.api(url)
       return {
         success: true,
         data: response
       }
     } catch (error) {
-      
       return {
         success: false,
         message: 'Error al obtener los pedidos',

@@ -6,13 +6,16 @@
         <div class="flex items-center gap-2">
           <span class="font-bold text-lg text-gray-800">{{ orders.length }} pedidos</span>
           <span class="text-gray-600">realizados en</span>
-          <select v-model="selectedYear" class="border border-gray-300 rounded px-3 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FF5000]">
+          <select
+            id="order-filter"
+            v-model="selectedFilter"
+            @change="loadOrders"
+            class="border border-gray-300 rounded px-3 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FF5000]"
+          >
+            <option value="last_30_days">Últimos 30 días</option>
+            <option value="last_3_months">Últimos 3 meses</option>
             <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
           </select>
-        </div>
-        <div class="flex gap-2">
-          <button class="text-sm px-3 py-2 bg-[#FF5000] text-white rounded hover:bg-[#e04a00] transition">Últimos 30 días</button>
-          <button class="text-sm px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">Últimos 3 meses</button>
         </div>
       </div>
 
@@ -108,9 +111,9 @@ import { useOrders } from '~/composables/useOrders'
 const { $formatPrice } = useNuxtApp()
 const orders = ref([])
 
-// Filtro de año
+// Filtro de año y recientes
 const years = ref([2025, 2024, 2023, 2022, 2021])
-const selectedYear = ref(years.value[0])
+const selectedFilter = ref('last_30_days')
 
 // Usar el composable de órdenes
 const {
@@ -138,11 +141,9 @@ onMounted(() => {
  */
 async function loadOrders() {
   clearError()
-
   try {
-    const result = await getCustomerOrders()
+    const result = await getCustomerOrders({ filter: selectedFilter.value })
     orders.value = result.data.data
-
     if (!result.success) {
       console.error('Error al cargar pedidos:', result.message)
     }
