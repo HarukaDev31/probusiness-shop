@@ -280,9 +280,10 @@ const handleLogin = async () => {
       }, 2000)
     } else {
       loginError.value = data.message || 'Credenciales incorrectas'
-      showError(loginError.value||'Credenciales incorrectas')
+      showError('Credenciales incorrectas')
     }
-  } catch (error) {
+  } catch (error) { 
+    console.log(error, 'error en login component')
     loginError.value = error.message || 'Error de conexión con el servidor'
     showError(loginError.value||'Error de conexión con el servidor')
   } finally {

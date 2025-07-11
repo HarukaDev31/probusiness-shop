@@ -57,7 +57,9 @@
 
         <div class="w-full max-w-md sm:max-w-lg md:max-w-md bg-white rounded-md shadow-lg p-6 sm:p-8 mx-4 sm:mx-0">
 
-            <h2 class="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6 border-b border-gray-200 pb-3 sm:pb-4">Registrarme</h2>
+            <h2
+                class="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6 border-b border-gray-200 pb-3 sm:pb-4">
+                Registrarme</h2>
             <form @submit.prevent="handleRegister" class="space-y-4 sm:space-y-5">
                 <div>
                     <label class="block text-gray-600 mb-1" for="nombre">Nombres</label>
@@ -81,16 +83,16 @@
                     <label class="block text-gray-600 mb-1" for="whatsapp">
                         <span class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.67.15-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.363.71.306 1.263.489 1.695.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                <path
+                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.67.15-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.363.71.306 1.263.489 1.695.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z" />
                             </svg>
                             WhatsApp
                         </span>
                     </label>
                     <input id="whatsapp" v-model="registerData.whatsapp" type="tel"
                         class="w-full px-4 py-3 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
-                        placeholder="+51 999 999 999" 
-                        @input="registerData.whatsapp = formatWhatsApp($event.target.value)"
-                        required />
+                        placeholder="+51 999 999 999"
+                        @input="registerData.whatsapp = formatWhatsApp($event.target.value)" required />
                     <p class="text-xs text-gray-500 mt-1">(*) Incluye el código de país (+51 para Perú)</p>
                 </div>
                 <div class="relative">
@@ -101,19 +103,21 @@
                     <button type="button" @click="showPassword = !showPassword"
                         class="absolute right-3 top-10 sm:top-8 text-gray-400 hover:text-gray-600">
                         <svg v-if="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                         </svg>
                         <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </button>
                     <p class="text-xs text-gray-500 mt-1">(*) La contraseña debe tener al menos 6 caracteres.</p>
                 </div>
                 <button type="submit" :disabled="loading"
                     class="w-full bg-orange-500 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg hover:bg-orange-600 transition disabled:opacity-60">
-                    <span v-if="loading"
-                        class="animate-spin h-5 w-5 mr-3 border-t-2 border-white rounded-full"></span>
+                    <span v-if="loading" class="animate-spin h-5 w-5 mr-3 border-t-2 border-white rounded-full"></span>
                     Crear cuenta
                 </button>
             </form>
@@ -135,9 +139,10 @@
                 <div class="flex-grow h-px bg-gray-200"></div>
             </div>
             <div class="text-center">
-                <NuxtLink to="/login" class="text-red-500 font-semibold hover:underline py-2 px-4 block">Iniciar sesión</NuxtLink>
+                <NuxtLink to="/login" class="text-red-500 font-semibold hover:underline py-2 px-4 block">Iniciar sesión
+                </NuxtLink>
             </div>
-       
+
             <!-- Modal de Recuperar Contraseña -->
             <div v-if="showForgot" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50"
                 @mousedown.self="closeForgot">
@@ -198,22 +203,23 @@ const registerData = ref({
 const showForgot = ref(false)
 const forgotEmail = ref('')
 const forgotLoading = ref(false)
+const { showError, showSuccess } = useModal()
 
 // Función para formatear el número de WhatsApp
 const formatWhatsApp = (value) => {
     // Remover todos los caracteres no numéricos excepto el +
     let cleaned = value.replace(/[^\d+]/g, '')
-    
+
     // Asegurar que empiece con +
     if (!cleaned.startsWith('+')) {
         cleaned = '+' + cleaned
     }
-    
+
     // Limitar a 15 dígitos (código de país + número)
     if (cleaned.length > 16) {
         cleaned = cleaned.substring(0, 16)
     }
-    
+
     return cleaned
 }
 
@@ -222,33 +228,34 @@ const formatWhatsApp = (value) => {
 async function handleRegister() {
     // Validaciones
     if (!registerData.value.nombre || !registerData.value.apellido || !registerData.value.email || !registerData.value.whatsapp || !registerData.value.password) {
-        $modal.showError('Por favor completa todos los campos obligatorios', 'Campos Requeridos')
+        showError('Por favor completa todos los campos obligatorios', 'Campos Requeridos')
         return
     }
-    
+
     if (registerData.value.password.length < 6) {
-        $modal.showWarning('La contraseña debe tener al menos 6 caracteres', 'Contraseña Inválida')
+        showWarning('La contraseña debe tener al menos 6 caracteres', 'Contraseña Inválida')
         return
     }
-    
+
     // Validar formato de WhatsApp
     const whatsappRegex = /^\+[1-9]\d{1,14}$/
     if (!whatsappRegex.test(registerData.value.whatsapp)) {
-        $modal.showWarning('Por favor ingresa un número de WhatsApp válido con código de país (ej: +51 999 999 999)', 'WhatsApp Inválido')
+        showWarning('Por favor ingresa un número de WhatsApp válido con código de país (ej: +51 999 999 999)', 'WhatsApp Inválido')
         return
     }
-    
+
     loading.value = true
     try {
         const userStore = useUserStore()
         await userStore.registerUser(registerData.value)
-        $modal.showSuccess('¡Cuenta creada exitosamente! Redirigiendo...', 'Registro Exitoso')
+        showSuccess('¡Cuenta creada exitosamente! Redirigiendo...', 'Registro Exitoso')
         setTimeout(() => {
             router.push('/')
-        }, 2000)
+        }, 1000)
     } catch (error) {
         console.log(error)
-        $modal.showError(error.message || 'Error al registrar usuario', 'Error de Registro')
+        console.log(error.message, 'error en register component')
+        showError(error.message||'Error al registrar usuario')
     } finally {
         loading.value = false
     }

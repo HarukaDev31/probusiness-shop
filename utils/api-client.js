@@ -47,6 +47,7 @@ export const apiClient = {
       const data = await response.json()
 
       if (!response.ok) {
+        console.log(response, 'response en api client')
         throw new Error(data.message || `Error ${response.status}`)
       }
 
@@ -66,10 +67,10 @@ export const apiClient = {
     return this.request(endpoint)
   },
 
-  async post(endpoint, data) {
+  async post(endpoint, options) {
     return this.request(endpoint, {
       method: 'POST',
-      body: JSON.stringify(data)
+      ...options
     })
   },
 

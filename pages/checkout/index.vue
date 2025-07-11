@@ -31,24 +31,25 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
-                    <select v-model="form.province" @change="onProvinceChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
-                    <option value="">Selecciona provincia</option>
-                    <option v-for="prov in provinces" :key="prov.id" :value="prov.name">{{ prov.name }}</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Departamento*</label>
+                    <select v-model="form.departamento" @change="onDepartamentoChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
+                      <option value="">{{ loading ? 'Cargando...' : 'Selecciona departamento' }}</option>
+                      <option v-for="dept in departamentos" :key="dept.value" :value="dept.value">{{ dept.label }}</option>
                     </select>
+                    <div v-if="departamentos.length === 0 && !loading" class="text-red-500 text-xs mt-1">No se pudieron cargar los departamentos</div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Ciudad*</label>
-                    <select v-model="form.city" @change="onCityChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
-                    <option value="">Selecciona ciudad</option>
-                    <option v-for="city in cities" :key="city.id" :value="city.name">{{ city.name }}</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
+                    <select v-model="form.provincia" @change="onProvinciaChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" :disabled="!form.departamento">
+                    <option value="">Selecciona provincia</option>
+                    <option v-for="prov in provincias" :key="prov.value" :value="prov.value">{{ prov.label }}</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Distrito*</label>
-                    <select v-model="form.district" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
+                    <select v-model="form.distrito" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" :disabled="!form.provincia">
                     <option value="">Selecciona distrito</option>
-                    <option v-for="district in districts" :key="district.id" :value="district.name">{{ district.name }}</option>
+                    <option v-for="dist in distritos" :key="dist.value" :value="dist.value">{{ dist.label }}</option>
                     </select>
                 </div>
                 </div>
@@ -166,24 +167,25 @@
             </div>
             <div class="grid grid-cols-1 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
-                    <select v-model="form.province" @change="onProvinceChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
-                    <option value="">Selecciona provincia</option>
-                    <option v-for="prov in provinces" :key="prov.id" :value="prov.name">{{ prov.name }}</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Departamento*</label>
+                    <select v-model="form.departamento" @change="onDepartamentoChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
+                    <option value="">{{ loading ? 'Cargando...' : 'Selecciona departamento' }}</option>
+                    <option v-for="dept in departamentos" :key="dept.value" :value="dept.value">{{ dept.label }}</option>
                     </select>
+                    <div v-if="departamentos.length === 0 && !loading" class="text-red-500 text-xs mt-1">No se pudieron cargar los departamentos</div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Ciudad*</label>
-                    <select v-model="form.city" @change="onCityChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
-                    <option value="">Selecciona ciudad</option>
-                    <option v-for="city in cities" :key="city.id" :value="city.name">{{ city.name }}</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
+                    <select v-model="form.provincia" @change="onProvinciaChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" :disabled="!form.departamento">
+                    <option value="">Selecciona provincia</option>
+                    <option v-for="prov in provincias" :key="prov.value" :value="prov.value">{{ prov.label }}</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Distrito*</label>
-                    <select v-model="form.district" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
+                    <select v-model="form.distrito" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" :disabled="!form.provincia">
                     <option value="">Selecciona distrito</option>
-                    <option v-for="district in districts" :key="district.id" :value="district.name">{{ district.name }}</option>
+                    <option v-for="dist in distritos" :key="dist.value" :value="dist.value">{{ dist.label }}</option>
                     </select>
                 </div>
             </div>
@@ -400,6 +402,7 @@ import { useCartStore } from '~/stores/cart'
 import { ref, onMounted, computed } from 'vue'
 import { useOrders } from '~/composables/useOrders'
 import { useModal } from '~/composables/useModal'
+import { useLocationService } from '~/services/location-service'
 
 const { $formatPrice } = useNuxtApp();
 const router = useRouter();
@@ -407,6 +410,9 @@ const router = useRouter();
 const cartStore = useCartStore();
 const savedMessage = ref(false)
 const mobileSummaryOpen = ref(false)
+
+// Usar el servicio de ubicaciones
+const locationService = useLocationService()
 
 // Usar el composable de modal
 const { showError } = useModal()
@@ -484,48 +490,89 @@ const orderNumber = ref('')
 // Colores para el confeti
 const confettiColors = ['#FF5000', '#22C55E', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899']
 
-const provinciasData = [
-  {
-    name: 'Lima',
-    cities: [
-      {
-        name: 'Lima',
-        districts: ['Miraflores', 'San Isidro', 'Surco']
-      },
-      {
-        name: 'Callao',
-        districts: ['Bellavista', 'La Perla']
-      }
-    ]
-  },
-  {
-    name: 'Arequipa',
-    cities: [
-      {
-        name: 'Arequipa',
-        districts: ['Cercado', 'Yanahuara']
-      }
-    ]
+// Estados reactivos para las ubicaciones
+const paises = ref([])
+const departamentos = ref([])
+const provincias = ref([])
+const distritos = ref([])
+const loading = ref(false)
+
+// Función para cargar departamentos
+const loadDepartamentos = async () => {
+  try {
+    loading.value = true
+    console.log('Cargando departamentos...')
+    const data = await locationService.getDepartamentos()
+    console.log('Departamentos cargados:', data)
+    console.log('Tipo de datos:', typeof data, Array.isArray(data))
+    departamentos.value = data || []
+    console.log('departamentos.value después de asignar:', departamentos.value)
+  } catch (error) {
+    console.error('Error al cargar departamentos:', error)
+    departamentos.value = []
+  } finally {
+    loading.value = false
   }
-]
-
-const provinces = ref(provinciasData.map(p => ({ name: p.name })))
-const cities = ref([])
-const districts = ref([])
-
-function onProvinceChange() {
-  form.value.city = ''
-  form.value.district = ''
-  const prov = provinciasData.find(p => p.name === form.value.province)
-  cities.value = prov ? prov.cities.map(c => ({ name: c.name })) : []
-  districts.value = []
 }
 
-function onCityChange() {
-  form.value.district = ''
-  const prov = provinciasData.find(p => p.name === form.value.province)
-  const city = prov?.cities.find(c => c.name === form.value.city)
-  districts.value = city ? city.districts.map(d => ({ name: d })) : []
+// Función para cargar provincias
+const loadProvincias = async (departamentoId) => {
+  try {
+    loading.value = true
+    form.value.provincia = ''
+    form.value.distrito = ''
+    console.log('Cargando provincias para departamentoId:', departamentoId)
+    const data = await locationService.getProvincias(departamentoId)
+    console.log('Provincias cargadas:', data)
+    provincias.value = data || []
+    console.log('provincias.value después de asignar:', provincias.value)
+  } catch (error) {
+    console.error('Error al cargar provincias:', error)
+    provincias.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+// Función para cargar distritos
+const loadDistritos = async (provinciaId) => {
+  try {
+    loading.value = true
+    form.value.distrito = ''
+    console.log('Cargando distritos para provinciaId:', provinciaId)
+    const data = await locationService.getDistritos(provinciaId)
+    console.log('Distritos cargados:', data)
+    distritos.value = data || []
+    console.log('distritos.value después de asignar:', distritos.value)
+  } catch (error) {
+    console.error('Error al cargar distritos:', error)
+    distritos.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+function onDepartamentoChange() {
+  if (form.value.departamento) {
+    const departamento = departamentos.value.find(d => d.value === form.value.departamento)
+    if (departamento) {
+      loadProvincias(departamento.value)
+    }
+  } else {
+    provincias.value = []
+    distritos.value = []
+  }
+}
+
+function onProvinciaChange() {
+  if (form.value.provincia) {
+    const provincia = provincias.value.find(p => p.value === form.value.provincia)
+    if (provincia) {
+      loadDistritos(provincia.value)
+    }
+  } else {
+    distritos.value = []
+  }
 }
 
 const form = ref({
@@ -533,18 +580,18 @@ const form = ref({
     dni: '',
     email: '',
     phone: '',
-    province: '',
-    city: '',
-    district: ''
+    departamento: '',
+    provincia: '',
+    distrito: ''
 });
 const isFormValid = computed(() =>
   form.value.fullName.trim() &&
   form.value.dni.trim() &&
   form.value.email.trim() &&
   form.value.phone.trim() &&
-  form.value.province.trim() &&
-  form.value.city.trim() &&
-  form.value.district.trim()
+  form.value.departamento &&
+  form.value.provincia &&
+  form.value.distrito
 )
 async function handlePedido() {
   // Validar que el carrito no esté vacío
@@ -596,16 +643,29 @@ const closeSuccessModal = () => {
     showSuccess.value = false;
     router.push('/');
 };
-onMounted(() => {
-    // Validar que el carrito no esté vacío
+onMounted(async () => {
     if (cartItems.value && cartItems.value.length === 0) {
         router.push('/cart');
         return;
     }
     
+    // Cargar departamentos al inicio
+    await loadDepartamentos()
+    
     const savedInfo = localStorage.getItem('checkoutInfo');
     if (savedInfo) {
-        form.value = JSON.parse(savedInfo);
+        const parsedInfo = JSON.parse(savedInfo);
+        
+        // Restaurar ubicaciones si existen
+        if (parsedInfo.departamento) {
+            await loadProvincias(parsedInfo.departamento)
+            if (parsedInfo.provincia) {
+                await loadDistritos(parsedInfo.provincia)
+            }
+        }
+        
+        // Restaurar el formulario después de cargar todos los datos
+        form.value = { ...parsedInfo };
     } else {
         // Autocompletar si el usuario está logueado
         const userName = localStorage.getItem('user_name');

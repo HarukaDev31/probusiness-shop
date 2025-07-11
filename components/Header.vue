@@ -18,12 +18,14 @@
             fill="#CCCCCC" />
         </svg>
       </button>
-      <!--Mobile Menu-->
+      <!--Sidebar Menu (Mobile & Desktop)-->
       <Transition name="mobile-menu">
-        <div v-if="mobileMenuOpen" class="fixed top-0 left-0 bg-white w-4/5 h-full shadow-lg z-50 overflow-y-auto">
-          <!-- Header del menú móvil -->
-          <div class="flex justify-end items-center p-4 border-b border-gray-100">
-            <button @click="toggleMobileMenu" class="p-2">
+        <div v-if="mobileMenuOpen" class="fixed top-0 left-0 bg-white h-full shadow-lg z-[9999] overflow-y-auto"
+             :class="isMobile ? 'w-4/5' : 'w-80'">
+          <!-- Header del menú lateral -->
+          <div class="flex justify-between items-center p-4 border-b border-gray-100">
+            <h3 class="font-semibold text-gray-800">Todas las categorías</h3>
+            <button @click="closeMobileMenu" class="p-2">
               <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="15.0437" y="0.302734" width="1" height="20.8517" rx="0.5"
                   transform="rotate(45 15.0437 0.302734)" fill="#CCCCCC" />
@@ -78,6 +80,7 @@
             <Transition name="dropdown">
               <div v-if="socialMobileOpen" class="bg-gray-50 overflow-hidden">
                 <a v-for="social in socialMedia" :key="social.name" :href="social.url"
+                  target="_blank"
                   class="group flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 hover:text-secondary transition-all duration-200 transform hover:translate-x-1">
                   <Icon :name="social.icon"
                     class="w-5 h-5 mr-3 transition-transform duration-200 group-hover:scale-110" />
@@ -110,7 +113,7 @@
 
       <!-- Backdrop -->
       <Transition name="mobile-menu">
-        <div v-if="mobileMenuOpen" @click="closeMobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+        <div v-if="mobileMenuOpen" @click="closeMobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-[9998]"></div>
       </Transition>
 
       <!-- Logo centrado -->
@@ -348,13 +351,14 @@
         <div class="hidden md:flex items-center w-full">
           <!-- Botón fijo a la izquierda -->
           <div class="flex-shrink-0">
-                          <div class="relative">
-                <button 
-                  class="nav-link py-3 px-8 flex items-center w-full h-full min-w-[120px] justify-center">
-                  Todas las categorías
-                  <Icon name="heroicons:chevron-right" class="w-4 h-4 ml-1" />
-                </button>
-              </div>
+            <div class="relative">
+              <button 
+                @click="toggleCategoriesMenu"
+                class="nav-link py-3 px-8 flex items-center w-full h-full min-w-[120px] justify-center">
+                Todas las categorías
+                <Icon name="heroicons:chevron-right" class="w-4 h-4 ml-1" />
+              </button>
+            </div>
           </div>
           
           <!-- Categorías scrolleables -->
@@ -390,6 +394,106 @@
 
     </nav>
   </header>
+  
+  <!-- Sidebar fuera del header para evitar problemas de overflow -->
+  <Transition name="mobile-menu">
+    <div v-if="mobileMenuOpen" class="fixed top-0 left-0 bg-white h-full shadow-lg z-[9999] overflow-y-auto border-2 border-red-500"
+         :class="isMobile ? 'w-4/5' : 'w-80'"
+         style="transform: translateX(0);"
+         @mounted="console.log('Sidebar mounted')">
+      <!-- Header del menú lateral -->
+      <div class="flex justify-between items-center p-4 border-b border-gray-100">
+        <h3 class="font-semibold text-gray-800">Todas las categorías</h3>
+        <button @click="closeMobileMenu" class="p-2">
+          <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="15.0437" y="0.302734" width="1" height="20.8517" rx="0.5"
+              transform="rotate(45 15.0437 0.302734)" fill="#CCCCCC" />
+            <rect x="15.3162" y="14.9961" width="1" height="20.7454" rx="0.5"
+              transform="rotate(135 15.3162 14.9961)" fill="#CCCCCC" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Usuario -->
+      <div class="flex items-center gap-4 p-4 border-b border-gray-100">
+        <svg width="30" height="34" viewBox="0 0 30 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M28.0812 32.0798V28.7472C28.0812 26.9795 27.3942 25.2842 26.1714 24.0342C24.9486 22.7843 23.2902 22.082 21.5609 22.082H8.5203C6.79101 22.082 5.13254 22.7843 3.90975 24.0342C2.68696 25.2842 2 26.9795 2 28.7472V32.0798"
+            stroke="#272A30" stroke-width="2.60812" stroke-linecap="round" stroke-linejoin="round" />
+          <path
+            d="M15.0406 15.4202C18.6416 15.4202 21.5609 12.4361 21.5609 8.75504C21.5609 5.07395 18.6416 2.08984 15.0406 2.08984C11.4395 2.08984 8.52026 5.07395 8.52026 8.75504C8.52026 12.4361 11.4395 15.4202 15.0406 15.4202Z"
+            stroke="#272A30" stroke-width="2.60812" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="font-medium"
+        @click="userName ? '' : $router.push('/login')"
+        >{{ userName ? userName : 'Iniciar sesión' }}</span>
+      </div>
+
+      <!-- Categorías desplegable -->
+      <div class="border-b border-gray-100">
+        <button @click="toggleCategoriesMobile" class="w-full flex justify-between items-center p-4 text-left">
+          <span class="font-medium text-gray-800">Categorías</span>
+          <Icon :name="categoriesMobileOpen ? 'heroicons:chevron-up' : 'heroicons:chevron-down'"
+            class="w-5 h-5 text-gray-500 transition-transform duration-200"
+            :class="{ 'rotate-180': categoriesMobileOpen }" />
+        </button>
+        <Transition name="dropdown">
+          <div v-if="categoriesMobileOpen" class="bg-gray-50 overflow-hidden">
+            <NuxtLink v-for="category in categories" :key="category.id" :to="`/category/${category.slug}`"
+              @click="closeMobileMenu"
+              class="block px-6 py-3 text-gray-700 hover:bg-gray-100 hover:text-secondary transition-all duration-200 transform hover:translate-x-1">
+              {{ category.name }}
+            </NuxtLink>
+          </div>
+        </Transition>
+      </div>
+
+      <!-- Redes sociales desplegable -->
+      <div class="border-b border-gray-100">
+        <button @click="toggleSocialMobile" class="w-full flex justify-between items-center p-4 text-left">
+          <span class="font-medium text-gray-800">Redes sociales</span>
+          <Icon :name="socialMobileOpen ? 'heroicons:chevron-up' : 'heroicons:chevron-down'"
+            class="w-5 h-5 text-gray-500 transition-transform duration-200"
+            :class="{ 'rotate-180': socialMobileOpen }" />
+        </button>
+        <Transition name="dropdown">
+          <div v-if="socialMobileOpen" class="bg-gray-50 overflow-hidden">
+            <a v-for="social in socialMedia" :key="social.name" :href="social.url"
+              class="group flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 hover:text-secondary transition-all duration-200 transform hover:translate-x-1">
+              <Icon :name="social.icon"
+                class="w-5 h-5 mr-3 transition-transform duration-200 group-hover:scale-110" />
+              {{ social.name }}
+            </a>
+          </div>
+        </Transition>
+      </div>
+
+      <!-- Enlaces adicionales -->
+      <div class="p-4">
+        <NuxtLink to="/wishlist" @click="closeMobileMenu"
+          class="flex items-center gap-3 py-3 text-gray-700 hover:text-secondary transition">
+          <Icon name="heroicons:heart" class="w-5 h-5" />
+          Lista de deseos
+        </NuxtLink>
+        <NuxtLink to="/orders" @click="closeMobileMenu"
+          class="flex items-center gap-3 py-3 text-gray-700 hover:text-secondary transition">
+          <Icon name="heroicons:cube" class="w-5 h-5" />
+          Pedidos
+        </NuxtLink>
+        <button @click="logout"
+          class="flex items-center gap-3 py-3 w-full text-left text-gray-700 hover:text-secondary transition">
+          <Icon name="heroicons:arrow-left-on-rectangle" class="w-5 h-5" />
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </Transition>
+
+  <!-- Backdrop fuera del header -->
+  <Transition name="mobile-menu">
+    <div v-if="mobileMenuOpen" @click="closeMobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-[9998]" 
+         @mousedown.prevent @click.stop></div>
+  </Transition>
 </template>
 
 <script setup>
@@ -418,10 +522,10 @@ const userName = computed(() => userStore.name)
 const userMenuOpen = ref(false);
 
 const socialMedia = [
-  { name: 'Instagram', url: '#', icon: 'mdi:instagram' },
-  { name: 'Facebook', url: '#', icon: 'mdi:facebook' },
-  { name: 'Youtube', url: '#', icon: 'mdi:youtube' },
-  { name: 'Tiktok', url: '#', icon: 'mdi:tik_tok' }
+  { name: 'Instagram', url: 'https://www.instagram.com/probusinesspe/', icon: 'mdi:instagram' },
+  { name: 'Facebook', url: 'https://www.facebook.com/Probusinesspe/', icon: 'mdi:facebook' },
+  { name: 'Youtube', url: 'https://www.youtube.com/@MiguelVillegasImportaciones', icon: 'mdi:youtube' },
+  { name: 'Tiktok', url: 'https://www.tiktok.com/@pro_business_impo?lang=es', icon: 'mdi:tik_tok' }
 ];
 
 const mobileMenuOpen = ref(false);
@@ -430,6 +534,8 @@ const categoriesMobileOpen = ref(false);
 const socialMobileOpen = ref(false);
 const router = useRouter()
 
+
+
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
   if (!mobileMenuOpen.value) {
@@ -437,6 +543,10 @@ const toggleMobileMenu = () => {
     categoriesMobileOpen.value = false;
     socialMobileOpen.value = false;
   }
+};
+
+const toggleCategoriesMenu = () => {
+  mobileMenuOpen.value = true;
 };
 
 const toggleCategoriesMobile = () => {
@@ -475,9 +585,9 @@ function logout() {
   router.push('/login')
 }
 
-// Close menus when window is resized
+// Close menus when window is resized (only for mobile to tablet transition)
 const handleResize = () => {
-  if (window.innerWidth >= 768) { // md breakpoint
+  if (window.innerWidth < 768 && window.innerWidth > 0) {
     closeAllMenus();
   }
 };
@@ -514,7 +624,7 @@ const goToOrders = () => {
   scrollbar-width: none;
 }
 
-/* Animaciones para el menú móvil */
+/* Animaciones para el menú lateral */
 .mobile-menu-enter-active,
 .mobile-menu-leave-active {
   transition: all 0.3s ease;
@@ -530,6 +640,14 @@ const goToOrders = () => {
 .mobile-menu-leave-from {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* Estilos específicos para desktop */
+@media (min-width: 1024px) {
+  .mobile-menu-enter-active,
+  .mobile-menu-leave-active {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 
 /* Estilos para las listas desplegables */

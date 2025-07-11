@@ -122,5 +122,8 @@ export const useCartStore = defineStore('cart', {
 
     // getter
   },
-  persist: false
+  persist: {
+    storage: localStorage,
+    key: 'cart-store'
+  }
 });

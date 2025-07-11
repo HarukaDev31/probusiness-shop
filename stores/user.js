@@ -8,15 +8,20 @@ export const useUserStore = defineStore('user', {
   }),
   actions: {
     async loginUser(email, password) {
-      const data = await authService.login(email, password)
-      this.setUser({
-        name: data.user.name,
-        email: data.user.email,
-        token: data.access_token
-      })
-      return data
+      try {
+        const data = await authService.login(email, password)
+        this.setUser({
+          name: data.user.name,
+          email: data.user.email,
+          token: data.access_token
+        })
+        return data
+      } catch (error) {
+        console.error('Error al iniciar sesión:', error)
+        throw error
+      }
     },
-    
+
     async registerUser(userData) {
       const data = await authService.register(userData)
       console.log(data.access_token)

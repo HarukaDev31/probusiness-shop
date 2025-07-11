@@ -8,6 +8,7 @@ export const authService = {
         body: JSON.stringify({ email, password })
       })
     } catch (error) {
+      console.error('Error al iniciar sesión:', error)  
       throw new Error(error.message || 'Error de conexión con el servidor')
     }
   },
