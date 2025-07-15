@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'epilogue': ['Epilogue', 'sans-serif'],
+      },
       colors: {
         primary: '#FF6600',
         secondary: '#333333',

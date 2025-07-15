@@ -75,7 +75,7 @@
               </div>
             </div>
             <!-- Imagen principal con overlay relativo -->
-            <div class="bg-white rounded-lg shadow-md flex-1 flex items-center justify-center ml-4 relative max-w-2xl max-h-96">
+            <div class="bg-white rounded-lg shadow-md flex-1 flex items-center justify-center ml-4 relative max-w-2xl h-[500px]">
               <div class="w-full h-full relative flex items-center justify-center">
                 <!-- Corazón favoritos -->
 
@@ -146,7 +146,7 @@
           <div class="md:hidden">
             <!-- Slider principal -->
             <div class="relative bg-white rounded-lg shadow-md">
-              <div class="w-full h-100 relative flex items-center justify-center max-w-full max-h-96"
+              <div class="w-full h-[300px] relative flex items-center justify-center"
                    @touchstart="handleTouchStart"
                    @touchmove="handleTouchMove"
                    @touchend="handleTouchEnd">
@@ -231,7 +231,9 @@
           </div>
           <!-- Panel lateral de carrito -->
           <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40"
-            @click.self="showCartPanel = false">
+            @click.self="showCartPanel = false"
+            
+            >
             <!-- Mobile: desde abajo -->
             <div class="md:hidden bg-white w-full h-[580px] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
               <div class="flex flex-col justify-between items-start my-3">
@@ -472,8 +474,8 @@
       <!-- Related Products -->
       <div class="mt-16">
         <h2 class="sm:text-lg lg:text-2xl font-bold mb-6">Otras Recomendaciones para tu negocio</h2>
-        <Swiper :modules="[Navigation]" :slides-per-view="2" :space-between="16" :breakpoints="{
-          640: { slidesPerView: 2, navigation: false },
+        <Swiper :modules="[Navigation]" :slides-per-view="1.2" :space-between="16" :breakpoints="{
+          640: { slidesPerView: 2.2, navigation: false },
           1024: { slidesPerView: 3, navigation: false },
           1280: { slidesPerView: 4, navigation: true }
         }" :navigation="false" class="!pb-10">
@@ -556,7 +558,7 @@ const router = useRouter();
 const cartQuantity = ref(1)
 
 const iniciarPedidoPanel = () => {
-  goToCart.value = false;
+  goToCart.value = true;
   if (product.value) {
     cartStore.addItem({
       id: product.value.id,

@@ -3,12 +3,12 @@
     <div class="container-custom max-w-[1440px] mx-auto py-5 pl-5">
       <h2 class="text-center py-5 text-xl md:text-2xl font-semibold mb-6">Importadores que trabajan con nosotros</h2>
       <Swiper
-        :slides-per-view="9"
-        :space-between="16"
+        :slides-per-view="3.5"
+        :space-between="12"
         :breakpoints="{
-          450: { slidesPerView: 3, spaceBetween: 12 },
-          480: { slidesPerView: 3, spaceBetween: 16 },
-          640: { slidesPerView: 4, spaceBetween: 18 },
+          450: { slidesPerView: 4.2, spaceBetween: 12 },
+          480: { slidesPerView: 4.8, spaceBetween: 16 },
+          640: { slidesPerView: 5.5, spaceBetween: 18 },
           1024: { slidesPerView: 6, spaceBetween: 20 },
           1280: { slidesPerView: 7, spaceBetween: 24 },
           1440: { slidesPerView: 9, spaceBetween: 24 }

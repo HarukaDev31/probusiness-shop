@@ -6,9 +6,19 @@
       </div>
       <div class="relative">
         <div v-if="!isLoading">
-          <!-- Vista mobile: 2 columnas -->
-          <div v-if="isMobile" class="grid grid-cols-2 gap-1">
-            <ProductCard v-for="product in products.slice(0, 4)" :key="product.id" :product="product" />
+          <!-- Vista mobile: Slider con scroll parcial -->
+          <div v-if="isMobile">
+            <Swiper
+              :modules="[Navigation]"
+              :slides-per-view="1.3"
+              :space-between="12"
+              :navigation="false"
+              class="mobile-product-swiper"
+            >
+              <SwiperSlide v-for="product in products" :key="product.id">
+                <ProductCard :product="product" />
+              </SwiperSlide>
+            </Swiper>
           </div>
           
           <!-- Vista desktop: Slider -->

@@ -78,7 +78,13 @@
             </div>
             <!-- Product Info -->
             <div class="flex-1 min-w-0">
-              <div class="font-bold text-lg text-gray-800 truncate">{{ order.items[0]?.name }}</div>
+              <div 
+                class="font-bold text-lg text-gray-800 truncate cursor-pointer hover:text-[#FF5000] transition-colors"
+                @click="goToProduct(order.items[0]?.productId)"
+              >
+              
+                {{ order.items[0]?.name }}
+              </div>
               <div class="text-gray-600 text-sm mt-1 truncate">
                 {{ order.items.length > 1 ? `y ${order.items.length - 1} producto(s) más` : ' ' }}
               </div>
@@ -138,7 +144,12 @@
                     <tr v-for="item in orderDetails[order.id].order.items" :key="item.id" class="border-b last:border-b-0">
                       <td class="flex items-center gap-4 px-4 py-3">
                         <img :src="item.image" :alt="item.name" class="w-14 h-14 rounded object-cover" />
-                        <span class="font-bold text-lg text-gray-800">{{ item.name }}</span>
+                        <span 
+                          class="font-bold text-lg text-gray-800 cursor-pointer hover:text-[#FF5000] transition-colors"
+                          @click="goToProduct(item.productId)"
+                        >
+                          {{ item.name }}
+                        </span>
                       </td>
                       <td class="text-center px-4 py-3 text-lg">{{ item.quantity }}</td>
                       <td class="text-center px-4 py-3 text-lg">{{ $formatPrice(item.price) }}</td>
@@ -165,8 +176,10 @@
 <script setup>
 import { useOrders } from '~/composables/useOrders'
 import orderService from '~/services/order-service'
+import { useRouter } from 'vue-router'
 
 const { $formatPrice } = useNuxtApp()
+const router = useRouter()
 const orders = ref([])
 
 // Filtro de año y recientes
@@ -302,5 +315,15 @@ function getStatusText(status) {
     cancelled: 'Cancelado'
   }
   return statusTexts[status] || 'Desconocido'
+}
+
+/**
+ * Navegar a la página del producto
+ */
+function goToProduct(productId) {
+  console.log('Navegando a producto:', productId)
+  if (productId) {
+    router.push(`/product/${productId}`)
+  }
 }
 </script>

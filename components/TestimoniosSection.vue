@@ -3,12 +3,12 @@
     <div class="container-custom max-w-[1440px] mx-auto">
       <h2 class="text-2xl font-bold mb-6">Testimonios de nuestros clientes</h2>
       <Swiper
-        :slides-per-view="1"
-        :space-between="24"
+        :slides-per-view="1.3"
+        :space-between="16"
         :breakpoints="{
-          450: { slidesPerView: 2 },
-          480: { slidesPerView: 2 },
-          640: { slidesPerView: 2 },
+          450: { slidesPerView: 1.8 },
+          480: { slidesPerView: 2.2 },
+          640: { slidesPerView: 2.5 },
           1024: { slidesPerView: 3 },
           1280: { slidesPerView: 5 }
         }"
