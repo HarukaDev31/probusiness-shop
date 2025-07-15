@@ -115,7 +115,7 @@ const slides = [
     id: 1,
     title: 'Productos electrónicos',
     image: 'https://intranet.probusiness.pe/assets/tienda/hero.webp',
-    mobileImage: 'https://intranet.probusiness.pe/assets/tienda/hero-mobile.webp'
+    mobileImage: 'https://intranet.probusiness.pe/assets/tienda/hero-mobile1.webp'
   },
   {
     id: 2,
