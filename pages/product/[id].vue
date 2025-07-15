@@ -233,13 +233,13 @@
           <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40"
             @click.self="showCartPanel = false">
             <!-- Mobile: desde abajo -->
-            <div class="md:hidden bg-white w-full h-[55%] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
-              <div class="flex flex-col justify-between items-start my-6">
+            <div class="md:hidden bg-white w-full h-[580px] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
+              <div class="flex flex-col justify-between items-start my-3">
                 <h2 class="text-lg font-bold">Selecciona la cantidad de tu interés</h2>
                 <span class="text-gray-500 py-2"><b>*</b>Pedido mínimo de importación <b> s/3.000</b></span>
               </div>
 
-              <div class="my-4">
+              <div class="my-2">
                 <h3 class="font-semibold my-2 text-xl">Cantidades</h3>
                 <div class="flex overflow-x-auto gap-4 py-2">
                   <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity"
@@ -250,7 +250,7 @@
                 </div>
               </div>
               <div class="border-b-2 border-gray-300 rounded py-3"></div>
-              <div class="my-6 flex">
+              <div class="my-2flex">
                 <div class="flex flex-row items-center gap-8 my-6 w-full">
                   <div class="flex flex-col flex-1">
                     <span class="font-semibold mb-1 text-base sm:text-lg">Cantidad</span>
