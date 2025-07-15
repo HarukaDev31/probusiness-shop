@@ -77,7 +77,7 @@ const testimonios = [
   {
     id: 1,
     nombre: 'ALUMNO DE CHINA',
-    thumbnail: '/assets/testimonios/alumnochino_1.webp',
+    thumbnail: 'https://intranet.probusiness.pe/assets/testimonios/alumnochino_1.webp',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7518214656066915602'
   },
   {
