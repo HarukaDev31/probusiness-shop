@@ -1,19 +1,37 @@
 <template>
   <section class="bg-white pt-8 pb-20 mb-[-50px] h-full">
-    <div class="container-custom max-w-[1440px] mx-auto">
-      <h2 class="text-center text-xl md:text-2xl font-semibold mb-6">Importadores que trabajan con nosotros</h2>
-      <div class="flex flex-wrap justify-center py-5 items-end gap-x-8 gap-y-4 md:gap-x-12 md:gap-y-6">
-        <img v-for="brand in brands" :key="brand.name" :src="brand.logo" :alt="brand.name"
-          class="max-h-7 md:max-h-10 h-auto w-auto grayscale opacity-80 hover:opacity-100 transition mx-2"
-          style="max-width:100px; object-fit:contain;"
-          loading="lazy"
-        />
-      </div>
+    <div class="container-custom max-w-[1440px] mx-auto py-5 pl-5">
+      <h2 class="text-center py-5 text-xl md:text-2xl font-semibold mb-6">Importadores que trabajan con nosotros</h2>
+      <Swiper
+        :slides-per-view="9"
+        :space-between="16"
+        :breakpoints="{
+          480: { slidesPerView: 3, spaceBetween: 16 },
+          640: { slidesPerView: 4, spaceBetween: 18 },
+          1024: { slidesPerView: 6, spaceBetween: 20 },
+          1280: { slidesPerView: 7, spaceBetween: 24 },
+          1440: { slidesPerView: 9, spaceBetween: 24 }
+        }"
+        class="brands-swiper "
+      >
+        <SwiperSlide v-for="brand in brands" :key="brand.name" class="flex items-center justify-center">
+          <img
+            :src="brand.logo"
+            :alt="brand.name"
+            class="max-h-7 md:max-h-10 h-auto w-auto grayscale opacity-80 hover:opacity-100 transition mx-1"
+            style="max-width:90px; object-fit:contain;"
+            loading="lazy"
+          />
+        </SwiperSlide>
+      </Swiper>
     </div>
   </section>
 </template>
 
 <script setup>
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+
 const brands = [
   { name: 'Sony', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.svg' },
   { name: 'GoPro', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/GoPro_logo_light.svg/1920px-GoPro_logo_light.svg.png' },

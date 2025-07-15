@@ -196,6 +196,10 @@ async function goToCheckout() {
   router.push('/checkout')
 }
 
+onMounted(() => {
+  cartStore.loadCartForUser();
+});
+
 </script>
 
 <style scoped>

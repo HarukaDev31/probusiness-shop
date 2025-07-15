@@ -6,7 +6,7 @@
           :src="getProductImage()" 
           :alt="product.nombre"
           loading="lazy"
-          class="absolute inset-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
+          class="absolute inset-0 w-full h-full object-contain p-1 md:p-4 hover:scale-105 transition-transform duration-300"
         />
       </NuxtLink>
       
@@ -17,7 +17,7 @@
       <!--badge from category-->
  
       <NuxtLink :to="`/product/${product.id}`">
-        <h3 class="font-semibold mb-2 line-clamp-2 hover:text-[#FF5000] transition-colors h-12 flex items-start">{{ truncateName(product.nombre) }}</h3>
+        <h3 class="font-medium mb-2 line-clamp-2 hover:text-[#FF5000] leading-1 transition-colors h-12 flex items-start">{{ truncateName(product.nombre) }}</h3>
       </NuxtLink>
       <div class="text-sm text-gray-500 mb-2">Orden mínima: {{ product.moq }}</div>
       <div class="text-2xl font-bold text-black mt-auto">{{ $formatPrice(product.precio) }}</div>

@@ -142,52 +142,78 @@
       <div class="flex-1 overflow-y-auto p-4">
         <div class="bg-white rounded-lg shadow-md p-6 mb-4">
           <h2 class="text-xl font-bold mb-4">Tus datos</h2>
-          <p class="text-xs text-gray-500 flex items-center gap-2 mb-4">
-            <Icon name="heroicons:lock-closed" class="w-4 h-4" />
-            Tu información personal está encriptada
+          <svg class="text-orange-400 pb-1" width="22" height="22" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.37037 5.78639V3.68931C9.37037 1.65436 7.63481 0 5.5 0C3.36519 0 1.62963 1.65436 1.62963 3.68931V5.78639C0.668148 6.27571 0 7.23104 0 8.34949V11.4563C0 13.064 1.36889 14.3689 3.05556 14.3689H7.94444C9.63111 14.3689 11 13.064 11 11.4563V8.34949C11 7.23881 10.3319 6.27571 9.37037 5.78639ZM2.85185 3.68931C2.85185 2.29902 4.04148 1.16504 5.5 1.16504C6.95852 1.16504 8.14815 2.29902 8.14815 3.68931V5.46018C8.08296 5.46018 8.01778 5.43687 7.94444 5.43687H3.05556C2.98222 5.43687 2.91704 5.45241 2.85185 5.46018V3.68931ZM9.77778 11.4563C9.77778 12.4194 8.95481 13.2038 7.94444 13.2038H3.05556C2.04519 13.2038 1.22222 12.4194 1.22222 11.4563V8.34949C1.22222 7.38638 2.04519 6.60192 3.05556 6.60192H7.94444C8.95481 6.60192 9.77778 7.38638 9.77778 8.34949V11.4563Z" fill="#FF500B"/>
+            <path d="M5.49978 8.53906C5.16571 8.53906 4.88867 8.80314 4.88867 9.12158V10.675C4.88867 10.9934 5.16571 11.2575 5.49978 11.2575C5.83386 11.2575 6.11089 10.9934 6.11089 10.675V9.12158C6.11089 8.80314 5.83386 8.53906 5.49978 8.53906Z" fill="#FF500B"/>
+          </svg>
+
+          <p class="text-base text-gray-500 flex items-center gap-2 mb-4">
+            Tu información personal está encriptada y solo se utilizará para fines de entrega
           </p>
           <form @submit.prevent="handleSubmit" class="space-y-4">
-            <div class="grid grid-cols-1 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre y apellido*</label>
-                <input v-model="form.fullName" type="text" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tus nombres y apellidos">
+            <div>
+              <label class="block text-base font-medium text-gray-700 mb-1">Nombre y apellido<span class="text-orange-400">*</span></label>
+              <input v-model="form.fullName" type="text" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base" placeholder="Ingresa tus nombres y apellidos">
+            </div>
+            <!-- DNI y WhatsApp en la misma fila -->
+            <div class="flex flex-row gap-4">
+              <div class="flex-1">
+                <label class="block text-base font-medium text-gray-700 mb-1">DNI/ID<span class="text-orange-400">*</span></label>
+                <input
+                  v-model="form.dni"
+                  type="text"
+                  required
+                  maxlength="8"
+                  class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base"
+                  placeholder="Ingresa tu número de DNI"
+                >
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">DNI/ID*</label>
-                <input v-model="form.dni" type="text" required maxlength="8" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu documento de identidad">
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Correo*</label>
-                <input v-model="form.email" type="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu correo">
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp*</label>
-                <input v-model="form.phone" type="tel" required maxlength="9" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu número de celular">
+              <div class="flex-1">
+                <label class="block text-base font-medium text-gray-700 mb-1">WhatsApp<span class="text-orange-400">*</span></label>
+                <input
+                  v-model="form.phone"
+                  type="tel"
+                  required
+                  maxlength="9"
+                  class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base"
+                  placeholder="Ingresa tu número de celular"
+                >
               </div>
             </div>
-            <div class="grid grid-cols-1 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Departamento*</label>
-                    <select v-model="form.departamento" @change="onDepartamentoChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
-                    <option value="">{{ loading ? 'Cargando...' : 'Selecciona departamento' }}</option>
-                    <option v-for="dept in departamentos" :key="dept.value" :value="dept.value">{{ dept.label }}</option>
-                    </select>
-                    <div v-if="departamentos.length === 0 && !loading" class="text-red-500 text-xs mt-1">No se pudieron cargar los departamentos</div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
-                    <select v-model="form.provincia" @change="onProvinciaChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" :disabled="!form.departamento">
-                    <option value="">Selecciona provincia</option>
-                    <option v-for="prov in provincias" :key="prov.value" :value="prov.value">{{ prov.label }}</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Distrito*</label>
-                    <select v-model="form.distrito" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" :disabled="!form.provincia">
-                    <option value="">Selecciona distrito</option>
-                    <option v-for="dist in distritos" :key="dist.value" :value="dist.value">{{ dist.label }}</option>
-                    </select>
-                </div>
+            <div>
+              <label class="block text-base font-medium text-gray-700 mb-1">Correo<span class="text-orange-400">*</span></label>
+              <input
+                v-model="form.email"
+                type="email"
+                required
+                class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base"
+                placeholder="Ingresa tu correo"
+              >
+            </div>
+            <!-- Provincia, Ciudad, Distrito en la misma fila -->
+            <div class="flex flex-row gap-4">
+              <div class="flex-1">
+                <label class="block text-base font-medium text-gray-700 mb-1">Provincia<span class="text-orange-400">*</span></label>
+                <select v-model="form.departamento" @change="onDepartamentoChange" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base">
+                  <option value="" class="text-base font-medium text-gray-700">{{ loading ? 'Cargando...' : 'Selecciona departamento' }}</option>
+                  <option class="text-base font-medium text-gray-700" v-for="dept in departamentos" :key="dept.value" :value="dept.value">{{ dept.label }}</option>
+                  <div v-if="departamentos.length === 0 && !loading" class="text-red-500 text-xs mt-1">No se pudieron cargar los departamentos</div>
+                </select>
+              </div>
+              <div class="flex-1">
+                <label class="block text-base font-medium text-gray-700 mb-1">Ciudad<span class="text-orange-400">*</span></label>
+                <select v-model="form.provincia" @change="onProvinciaChange" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base" :disabled="!form.departamento">
+                  <option value="">Selecciona provincia</option>
+                  <option v-for="prov in provincias" :key="prov.value" :value="prov.value">{{ prov.label }}</option>
+                </select>
+              </div>
+              <div class="flex-1">
+                <label class="block text-base font-medium text-gray-700 mb-1">Distrito<span class="text-orange-400">*</span></label>
+                <select v-model="form.distrito" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base" :disabled="!form.provincia">
+                  <option value="">Selecciona distrito</option>
+                  <option v-for="dist in distritos" :key="dist.value" :value="dist.value">{{ dist.label }}</option>
+                </select>
+              </div>
             </div>
             <button
               type="button"
@@ -237,13 +263,13 @@
       <!-- Panel inferior colapsable -->
       <div class="bg-white border-t border-gray-200">
         <!-- Header del panel -->
-        <div class="p-4 border-b border-gray-100">
+        <div class="p-6 border-b border-gray-100">
           <button @click="toggleMobileSummary" class="w-full flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span class="text-gray-600">Resumen de pedido</span>
+              <span class="text-black-600 text-xl">Resumen de pedido</span>
             </div>
             <Icon 
-              :name="mobileSummaryOpen ? 'heroicons:chevron-up' : 'heroicons:chevron-down'" 
+              :name="mobileSummaryOpen ? 'heroicons:chevron-down' : 'heroicons:chevron-up'" 
               class="w-5 h-5 text-gray-500 transition-transform"
             />
           </button>
@@ -427,11 +453,15 @@ const cartTotal = computed(() => cartStore.cartTotal)
 const checkoutItems = computed(() => cartStore.checkoutItems)
 
 function guardarDatos() {
-  localStorage.setItem('checkoutInfo', JSON.stringify(form.value));
-  savedMessage.value = true
+  // Usa el email como parte de la clave, si está disponible
+  const userEmail = form.value.email || localStorage.getItem('user_email') || '';
+  const key = userEmail ? `checkoutInfo_${userEmail}` : 'checkoutInfo';
+
+  localStorage.setItem(key, JSON.stringify(form.value));
+  savedMessage.value = true;
   setTimeout(() => {
-    savedMessage.value = false
-  }, 2000)
+    savedMessage.value = false;
+  }, 2000);
 }
 
 function increaseQuantity(item) {
@@ -657,6 +687,9 @@ onMounted(async () => {
     // Cargar departamentos al inicio
     await loadDepartamentos()
     
+    // Usa el email actual para buscar los datos guardados
+    const userEmail = localStorage.getItem('user_email') || '';
+    const key = userEmail ? `checkoutInfo_${userEmail}` : 'checkoutInfo';
     const savedInfo = localStorage.getItem('checkoutInfo');
     if (savedInfo) {
         const parsedInfo = JSON.parse(savedInfo);

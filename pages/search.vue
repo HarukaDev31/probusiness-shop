@@ -67,18 +67,29 @@ onMounted(async () => {
   await productStore.searchProducts(query, currentPage.value);
   loading.value = false;
 });
-const loadMore = async () => {
+
+
+const fetchResults = async (query, page = 1) => {
+  loading.value = true;
+  currentPage.value = page;
+  await productStore.clearProducts?.(); // Si tienes un método para limpiar productos
+  await productStore.searchProducts(query, page);
+  loading.value = false;
+};
+// Update when search query changes
+watch(
+  () => route.query.q,
+  async (newQ) => {
+    const query = (newQ || '').toLowerCase();
+    await fetchResults(query, 1);
+  },
+  { immediate: true }
+);
+
+  const loadMore = async () => {
   currentPage.value++;
   loadMore.value = true;
   await productStore.searchProducts(searchQuery.value, currentPage.value);
   loadMore.value = false;
 };
-// Update when search query changes
-watch(() => route.query.q, () => {
-  loading.value = true;
-  // Simulate search delay
-  setTimeout(() => {
-    loading.value = false;
-  }, 500);
-});
 </script>

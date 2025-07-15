@@ -7,8 +7,8 @@
       <div class="relative">
         <div v-if="!isLoading">
           <!-- Vista mobile: 2 columnas -->
-          <div v-if="isMobile" class="grid grid-cols-2 gap-4">
-            <ProductCard v-for="product in products" :key="product.id" :product="product" />
+          <div v-if="isMobile" class="grid grid-cols-2 gap-1">
+            <ProductCard v-for="product in products.slice(0, 4)" :key="product.id" :product="product" />
           </div>
           
           <!-- Vista desktop: Slider -->
