@@ -17,7 +17,7 @@
           :key="testimonio.id"
         >
           <div class="bg-white rounded-xl shadow overflow-hidden flex flex-col items-center relative group h-full">
-            <div class="relative w-full h-full flex items-center justify-center bg-gray-100">
+            <div class="relative w-full aspect-[9/16] flex items-center justify-center bg-gray-100">
               <img
                 :src="testimonio.thumbnail || defaultThumbnail"
                 :alt="testimonio.nombre"
