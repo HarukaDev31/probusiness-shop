@@ -424,16 +424,19 @@ definePageMeta({
 
 import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart'
+import { useUserStore } from '~/stores/user'
 
 import { ref, onMounted, computed } from 'vue'
 import { useOrders } from '~/composables/useOrders'
 import { useModal } from '~/composables/useModal'
 import { getDepartamentos, getProvincias, getDistritos } from '~/services/location-service'
+import { getUserAccount } from '~/services/user-account-service'
 
 const { $formatPrice } = useNuxtApp();
 const router = useRouter();
 //add middleware to check if cart is empty
 const cartStore = useCartStore();
+const userStore = useUserStore();
 const savedMessage = ref(false)
 const mobileSummaryOpen = ref(false)
 
@@ -680,6 +683,55 @@ const closeSuccessModal = () => {
     showSuccess.value = false;
     router.push('/');
 };
+
+// Función para cargar datos del usuario desde la API
+const loadUserData = async () => {
+    try {
+        // Verificar si hay token de autenticación
+        if (!userStore.token) {
+            console.log('No hay token de autenticación, saltando carga de datos del usuario');
+            return false;
+        }
+
+        console.log('Cargando datos del usuario desde API...');
+        const response = await getUserAccount();
+        console.log('Respuesta de la API /me:', response);
+        
+        if (response && response.data) {
+            const userData = response.data;
+            
+            // Rellenar el formulario con los datos del usuario
+            form.value.fullName = userData.nombre || userData.name || '';
+            form.value.dni = userData.dni || '';
+            form.value.email = userData.email || '';
+            form.value.phone = userData.whatsapp || userData.phone || '';
+            
+            // Si el usuario tiene ubicación guardada, cargarla
+            if (userData.departamento) {
+                form.value.departamento = userData.departamento;
+                await loadProvincias(userData.departamento);
+                
+                if (userData.provincia) {
+                    form.value.provincia = userData.provincia;
+                    await loadDistritos(userData.provincia);
+                    
+                    if (userData.distrito) {
+                        form.value.distrito = userData.distrito;
+                    }
+                }
+            }
+            
+            console.log('Formulario rellenado con datos del usuario:', form.value);
+            return true;
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Error al cargar datos del usuario:', error);
+        return false;
+    }
+};
+
 onMounted(async () => {
     if (cartItems.value && cartItems.value.length === 0) {
         router.push('/cart');
@@ -689,29 +741,38 @@ onMounted(async () => {
     // Cargar departamentos al inicio
     await loadDepartamentos()
     
-    // Usa el email actual para buscar los datos guardados
-    const userEmail = localStorage.getItem('user_email') || '';
-    const key = userEmail ? `checkoutInfo_${userEmail}` : 'checkoutInfo';
-    const savedInfo = localStorage.getItem('checkoutInfo');
-    if (savedInfo) {
-        const parsedInfo = JSON.parse(savedInfo);
+    // Intentar cargar datos del usuario desde la API primero
+    const userDataLoaded = await loadUserData();
+    
+    // Si no se pudieron cargar los datos del usuario desde la API, 
+    // intentar cargar desde localStorage
+    if (!userDataLoaded) {
+        console.log('No se pudieron cargar datos del usuario desde API, intentando localStorage...');
         
-        // Restaurar ubicaciones si existen
-        if (parsedInfo.departamento) {
-            await loadProvincias(parsedInfo.departamento)
-            if (parsedInfo.provincia) {
-                await loadDistritos(parsedInfo.provincia)
+        // Usa el email actual para buscar los datos guardados
+        const userEmail = localStorage.getItem('user_email') || '';
+        const key = userEmail ? `checkoutInfo_${userEmail}` : 'checkoutInfo';
+        const savedInfo = localStorage.getItem('checkoutInfo');
+        if (savedInfo) {
+            const parsedInfo = JSON.parse(savedInfo);
+            
+            // Restaurar ubicaciones si existen
+            if (parsedInfo.departamento) {
+                await loadProvincias(parsedInfo.departamento)
+                if (parsedInfo.provincia) {
+                    await loadDistritos(parsedInfo.provincia)
+                }
             }
+            
+            // Restaurar el formulario después de cargar todos los datos
+            form.value = { ...parsedInfo };
+        } else {
+            // Autocompletar si el usuario está logueado
+            const userName = localStorage.getItem('user_name');
+            const userEmail = localStorage.getItem('user_email');
+            if (userName) form.value.fullName = userName;
+            if (userEmail) form.value.email = userEmail;
         }
-        
-        // Restaurar el formulario después de cargar todos los datos
-        form.value = { ...parsedInfo };
-    } else {
-        // Autocompletar si el usuario está logueado
-        const userName = localStorage.getItem('user_name');
-        const userEmail = localStorage.getItem('user_email');
-        if (userName) form.value.fullName = userName;
-        if (userEmail) form.value.email = userEmail;
     }
 });
 </script>
