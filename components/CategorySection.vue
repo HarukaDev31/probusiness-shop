@@ -14,7 +14,7 @@
           <!-- Vista desktop: Slider -->
           <div v-else>
             <Swiper
-              :modules="[Navigation]"
+              :modules="[Navigation, Scrollbar]"
               :slides-per-view="4"
               :breakpoints="{
                 768: {
@@ -27,6 +27,7 @@
                   slidesPerView: 4
                 }
               }"
+              :scrollbar="{ draggable: true }"
               :space-between="24"
               :navigation="navigationOptions"
               :slides-per-group="1"
@@ -82,9 +83,11 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Scrollbar } from 'swiper/modules';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import 'swiper/css/scrollbar';
 const { isMobile, isTablet, isDesktop } = useScreenSize();
 const props = defineProps({
   title: { type: String, required: true },

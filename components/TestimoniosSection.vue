@@ -3,15 +3,16 @@
     <div class="container-custom max-w-[1440px] mx-auto">
       <h2 class="text-2xl font-bold mb-6">Testimonios de nuestros clientes</h2>
       <Swiper
+        :modules="[Scrollbar]"
         :slides-per-view="1"
         :space-between="24"
         :breakpoints="{
-          450: { slidesPerView: 2 },
-          480: { slidesPerView: 2 },
+          420: { slidesPerView: 2 },
           640: { slidesPerView: 2 },
           1024: { slidesPerView: 3 },
           1280: { slidesPerView: 5 }
         }"
+        :scrollbar="{ draggable: true }"
         class="testimonios-swiper"
       >
         <SwiperSlide
@@ -71,7 +72,9 @@
 <script setup>
 import { ref } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Scrollbar } from 'swiper/modules';
 import 'swiper/css';
+import 'swiper/css/scrollbar';
 
 const defaultThumbnail = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5SaY5SpcvkbuONkzR3lXbHCFKDEUef2z8f6tpvcLH2dKKuXFMg3gyk2av2qs2C2o0tHk';
 
@@ -140,5 +143,17 @@ function handleImageLoad() {
   height: 100%;
   top: 0;
   left: 0;
+}
+.brands-swiper {
+  padding-bottom: 24px; /* Espacio para el scrollbar */
+}
+.brands-swiper .swiper-scrollbar {
+  position: absolute !important;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 6px;
+  margin-top: 0;
 }
 </style>
