@@ -474,11 +474,11 @@
       <!-- Related Products -->
       <div class="mt-16">
         <h2 class="sm:text-lg lg:text-2xl font-bold mb-6">Otras Recomendaciones para tu negocio</h2>
-        <Swiper :modules="[Navigation]" :slides-per-view="1.2" :space-between="16" :breakpoints="{
+        <Swiper :modules="[Navigation,Scrollbar]" :slides-per-view="1.2" :space-between="16" :breakpoints="{
           640: { slidesPerView: 2.2, navigation: false },
           1024: { slidesPerView: 3, navigation: false },
           1280: { slidesPerView: 4, navigation: true }
-        }" :navigation="false" class="!pb-10">
+        }" :scrollbar="{ draggable: true }" :navigation="false" class="pb-10">
           <SwiperSlide v-for="relatedProduct in relatedProducts" :key="relatedProduct.id">
             <ProductCard :product="relatedProduct" />
           </SwiperSlide>
@@ -529,8 +529,10 @@
 
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Scrollbar } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import 'swiper/css/scrollbar';
 import { Navigation } from 'swiper/modules';
 import { useRouter } from 'vue-router'
 import { useVideoLoader } from '~/composables/useVideoLoader';

@@ -13,13 +13,14 @@
           1280: { slidesPerView: 7, spaceBetween: 24 },
           1440: { slidesPerView: 9, spaceBetween: 24 }
         }"
+        :scrollbar="{ draggable: true }"
         class="brands-swiper "
       >
         <SwiperSlide v-for="brand in brands" :key="brand.name" class="flex items-center justify-center">
           <img
             :src="brand.logo"
             :alt="brand.name"
-            class="max-h-7 md:max-h-10 h-auto w-auto grayscale opacity-80 hover:opacity-100 transition mx-1"
+            class="max-h-8 h-auto w-auto grayscale opacity-80 hover:opacity-100 transition mx-1"
             style="max-width:90px; object-fit:contain;"
             loading="lazy"
           />
@@ -31,7 +32,9 @@
 
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Scrollbar } from 'swiper/modules';
 import 'swiper/css';
+import 'swiper/css/scrollbar';
 
 const brands = [
   { name: 'Sony', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.svg' },
@@ -45,3 +48,17 @@ const brands = [
   { name: 'Levis', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Levi%27s_logo.svg' },
 ];
 </script>
+<style scoped>
+.brands-swiper {
+  padding-bottom: 24px; /* Espacio para el scrollbar */
+}
+.brands-swiper .swiper-scrollbar {
+  position: absolute !important;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 6px;
+  margin-top: 0;
+}
+</style>
