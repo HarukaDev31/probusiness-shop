@@ -204,6 +204,11 @@ const forgotEmail = ref('')
 const forgotLoading = ref(false)
 const { showError, showSuccess } = useModal()
 
+// Agrega esta función para mostrar advertencias
+function showWarning(message, title = 'Advertencia') {
+  showError(message, title)
+}
+
 // Función para formatear el número de WhatsApp
 const formatWhatsApp = (value) => {
     // Remover todos los caracteres no numéricos (solo números)

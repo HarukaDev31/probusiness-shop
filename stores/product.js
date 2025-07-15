@@ -52,6 +52,10 @@ export const useProductStore = defineStore('product', () => {
       slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
     })));
   }
+  function clearProducts() {
+    products.value = [];
+    totalProducts.value = 0;
+  }
 
   return {
     products,
@@ -63,6 +67,7 @@ export const useProductStore = defineStore('product', () => {
     fetchProductBySupplierId,
     searchProducts,
     totalProducts,
-    supplierProducts
+    supplierProducts,
+    clearProducts
   };
 });

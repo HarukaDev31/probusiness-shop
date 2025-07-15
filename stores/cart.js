@@ -33,6 +33,22 @@ export const useCartStore = defineStore('cart', {
   },
 
   actions: {
+    saveCartForUser() {
+      const userEmail = localStorage.getItem('user_email') || '';
+      const key = userEmail ? `cart_${userEmail}` : 'cart';
+      localStorage.setItem(key, JSON.stringify(this.items));
+    },
+    loadCartForUser() {
+      const userEmail = localStorage.getItem('user_email') || '';
+      const key = userEmail ? `cart_${userEmail}` : 'cart';
+      const savedCart = localStorage.getItem(key);
+      if (savedCart) {
+        this.items = JSON.parse(savedCart);
+      } else {
+        this.items = [];
+      }
+    },
+
     addItem(product) {
       // Helper para extraer el número del string de precio
       const parsePrecio = (precioStr) => {
@@ -81,6 +97,7 @@ export const useCartStore = defineStore('cart', {
       }
 
       // Provide feedback
+      this.saveCartForUser();
       this.showNotification(`${cleanProduct.name} añadido al carrito`);
     },
     addToCart(product) {
@@ -98,6 +115,7 @@ export const useCartStore = defineStore('cart', {
         } else {
           this.items[itemIndex].quantity = quantity;
         }
+        this.saveCartForUser();
       }
     },
     
@@ -114,6 +132,10 @@ export const useCartStore = defineStore('cart', {
     
     clearCart() {
       this.items = [];
+      const userEmail = localStorage.getItem('user_email') || '';
+      const key = userEmail ? `cart_${userEmail}` : 'cart';
+      localStorage.removeItem(key); // Elimina el carrito del usuario del localStorage
+      this.saveCartForUser(); // Opcional: asegura que el estado esté sincronizado
     },
     
     showNotification(message) {

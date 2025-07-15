@@ -2,40 +2,50 @@
   <section class="py-10">
     <div class="container-custom max-w-[1440px] mx-auto">
       <h2 class="text-2xl font-bold mb-6">Testimonios de nuestros clientes</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <div
+      <Swiper
+        :slides-per-view="1"
+        :space-between="24"
+        :breakpoints="{
+          640: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+          1280: { slidesPerView: 5 }
+        }"
+        class="testimonios-swiper"
+      >
+        <SwiperSlide
           v-for="testimonio in testimonios"
           :key="testimonio.id"
-          class="bg-white rounded-xl shadow overflow-hidden flex flex-col items-center relative group"
         >
-          <div class="relative w-full h-full flex items-center justify-center bg-gray-100">
-            <img
-              :src="testimonio.thumbnail"
-              :alt="testimonio.nombre"
-              class="object-cover w-full h-full"
-              @error="handleImageError"
-              @load="handleImageLoad"
-            />
-            <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
-              <div class="text-gray-500 text-center">
-                <svg class="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                </svg>
-                <p class="text-sm">{{ testimonio.nombre }}</p>
+          <div class="bg-white rounded-xl shadow overflow-hidden flex flex-col items-center relative group h-full">
+            <div class="relative w-full h-full flex items-center justify-center bg-gray-100">
+              <img
+                :src="testimonio.thumbnail || defaultThumbnail"
+                :alt="testimonio.nombre"
+                class="object-cover w-full h-full"
+                @error="event => event.target.src = defaultThumbnail"
+                @load="handleImageLoad"
+              />
+              <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                <div class="text-gray-500 text-center">
+                  <svg class="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                  </svg>
+                  <p class="text-sm">{{ testimonio.nombre }}</p>
+                </div>
               </div>
+              <button
+                class="absolute inset-0 flex items-center justify-center focus:outline-none"
+                @click="openModal(testimonio.tiktokUrl)"
+                aria-label="Ver testimonio"
+              >
+                <svg class="w-16 h-16 text-white bg-black bg-opacity-50 rounded-full p-3 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </button>
             </div>
-            <button
-              class="absolute inset-0 flex items-center justify-center focus:outline-none"
-              @click="openModal(testimonio.tiktokUrl)"
-              aria-label="Ver testimonio"
-            >
-              <svg class="w-16 h-16 text-white bg-black bg-opacity-50 rounded-full p-3 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </button>
           </div>
-        </div>
-      </div>
+        </SwiperSlide>
+      </Swiper>
     </div>
     <!-- Modal -->
     <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60" @click.self="closeModal">
@@ -58,39 +68,42 @@
 
 <script setup>
 import { ref } from 'vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+
+const defaultThumbnail = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5SaY5SpcvkbuONkzR3lXbHCFKDEUef2z8f6tpvcLH2dKKuXFMg3gyk2av2qs2C2o0tHk';
 
 const testimonios = [
   {
     id: 1,
     nombre: 'ALUMNO DE CHINA',
-    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oEFgogQVAA9eDlvRjLeZBQGCfUrhgIIgcgUBHY~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=048SiX1sFFrkR90snPi8yLpCM80%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
+    thumbnail: '/assets/testimonios/alumnochino_1.webp',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7518214656066915602'
   },
   {
     id: 2,
     nombre: 'IMPORTADOR ARIEL MEDINA',
-    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/ocPZlilDABqllAyBIRaiEFYEEA8AMtxAZAPBW~tplv-photomode-zoomcover:720:720.avif?dr=14555&x-expires=1751724000&x-signature=SNhWZ5UTwTAZIBV3nPzbea%2BfQ1U%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
+    thumbnail: 'https://intranet.probusiness.pe/assets/testimonios/arielmedina.webp',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7501137755292962056'
   },
   {
     id: 3,
     nombre: 'IMPORTADOR RODRIGO',
-    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oIyhSfAnEQufB4AGe8gRGMlJGIsIQSA8AAeXAG~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=vmuSefscNDOYs89AEQnZdjSuWgA%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
+    thumbnail: 'https://intranet.probusiness.pe/assets/testimonios/rodrigo.webp',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7495945030528503047'
   },
   {
     id: 4,
     nombre: 'IMPORTADOR WILLY',
-    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oc2AjDeIvA6bPn2oeQEtjMAlAdIML0IAGTHPfo~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=wwWcZ3OxrnDMOaekep%2BQQcXho%2Fo%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
+    thumbnail: 'https://intranet.probusiness.pe/assets/testimonios/willy.webp',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7490750609021324551'
   },
   {
     id: 5,
     nombre: 'IMPORTADOR PERCY ACUÑA',
-    thumbnail: 'https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oUaCbAoGPEAng5iLIAAAHAIGID1EexfAejQIHP~tplv-tiktokx-origin.image?dr=14575&x-expires=1751724000&x-signature=3vkM6Q%2F%2F3biZgz4g0M4UvbzhSds%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=maliva',
+    thumbnail: 'https://intranet.probusiness.pe/assets/testimonios/percy.webp',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7485545802073525512'
   },
-  
 ];
 
 const showModal = ref(false);
@@ -105,11 +118,6 @@ function openModal(url) {
 function closeModal() {
   showModal.value = false;
   modalTiktokUrl.value = '';
-}
-
-function handleImageError(event) {
-  console.error('Error loading image:', event.target.src);
-  imageLoaded.value = false;
 }
 
 function handleImageLoad() {
