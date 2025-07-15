@@ -6,6 +6,8 @@
         :slides-per-view="1"
         :space-between="24"
         :breakpoints="{
+          450: { slidesPerView: 2 },
+          480: { slidesPerView: 2 },
           640: { slidesPerView: 2 },
           1024: { slidesPerView: 3 },
           1280: { slidesPerView: 5 }
@@ -16,7 +18,7 @@
           v-for="testimonio in testimonios"
           :key="testimonio.id"
         >
-          <div class="bg-white rounded-xl shadow overflow-hidden flex flex-col items-center relative group h-full">
+          <div class="bg-white rounded-xl shadow overflow-hidden flex flex-col items-center relative group h-full mx-auto max-w-xs sm:max-w-sm">
             <div class="relative w-full aspect-[9/16] flex items-center justify-center bg-gray-100">
               <img
                 :src="testimonio.thumbnail || defaultThumbnail"
