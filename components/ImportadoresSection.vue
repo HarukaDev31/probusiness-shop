@@ -7,7 +7,7 @@
         :slides-per-view="9"
         :space-between="16"
         :breakpoints="{
-          420: { slidesPerView: 3, spaceBetween: 12 },
+          360: { slidesPerView: 3, spaceBetween: 12 },
           480: { slidesPerView: 3, spaceBetween: 16 },
           640: { slidesPerView: 4, spaceBetween: 18 },
           1024: { slidesPerView: 6, spaceBetween: 20 },
