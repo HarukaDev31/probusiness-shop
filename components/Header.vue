@@ -350,7 +350,7 @@
           <div class="absolute top-10 right-0 bg-white shadow-lg rounded-md w-48 hidden group-hover:block z-10">
             <ul class="py-2">
               <li v-for="social in socialMedia" :key="social.name" class="hover:bg-gray-100">
-                <a :href="social.url" class="flex items-center px-4 py-2">
+                <a :href="social.url" target="_blank" class="flex items-center px-4 py-2">
                   <Icon :name="social.icon" class="w-5 h-5 mr-2" /> {{ social.name }}
                 </a>
               </li>
@@ -471,6 +471,7 @@
         <Transition name="dropdown">
           <div v-if="socialMobileOpen" class="bg-gray-50 overflow-hidden">
             <a v-for="social in socialMedia" :key="social.name" :href="social.url"
+              target="_blank"
               class="group flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 hover:text-secondary transition-all duration-200 transform hover:translate-x-1">
               <Icon :name="social.icon" class="w-5 h-5 mr-3 transition-transform duration-200 group-hover:scale-110" />
               {{ social.name }}

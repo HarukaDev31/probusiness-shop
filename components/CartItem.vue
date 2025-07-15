@@ -10,42 +10,61 @@
     
     <!-- Contenido principal -->
     <div class="flex-1 min-w-0">
-      <!-- Nombre del producto -->
-      <h3 
-        class="text-sm md:text-base font-medium text-gray-900 leading-tight cursor-pointer hover:text-[#FF5000] transition-colors mb-2" 
-        style="word-break: break-word; line-height: 1.3;"
-        @click="goToProduct(item.product?.id || item.id)"
-      >
-        {{ item.name?.slice(0, 80) + '...' || item.nombre.slice(0, 80) + '...' }}
-      </h3>
-      
-      <!-- Controles de cantidad en mobile -->
-      <div class="flex items-center justify-between md:hidden">
-        <div class="flex items-center gap-1 bg-[#F5F8FB] rounded-lg border border-gray-200 px-1">
-          <button 
-            @click="decreaseQuantity" 
-            :disabled="inputQuantity <= getProductMOQ(props.item)"
-            :class="inputQuantity <= getProductMOQ(props.item) ? 'w-6 h-6 flex items-center justify-center text-sm text-gray-400 rounded cursor-not-allowed' : 'w-6 h-6 flex items-center justify-center text-sm text-gray-700 hover:bg-gray-200 rounded'"
+      <!-- Layout para mobile -->
+      <div class="md:hidden">
+        <!-- Fila 1: Nombre y precio -->
+        <div class="flex items-start justify-between gap-2 mb-2">
+          <h3 
+            class="text-sm font-medium text-gray-900 leading-tight cursor-pointer hover:text-[#FF5000] transition-colors flex-1 min-w-0" 
+            style="word-break: break-word; line-height: 1.3;"
+            @click="goToProduct(item.product?.id || item.id)"
           >
-            -
+            {{ (item.name || item.nombre).slice(0, 50) + '...' }}
+          </h3>
+          <div class="text-right flex-shrink-0">
+            <div class="font-semibold text-gray-800 text-sm">
+              {{ $formatPrice(item.price * item.quantity) }}
+            </div>
+            <div class="text-xs text-gray-500">
+              {{ $formatPrice(item.price) }} c/u
+            </div>
+          </div>
+        </div>
+        
+        <!-- Fila 2: Controles de cantidad y eliminar -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1 bg-[#F5F8FB] rounded-lg border border-gray-200 px-1">
+            <button 
+              @click="decreaseQuantity" 
+              :disabled="inputQuantity <= getProductMOQ(props.item)"
+              :class="inputQuantity <= getProductMOQ(props.item) ? 'w-6 h-6 flex items-center justify-center text-sm text-gray-400 rounded cursor-not-allowed' : 'w-6 h-6 flex items-center justify-center text-sm text-gray-700 hover:bg-gray-200 rounded'"
+            >
+              -
+            </button>
+            <input 
+              type="number" 
+              :min="getProductMOQ(props.item)" 
+              v-model.number="inputQuantity" 
+              @input="validateInputQuantity"
+              class="w-10 text-center bg-transparent outline-none border-none text-sm font-semibold" 
+            />
+            <button @click="increaseQuantity" class="w-6 h-6 flex items-center justify-center text-sm text-gray-700 hover:bg-gray-200 rounded">+</button>
+          </div>
+          <button @click="removeItem" class="text-red-500 hover:text-red-600 flex items-center justify-center flex-shrink-0 ml-2">
+            <Icon name="heroicons:trash" class="w-5 h-5" />
           </button>
-          <input 
-            type="number" 
-            :min="getProductMOQ(props.item)" 
-            v-model.number="inputQuantity" 
-            @input="validateInputQuantity"
-            class="w-10 text-center bg-transparent outline-none border-none text-sm font-semibold" 
-          />
-          <button @click="increaseQuantity" class="w-6 h-6 flex items-center justify-center text-sm text-gray-700 hover:bg-gray-200 rounded">+</button>
         </div>
-        <div class="text-right">
-          <div class="font-semibold text-gray-800 text-sm">
-            {{ $formatPrice(item.price * item.quantity) }}
-          </div>
-          <div class="text-xs text-gray-500">
-            {{ $formatPrice(item.price) }} c/u
-          </div>
-        </div>
+      </div>
+      
+      <!-- Layout para desktop -->
+      <div class="hidden md:block">
+        <h3 
+          class="text-base font-medium text-gray-900 leading-tight cursor-pointer hover:text-[#FF5000] transition-colors mb-2" 
+          style="word-break: break-word; line-height: 1.3;"
+          @click="goToProduct(item.product?.id || item.id)"
+        >
+          {{ item.name?.slice(0, 80) + '...' || item.nombre.slice(0, 80) + '...' }}
+        </h3>
       </div>
     </div>
     
@@ -73,9 +92,9 @@
       {{ $formatPrice(item.price * item.quantity) }}
     </div>
     
-    <!-- Eliminar -->
-    <button @click="removeItem" class="text-red-500 hover:text-red-600 flex items-center justify-center flex-shrink-0">
-      <Icon name="heroicons:trash" class="w-5 h-5 md:w-6 md:h-6" />
+    <!-- Eliminar solo en desktop -->
+    <button @click="removeItem" class="hidden md:flex text-red-500 hover:text-red-600 items-center justify-center flex-shrink-0">
+      <Icon name="heroicons:trash" class="w-6 h-6" />
     </button>
   </div>
 </template>

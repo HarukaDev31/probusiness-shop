@@ -75,22 +75,22 @@
               </div>
             </div>
             <!-- Imagen principal con overlay relativo -->
-            <div class="bg-white rounded-lg shadow-md flex-1 flex items-center justify-center ml-4 relative overflow-hidden">
-              <!-- Corazón favoritos -->
-              <WishlistButton :product="product" class="absolute top-4 right-4 z-20" />
-
-              <!-- Flecha izquierda -->
-              <button v-if="mediaItems.length > 1" @click="prevMedia"
-                class="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                    clip-rule="evenodd" />
-                </svg>
-              </button>
+            <div class="bg-white rounded-lg shadow-md flex-1 flex items-center justify-center ml-4 relative max-w-2xl h-[500px]">
               <div class="w-full h-full relative flex items-center justify-center">
+                <!-- Corazón favoritos -->
+
+                <!-- Flecha izquierda -->
+                <button v-if="mediaItems.length > 1" @click="prevMedia"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </button>
+                
                 <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
-                  class="object-cover w-full h-full" />
+                  class="object-contain w-full h-full max-w-full max-h-full" />
                 <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
                   <video :src="activeMedia.url" :alt="product.nombre"
                     class="object-cover w-full h-full" autoplay muted loop
@@ -128,6 +128,8 @@
                   </div>
                 </div>
               </div>
+              <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
+
               <!-- Flecha derecha -->
               <button v-if="mediaItems.length > 1" @click="nextMedia"
                 class="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition">
@@ -143,13 +145,16 @@
           <!-- Vista Mobile -->
           <div class="md:hidden">
             <!-- Slider principal -->
-            <div class="relative bg-white rounded-lg shadow-md overflow-hidden">
-              <div class="w-full h-100 relative flex items-center justify-center"
+            <div class="relative bg-white rounded-lg shadow-md">
+              <div class="w-full h-[300px] relative flex items-center justify-center"
                    @touchstart="handleTouchStart"
                    @touchmove="handleTouchMove"
                    @touchend="handleTouchEnd">
+                <!-- Wishlist en la esquina superior derecha -->
+                <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
+                
                 <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
-                  class="object-cover w-full h-full" />
+                  class="object-contain w-full h-full max-w-full max-h-full" />
                 <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
                   <video :src="activeMedia.url" :alt="product.nombre"
                     class="object-cover w-full h-full" autoplay muted loop
@@ -188,15 +193,12 @@
                 </div>
               </div>
               
-              <!-- Contador y Wishlist en la parte inferior -->
-              <div class="absolute bottom-4 left-0 right-0 flex justify-between items-center px-4">
+              <!-- Contador en la parte inferior -->
+              <div class="absolute bottom-4 left-4">
                 <!-- Contador de imágenes -->
                 <div class="bg-black/50 text-white px-2 py-1 rounded text-sm">
                   {{ activeMediaIndex + 1 }} / {{ mediaItems.length }}
                 </div>
-                
-                <!-- Corazón favoritos -->
-                <WishlistButton :product="product" />
               </div>
             </div>
             <!-- Nombre del producto centrado solo en mobile -->
@@ -229,15 +231,17 @@
           </div>
           <!-- Panel lateral de carrito -->
           <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40"
-            @click.self="showCartPanel = false">
+            @click.self="showCartPanel = false"
+            
+            >
             <!-- Mobile: desde abajo -->
-            <div class="md:hidden bg-white w-full h-[55%] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
-              <div class="flex flex-col justify-between items-start my-6">
+            <div class="md:hidden bg-white w-full h-[580px] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
+              <div class="flex flex-col justify-between items-start my-3">
                 <h2 class="text-lg font-bold">Selecciona la cantidad de tu interés</h2>
                 <span class="text-gray-500 py-2"><b>*</b>Pedido mínimo de importación <b> s/3.000</b></span>
               </div>
 
-              <div class="my-4">
+              <div class="my-2">
                 <h3 class="font-semibold my-2 text-xl">Cantidades</h3>
                 <div class="flex overflow-x-auto gap-4 py-2">
                   <div v-for="price in JSON.parse(product.prices_range ?? '[]')" :key="price.quantity"
@@ -248,7 +252,7 @@
                 </div>
               </div>
               <div class="border-b-2 border-gray-300 rounded py-3"></div>
-              <div class="my-6 flex">
+              <div class="my-2flex">
                 <div class="flex flex-row items-center gap-8 my-6 w-full">
                   <div class="flex flex-col flex-1">
                     <span class="font-semibold mb-1 text-base sm:text-lg">Cantidad</span>
@@ -406,7 +410,7 @@
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6 mt-3 col-span-12 md:col-span-6">
+      <div class="bg-white rounded-lg shadow-md p-6 mt-3 col-span-12 md:col-span-6 block md:hidden">
         <div class="block md:hidden">
             <h3 class="font-bold text-xl text-gray-800">Datos importantes:</h3>
             <ul class="space-y-3 py-4">
@@ -470,8 +474,8 @@
       <!-- Related Products -->
       <div class="mt-16">
         <h2 class="sm:text-lg lg:text-2xl font-bold mb-6">Otras Recomendaciones para tu negocio</h2>
-        <Swiper :modules="[Navigation, Scrollbar]" :slides-per-view="2" :space-between="16" :breakpoints="{
-          640: { slidesPerView: 2, navigation: false },
+        <Swiper :modules="[Navigation,Scrollbar]" :slides-per-view="1.2" :space-between="16" :breakpoints="{
+          640: { slidesPerView: 2.2, navigation: false },
           1024: { slidesPerView: 3, navigation: false },
           1280: { slidesPerView: 4, navigation: true }
         }" :scrollbar="{ draggable: true }" :navigation="false" class="pb-10">
@@ -556,7 +560,7 @@ const router = useRouter();
 const cartQuantity = ref(1)
 
 const iniciarPedidoPanel = () => {
-  goToCart.value = false;
+  goToCart.value = true;
   if (product.value) {
     cartStore.addItem({
       id: product.value.id,

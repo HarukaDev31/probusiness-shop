@@ -79,11 +79,8 @@ export const useWishlistStore = defineStore('wishlist', {
     },
 
     async toggleWishlist(product) {
-      if (this.isInWishlist(product.id)) {
-        return await this.removeFromWishlist(product.id)
-      } else {
-        return await this.addToWishlist(product)
-      }
+      return await this.addToWishlist(product)
+
     },
 
     async clearWishlist() {

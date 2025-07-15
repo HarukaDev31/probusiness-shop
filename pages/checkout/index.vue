@@ -10,44 +10,44 @@
             <Icon name="heroicons:lock-closed" class="w-4 h-4" />
             Tu información personal está encriptada y solo se utilizará para fines de entrega
           </p>
-          <form @submit.prevent="handleSubmit" class="space-y-4">
+          <form @submit.prevent="handleSubmit" class="space-y-4 font-epilogue">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre y apellido*</label>
-                <input v-model="form.fullName" type="text" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tus nombres y apellidos">
+                <label class="block text-sm font-normal text-gray-700 mb-1">Nombre y apellido*</label>
+                <input v-model="form.fullName" type="text" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9] font-epilogue font-normal" placeholder="Ingresa tus nombres y apellidos">
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">DNI/ID*</label>
-                <input v-model="form.dni" type="text" required maxlength="8" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu documento de identidad">
+                <label class="block text-sm font-normal text-gray-700 mb-1">DNI/ID*</label>
+                <input v-model="form.dni" type="text" required maxlength="8" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9] font-epilogue font-normal" placeholder="Ingresa tu documento de identidad">
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Correo*</label>
-                <input v-model="form.email" type="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu correo">
+                <label class="block text-sm font-normal text-gray-700 mb-1">Correo*</label>
+                <input v-model="form.email" type="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9] font-epilogue font-normal" placeholder="Ingresa tu correo">
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp*</label>
-                <input v-model="form.phone" type="tel" required maxlength="9" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" placeholder="Ingresa tu número de celular">
+                <label class="block text-sm font-normal text-gray-700 mb-1">WhatsApp*</label>
+                <input v-model="form.phone" type="tel" required maxlength="9" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9] font-epilogue font-normal" placeholder="Ingresa tu número de celular">
               </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Departamento*</label>
-                    <select v-model="form.departamento" @change="onDepartamentoChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]">
+                    <label class="block text-sm font-normal text-gray-700 mb-1">Departamento*</label>
+                    <select v-model="form.departamento" @change="onDepartamentoChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9] font-epilogue font-normal">
                       <option value="">{{ loading ? 'Cargando...' : 'Selecciona departamento' }}</option>
                       <option v-for="dept in departamentos" :key="dept.value" :value="dept.value">{{ dept.label }}</option>
                     </select>
-                    <div v-if="departamentos.length === 0 && !loading" class="text-red-500 text-xs mt-1">No se pudieron cargar los departamentos</div>
+                    <div v-if="departamentos.length === 0 && !loading" class="text-red-500 text-xs mt-1 font-epilogue">No se pudieron cargar los departamentos</div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia*</label>
-                    <select v-model="form.provincia" @change="onProvinciaChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" :disabled="!form.departamento">
+                    <label class="block text-sm font-normal text-gray-700 mb-1">Provincia*</label>
+                    <select v-model="form.provincia" @change="onProvinciaChange" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9] font-epilogue font-normal" :disabled="!form.departamento">
                     <option value="">Selecciona provincia</option>
                     <option v-for="prov in provincias" :key="prov.value" :value="prov.value">{{ prov.label }}</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Distrito*</label>
-                    <select v-model="form.distrito" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9]" :disabled="!form.provincia">
+                    <label class="block text-sm font-normal text-gray-700 mb-1">Distrito*</label>
+                    <select v-model="form.distrito" required class="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#F0F4F9] font-epilogue font-normal" :disabled="!form.provincia">
                     <option value="">Selecciona distrito</option>
                     <option v-for="dist in distritos" :key="dist.value" :value="dist.value">{{ dist.label }}</option>
                     </select>
@@ -55,12 +55,12 @@
                 </div>
             <button
               type="button"
-              class="w-[25%] bg-[#FF5000] text-white font-semibold p-3 rounded mt-4"
+              class="w-[25%] bg-[#FF5000] text-white font-semibold p-3 rounded mt-4 font-epilogue"
               @click="guardarDatos"
             >
               Guardar
             </button>
-            <span v-if="savedMessage" class="ml-4 text-green-600 font-semibold">¡Guardado!</span>
+            <span v-if="savedMessage" class="ml-4 text-green-600 font-semibold font-epilogue">¡Guardado!</span>
           </form>
         </div>
         <!-- Productos seleccionados -->
@@ -137,9 +137,9 @@
     </div>
 
     <!-- Vista Mobile -->
-    <div class="md:hidden flex flex-col h-screen">
+    <div class="md:hidden flex flex-col min-h-screen">
       <!-- Contenido principal -->
-      <div class="flex-1 overflow-y-auto p-4">
+      <div class="flex-1 overflow-y-auto p-4 pb-32">
         <div class="bg-white rounded-lg shadow-md p-6 mb-4">
           <h2 class="text-xl font-bold mb-4">Tus datos</h2>
           <svg class="text-orange-400 pb-1" width="22" height="22" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -150,66 +150,66 @@
           <p class="text-base text-gray-500 flex items-center gap-2 mb-4">
             Tu información personal está encriptada y solo se utilizará para fines de entrega
           </p>
-          <form @submit.prevent="handleSubmit" class="space-y-4">
+          <form @submit.prevent="handleSubmit" class="space-y-4 font-epilogue">
             <div>
-              <label class="block text-base font-medium text-gray-700 mb-1">Nombre y apellido<span class="text-orange-400">*</span></label>
-              <input v-model="form.fullName" type="text" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base" placeholder="Ingresa tus nombres y apellidos">
+              <label class="block text-base font-normal text-gray-700 mb-1">Nombre y apellido<span class="text-orange-400">*</span></label>
+              <input v-model="form.fullName" type="text" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base font-epilogue font-normal" placeholder="Ingresa tus nombres y apellidos">
             </div>
             <!-- DNI y WhatsApp en la misma fila -->
             <div class="flex flex-row gap-4">
               <div class="flex-1">
-                <label class="block text-base font-medium text-gray-700 mb-1">DNI/ID<span class="text-orange-400">*</span></label>
+                <label class="block text-base font-normal text-gray-700 mb-1">DNI/ID<span class="text-orange-400">*</span></label>
                 <input
                   v-model="form.dni"
                   type="text"
                   required
                   maxlength="8"
-                  class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base"
+                  class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base font-epilogue font-normal"
                   placeholder="Ingresa tu número de DNI"
                 >
               </div>
               <div class="flex-1">
-                <label class="block text-base font-medium text-gray-700 mb-1">WhatsApp<span class="text-orange-400">*</span></label>
+                <label class="block text-base font-normal text-gray-700 mb-1">WhatsApp<span class="text-orange-400">*</span></label>
                 <input
                   v-model="form.phone"
                   type="tel"
                   required
                   maxlength="9"
-                  class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base"
+                  class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base font-epilogue font-normal"
                   placeholder="Ingresa tu número de celular"
                 >
               </div>
             </div>
             <div>
-              <label class="block text-base font-medium text-gray-700 mb-1">Correo<span class="text-orange-400">*</span></label>
+              <label class="block text-base font-normal text-gray-700 mb-1">Correo<span class="text-orange-400">*</span></label>
               <input
                 v-model="form.email"
                 type="email"
                 required
-                class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base"
+                class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base font-epilogue font-normal"
                 placeholder="Ingresa tu correo"
               >
             </div>
             <!-- Provincia, Ciudad, Distrito en la misma fila -->
             <div class="flex flex-row gap-4">
               <div class="flex-1">
-                <label class="block text-base font-medium text-gray-700 mb-1">Provincia<span class="text-orange-400">*</span></label>
-                <select v-model="form.departamento" @change="onDepartamentoChange" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base">
-                  <option value="" class="text-base font-medium text-gray-700">{{ loading ? 'Cargando...' : 'Selecciona departamento' }}</option>
-                  <option class="text-base font-medium text-gray-700" v-for="dept in departamentos" :key="dept.value" :value="dept.value">{{ dept.label }}</option>
-                  <div v-if="departamentos.length === 0 && !loading" class="text-red-500 text-xs mt-1">No se pudieron cargar los departamentos</div>
+                <label class="block text-base font-normal text-gray-700 mb-1">Provincia<span class="text-orange-400">*</span></label>
+                <select v-model="form.departamento" @change="onDepartamentoChange" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base font-epilogue font-normal">
+                  <option value="" class="text-base font-normal text-gray-700">{{ loading ? 'Cargando...' : 'Selecciona departamento' }}</option>
+                  <option class="text-base font-normal text-gray-700" v-for="dept in departamentos" :key="dept.value" :value="dept.value">{{ dept.label }}</option>
+                  <div v-if="departamentos.length === 0 && !loading" class="text-red-500 text-xs mt-1 font-epilogue">No se pudieron cargar los departamentos</div>
                 </select>
               </div>
               <div class="flex-1">
-                <label class="block text-base font-medium text-gray-700 mb-1">Ciudad<span class="text-orange-400">*</span></label>
-                <select v-model="form.provincia" @change="onProvinciaChange" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base" :disabled="!form.departamento">
+                <label class="block text-base font-normal text-gray-700 mb-1">Ciudad<span class="text-orange-400">*</span></label>
+                <select v-model="form.provincia" @change="onProvinciaChange" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base font-epilogue font-normal" :disabled="!form.departamento">
                   <option value="">Selecciona provincia</option>
                   <option v-for="prov in provincias" :key="prov.value" :value="prov.value">{{ prov.label }}</option>
                 </select>
               </div>
               <div class="flex-1">
-                <label class="block text-base font-medium text-gray-700 mb-1">Distrito<span class="text-orange-400">*</span></label>
-                <select v-model="form.distrito" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base" :disabled="!form.provincia">
+                <label class="block text-base font-normal text-gray-700 mb-1">Distrito<span class="text-orange-400">*</span></label>
+                <select v-model="form.distrito" required class="w-full rounded-xl px-4 py-3 bg-[#F0F4F9] border-0 focus:ring-2 focus:ring-orange-400 text-base font-epilogue font-normal" :disabled="!form.provincia">
                   <option value="">Selecciona distrito</option>
                   <option v-for="dist in distritos" :key="dist.value" :value="dist.value">{{ dist.label }}</option>
                 </select>
@@ -217,12 +217,12 @@
             </div>
             <button
               type="button"
-              class="w-full bg-[#FF5000] text-white font-semibold p-3 rounded mt-4"
+              class="w-full bg-[#FF5000] text-white font-semibold p-3 rounded mt-4 font-epilogue"
               @click="guardarDatos"
             >
               Guardar
             </button>
-            <span v-if="savedMessage" class="text-green-600 font-semibold text-center block">¡Guardado!</span>
+            <span v-if="savedMessage" class="text-green-600 font-semibold text-center block font-epilogue">¡Guardado!</span>
           </form>
         </div>
         
@@ -260,23 +260,32 @@
         </div>
       </div>
 
-      <!-- Panel inferior colapsable -->
-      <div class="bg-white border-t border-gray-200">
+      <!-- Panel inferior fijo -->
+      <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
         <!-- Header del panel -->
-        <div class="p-6 border-b border-gray-100">
+        <div class="p-4 border-b border-gray-100">
           <button @click="toggleMobileSummary" class="w-full flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span class="text-black-600 text-xl">Resumen de pedido</span>
+              <span class="text-black-600 text-lg">Resumen de pedido</span>
             </div>
             <Icon 
               :name="mobileSummaryOpen ? 'heroicons:chevron-down' : 'heroicons:chevron-up'" 
-              class="w-5 h-5 text-gray-500 transition-transform"
+              class="w-5 h-5 text-gray-500 transition-transform duration-300"
+              :class="mobileSummaryOpen ? 'rotate-180' : 'rotate-0'"
             />
           </button>
         </div>
         
         <!-- Contenido colapsable -->
-        <div v-if="mobileSummaryOpen" class="p-4 space-y-4">
+        <transition
+          enter-active-class="transition-all duration-300 ease-out"
+          enter-from-class="transform translate-y-full opacity-0"
+          enter-to-class="transform translate-y-0 opacity-100"
+          leave-active-class="transition-all duration-300 ease-in"
+          leave-from-class="transform translate-y-0 opacity-100"
+          leave-to-class="transform translate-y-full opacity-0"
+        >
+          <div v-if="mobileSummaryOpen" class="p-4 space-y-4">
           <!-- Precio en soles -->
           <div class="flex justify-between items-center">
             <span class="text-gray-600">Pagar en soles:</span>
@@ -314,6 +323,7 @@
             </ul>
           </div>
         </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -424,16 +434,19 @@ definePageMeta({
 
 import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart'
+import { useUserStore } from '~/stores/user'
 
 import { ref, onMounted, computed } from 'vue'
 import { useOrders } from '~/composables/useOrders'
 import { useModal } from '~/composables/useModal'
 import { getDepartamentos, getProvincias, getDistritos } from '~/services/location-service'
+import { getUserAccount } from '~/services/user-account-service'
 
 const { $formatPrice } = useNuxtApp();
 const router = useRouter();
 //add middleware to check if cart is empty
 const cartStore = useCartStore();
+const userStore = useUserStore();
 const savedMessage = ref(false)
 const mobileSummaryOpen = ref(false)
 
@@ -455,7 +468,7 @@ const checkoutItems = computed(() => cartStore.checkoutItems)
 function guardarDatos() {
   // Usa el email como parte de la clave, si está disponible
   const userEmail = form.value.email || localStorage.getItem('user_email') || '';
-  const key = userEmail ? `checkoutInfo_${userEmail}` : 'checkoutInfo';
+  const key =  'checkoutInfo';
 
   localStorage.setItem(key, JSON.stringify(form.value));
   savedMessage.value = true;
@@ -654,12 +667,14 @@ async function handlePedido() {
       // Limpiar el carrito después de un pedido exitoso
       cartStore.clearCart();
       showSuccess.value = true;
+      localStorage.removeItem('checkoutInfo');
     } else {
       if (result.status === 401) {
         showError('Tu sesión ha expirado. Por favor, inicia sesión para continuar.')
       
       } else {
-        // Mostrar otros errores con modal
+        //set on local storage route to redirect later login or register
+        localStorage.setItem('checkoutRoute', '/checkout');
         showError(result.message || 'Error al procesar el pedido. Por favor, inténtalo de nuevo.')
       }
     }
@@ -678,6 +693,55 @@ const closeSuccessModal = () => {
     showSuccess.value = false;
     router.push('/');
 };
+
+// Función para cargar datos del usuario desde la API
+const loadUserData = async () => {
+    try {
+        // Verificar si hay token de autenticación
+        if (!userStore.token) {
+            console.log('No hay token de autenticación, saltando carga de datos del usuario');
+            return false;
+        }
+
+        console.log('Cargando datos del usuario desde API...');
+        const response = await getUserAccount();
+        console.log('Respuesta de la API /me:', response);
+        
+        if (response && response.data) {
+            const userData = response.data;
+            
+            // Rellenar el formulario con los datos del usuario
+            form.value.fullName = userData.nombre || userData.name || '';
+            form.value.dni = userData.dni || '';
+            form.value.email = userData.email || '';
+            form.value.phone = userData.whatsapp || userData.phone || '';
+            
+            // Si el usuario tiene ubicación guardada, cargarla
+            if (userData.departamento) {
+                form.value.departamento = userData.departamento;
+                await loadProvincias(userData.departamento);
+                
+                if (userData.provincia) {
+                    form.value.provincia = userData.provincia;
+                    await loadDistritos(userData.provincia);
+                    
+                    if (userData.distrito) {
+                        form.value.distrito = userData.distrito;
+                    }
+                }
+            }
+            
+            console.log('Formulario rellenado con datos del usuario:', form.value);
+            return true;
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Error al cargar datos del usuario:', error);
+        return false;
+    }
+};
+
 onMounted(async () => {
     if (cartItems.value && cartItems.value.length === 0) {
         router.push('/cart');
@@ -687,29 +751,38 @@ onMounted(async () => {
     // Cargar departamentos al inicio
     await loadDepartamentos()
     
-    // Usa el email actual para buscar los datos guardados
-    const userEmail = localStorage.getItem('user_email') || '';
-    const key = userEmail ? `checkoutInfo_${userEmail}` : 'checkoutInfo';
-    const savedInfo = localStorage.getItem('checkoutInfo');
-    if (savedInfo) {
-        const parsedInfo = JSON.parse(savedInfo);
+    // Intentar cargar datos del usuario desde la API primero
+    const userDataLoaded = await loadUserData();
+    
+    // Si no se pudieron cargar los datos del usuario desde la API, 
+    // intentar cargar desde localStorage
+    if (!userDataLoaded) {
+        console.log('No se pudieron cargar datos del usuario desde API, intentando localStorage...');
         
-        // Restaurar ubicaciones si existen
-        if (parsedInfo.departamento) {
-            await loadProvincias(parsedInfo.departamento)
-            if (parsedInfo.provincia) {
-                await loadDistritos(parsedInfo.provincia)
+        // Usa el email actual para buscar los datos guardados
+        const userEmail = localStorage.getItem('user_email') || '';
+        const key = userEmail ? `checkoutInfo_${userEmail}` : 'checkoutInfo';
+        const savedInfo = localStorage.getItem('checkoutInfo');
+        if (savedInfo) {
+            const parsedInfo = JSON.parse(savedInfo);
+            
+            // Restaurar ubicaciones si existen
+            if (parsedInfo.departamento) {
+                await loadProvincias(parsedInfo.departamento)
+                if (parsedInfo.provincia) {
+                    await loadDistritos(parsedInfo.provincia)
+                }
             }
+            
+            // Restaurar el formulario después de cargar todos los datos
+            form.value = { ...parsedInfo };
+        } else {
+            // Autocompletar si el usuario está logueado
+            const userName = localStorage.getItem('user_name');
+            const userEmail = localStorage.getItem('user_email');
+            if (userName) form.value.fullName = userName;
+            if (userEmail) form.value.email = userEmail;
         }
-        
-        // Restaurar el formulario después de cargar todos los datos
-        form.value = { ...parsedInfo };
-    } else {
-        // Autocompletar si el usuario está logueado
-        const userName = localStorage.getItem('user_name');
-        const userEmail = localStorage.getItem('user_email');
-        if (userName) form.value.fullName = userName;
-        if (userEmail) form.value.email = userEmail;
     }
 });
 </script>
@@ -893,6 +966,28 @@ input[type="radio"]:checked::after {
     width: 35px;
     height: 35px;
   }
+}
+
+/* Animaciones para el resumen móvil */
+.mobile-summary-enter-active,
+.mobile-summary-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-summary-enter-from {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.mobile-summary-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.mobile-summary-enter-to,
+.mobile-summary-leave-from {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 </style>
