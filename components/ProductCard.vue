@@ -1,17 +1,19 @@
 <template>
   <div class="product-card flex flex-col h-full">
-    <div class="relative pb-[100%] overflow-hidden relative">
-      <NuxtLink :to="`/product/${product.id}`">
-        <NuxtImg  
-          :src="getProductImage()" 
-          :alt="product.nombre"
-          loading="lazy"
-          class="absolute inset-0 w-full h-full object-contain p-1 md:p-4 hover:scale-105 transition-transform duration-300"
-        />
-      </NuxtLink>
-      
-      <!-- Wishlist button -->
-      
+    <div class="relative ">
+      <div class="absolute inset-0 relative">
+        <NuxtLink :to="`/product/${product.id}`">
+          <NuxtImg  
+            :src="getProductImage()" 
+            :alt="product.nombre"
+            loading="lazy"
+            class="w-full h-full object-contain p-1 md:p-4 hover:scale-105 transition-transform duration-300 max-w-full max-h-full"
+          />
+        </NuxtLink>
+        
+        <!-- Wishlist button -->
+        <WishlistButton :product="product" class="absolute top-2 right-2 z-20" />
+      </div>
     </div>
     <div class="p-4 flex flex-col flex-grow">
       <!--badge from category-->

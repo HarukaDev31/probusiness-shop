@@ -294,7 +294,7 @@
           </button>
           
           <!-- Datos importantes -->
-          <div class="bg-gray-50 rounded-lg p-4">
+          <div class="bg-gray-50 rounded-lg p-4 flex md:hidden">
             <h4 class="text-sm font-bold mb-3">Datos importantes:</h4>
             <ul class="space-y-3 text-xs">
               <li class="flex items-start gap-2">
@@ -455,7 +455,7 @@ const checkoutItems = computed(() => cartStore.checkoutItems)
 function guardarDatos() {
   // Usa el email como parte de la clave, si está disponible
   const userEmail = form.value.email || localStorage.getItem('user_email') || '';
-  const key = userEmail ? `checkoutInfo_${userEmail}` : 'checkoutInfo';
+  const key =  'checkoutInfo';
 
   localStorage.setItem(key, JSON.stringify(form.value));
   savedMessage.value = true;
@@ -654,12 +654,14 @@ async function handlePedido() {
       // Limpiar el carrito después de un pedido exitoso
       cartStore.clearCart();
       showSuccess.value = true;
+      localStorage.removeItem('checkoutInfo');
     } else {
       if (result.status === 401) {
         showError('Tu sesión ha expirado. Por favor, inicia sesión para continuar.')
       
       } else {
-        // Mostrar otros errores con modal
+        //set on local storage route to redirect later login or register
+        localStorage.setItem('checkoutRoute', '/checkout');
         showError(result.message || 'Error al procesar el pedido. Por favor, inténtalo de nuevo.')
       }
     }

@@ -286,9 +286,12 @@ const handleLogin = async () => {
         const data = await userStore.loginUser(registerData.value.email, registerData.value.password)
         if (data.access_token) {
             $modal.showSuccess('¡Has iniciado sesión exitosamente! Redirigiendo...', 'Inicio de Sesión Exitoso')
-            setTimeout(() => {
+            const checkoutRoute = localStorage.getItem('checkoutRoute')
+            if (checkoutRoute) {
+                router.push(checkoutRoute)
+            } else {
                 router.push('/')
-            }, 2000)
+            }
         } else {
             $modal.showError(data.message || 'Credenciales incorrectas', 'Error de Autenticación')
         }

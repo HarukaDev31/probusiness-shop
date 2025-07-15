@@ -75,22 +75,22 @@
               </div>
             </div>
             <!-- Imagen principal con overlay relativo -->
-            <div class="bg-white rounded-lg shadow-md flex-1 flex items-center justify-center ml-4 relative overflow-hidden">
-              <!-- Corazón favoritos -->
-              <WishlistButton :product="product" class="absolute top-4 right-4 z-20" />
-
-              <!-- Flecha izquierda -->
-              <button v-if="mediaItems.length > 1" @click="prevMedia"
-                class="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                    clip-rule="evenodd" />
-                </svg>
-              </button>
+            <div class="bg-white rounded-lg shadow-md flex-1 flex items-center justify-center ml-4 relative max-w-2xl max-h-96">
               <div class="w-full h-full relative flex items-center justify-center">
+                <!-- Corazón favoritos -->
+
+                <!-- Flecha izquierda -->
+                <button v-if="mediaItems.length > 1" @click="prevMedia"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </button>
+                
                 <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
-                  class="object-cover w-full h-full" />
+                  class="object-contain w-full h-full max-w-full max-h-full" />
                 <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
                   <video :src="activeMedia.url" :alt="product.nombre"
                     class="object-cover w-full h-full" autoplay muted loop
@@ -128,6 +128,8 @@
                   </div>
                 </div>
               </div>
+              <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
+
               <!-- Flecha derecha -->
               <button v-if="mediaItems.length > 1" @click="nextMedia"
                 class="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition">
@@ -143,13 +145,16 @@
           <!-- Vista Mobile -->
           <div class="md:hidden">
             <!-- Slider principal -->
-            <div class="relative bg-white rounded-lg shadow-md overflow-hidden">
-              <div class="w-full h-100 relative flex items-center justify-center"
+            <div class="relative bg-white rounded-lg shadow-md">
+              <div class="w-full h-100 relative flex items-center justify-center max-w-full max-h-96"
                    @touchstart="handleTouchStart"
                    @touchmove="handleTouchMove"
                    @touchend="handleTouchEnd">
+                <!-- Wishlist en la esquina superior derecha -->
+                <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
+                
                 <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
-                  class="object-cover w-full h-full" />
+                  class="object-contain w-full h-full max-w-full max-h-full" />
                 <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
                   <video :src="activeMedia.url" :alt="product.nombre"
                     class="object-cover w-full h-full" autoplay muted loop
@@ -188,15 +193,12 @@
                 </div>
               </div>
               
-              <!-- Contador y Wishlist en la parte inferior -->
-              <div class="absolute bottom-4 left-0 right-0 flex justify-between items-center px-4">
+              <!-- Contador en la parte inferior -->
+              <div class="absolute bottom-4 left-4">
                 <!-- Contador de imágenes -->
                 <div class="bg-black/50 text-white px-2 py-1 rounded text-sm">
                   {{ activeMediaIndex + 1 }} / {{ mediaItems.length }}
                 </div>
-                
-                <!-- Corazón favoritos -->
-                <WishlistButton :product="product" />
               </div>
             </div>
             <!-- Nombre del producto centrado solo en mobile -->
@@ -406,7 +408,7 @@
           </div>
         </div>
       </div>
-      <div class="bg-white rounded-lg shadow-md p-6 mt-3 col-span-12 md:col-span-6">
+      <div class="bg-white rounded-lg shadow-md p-6 mt-3 col-span-12 md:col-span-6 block md:hidden">
         <div class="block md:hidden">
             <h3 class="font-bold text-xl text-gray-800">Datos importantes:</h3>
             <ul class="space-y-3 py-4">

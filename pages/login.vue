@@ -274,10 +274,13 @@ const handleLogin = async () => {
     const data = await userStore.loginUser(loginData.value.email, loginData.value.password)
     if (data.access_token) {
       loginSuccess.value = true
-      setTimeout(() => {
-        loginSuccess.value = false
+      //get checkout route from local storage
+      const checkoutRoute = localStorage.getItem('checkoutRoute')
+      if (checkoutRoute) {
+        router.push(checkoutRoute)
+      } else {
         router.push('/')
-      }, 2000)
+      }
     } else {
       loginError.value = data.message || 'Credenciales incorrectas'
       showError('Credenciales incorrectas')
