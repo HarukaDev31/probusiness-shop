@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-[400px] sm:h-96 lg:h-[600px] bg-gray-200 overflow-hidden">
+  <div class="relative h-[320px] sm:h-96 lg:h-[600px] bg-gray-200 overflow-hidden">
 
     <!-- Slideshow -->
     <div class="absolute inset-0 flex flex-row justify-center items-center grid grid-cols-5
@@ -32,7 +32,7 @@
       </svg>
       <NuxtImg v-for="(slide, index) in slides" :key="slide.id" :src="isMobile ? slide.mobileImage : slide.image"
         :alt="slide.title" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-1"
-        sizes="sm:100vw md:50vw lg:1200px" format="webp" quality="80" width="1920" height="1080" loading="eager"
+        sizes="100vw lg:1200px" format="webp" quality="80" width="1920" height="1080" loading="eager"
         fetchpriority="high" decoding="async" alt="Descripción SEO importante"
         :class="{ 'opacity-0': currentSlide !== index, 'opacity-100': currentSlide === index }" />
 
