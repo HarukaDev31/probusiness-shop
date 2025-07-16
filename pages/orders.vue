@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-[#f5f8fb]">
-    <div class="max-w-6xl mx-auto p-6">
+    <div class="max-w-6xl mx-auto p-4 md:p-6">
       <!-- Filtro de año y contador de pedidos -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white rounded-lg shadow-md p-6 mb-6 gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white rounded-lg shadow-md p-4 md:p-6 mb-4 md:mb-6 gap-4">
         <div class="flex items-center gap-2">
           <span class="font-bold text-lg text-gray-800">{{ orders.length }} pedidos</span>
           <span class="text-gray-600">realizados en</span>
@@ -52,52 +52,54 @@
       </div>
 
       <!-- Orders List -->
-      <div v-else class="space-y-8">
+      <div v-else class="space-y-4 md:space-y-8">
         <div v-for="order in orders" :key="order.id" class="bg-white rounded-2xl border border-gray-300 overflow-hidden">
           <!-- Order Header -->
-          <div class="flex flex-col md:flex-row md:items-center justify-between bg-gray-100 px-6 py-4 border-b border-gray-200">
-            <div>
-              <div class="text-sm text-gray-500 font-medium">PEDIDO REALIZADO</div>
-              <div class="text-lg text-gray-800 font-semibold">{{ new Date(order.orderDate).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' }) }}</div>
+          <div class="flex flex-col space-y-3 md:space-y-0 md:flex-row md:items-center justify-between bg-gray-100 px-4 md:px-6 py-4 border-b border-gray-200">
+            <div class="flex-1">
+              <div class="text-xs md:text-sm text-gray-500 font-bold">PEDIDO REALIZADO</div>
+              <div class="text-sm md:text-lg text-gray-800 font-bold">{{ new Date(order.orderDate).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' }) }}</div>
             </div>
-            <div class="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0">
-              <div class="text-sm text-gray-500 font-medium">TOTAL</div>
-              <div class="text-xl text-gray-800 font-bold">{{ $formatPrice(order.total) }}</div>
-            </div>
-            <div class="flex flex-col md:items-end">
-              <div class="text-sm text-gray-500 font-medium">N. PEDIDO</div>
-              <div class="text-lg text-gray-800 font-semibold">{{ order.orderNumber }}</div>
+            <div class="flex justify-between md:flex-col md:items-center gap-4">
+              <div>
+                <div class="text-xs md:text-sm text-gray-500 font-bold">TOTAL</div>
+                <div class="text-lg md:text-xl text-gray-800 font-bold">{{ $formatPrice(order.total) }}</div>
+              </div>
+              <div class="md:items-end">
+                <div class="text-xs md:text-sm text-gray-500 font-bold">N. PEDIDO</div>
+                <div class="text-sm md:text-lg text-gray-800 font-bold">{{ order.orderNumber }}</div>
+              </div>
             </div>
           </div>
 
           <!-- Order Content -->
-          <div class="flex flex-col md:flex-row items-center gap-6 px-6 py-6">
+          <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 px-4 md:px-6 py-4 md:py-6">
             <!-- Product Image -->
             <div class="flex-shrink-0">
-              <img :src="order.items[0]?.image" :alt="order.items[0]?.name" class="w-20 h-20 rounded object-cover border border-gray-200" />
+              <img :src="order.items[0]?.image" :alt="order.items[0]?.name" class="w-16 h-16 md:w-20 md:h-20 rounded object-cover border border-gray-200" />
             </div>
             <!-- Product Info -->
             <div class="flex-1 min-w-0">
               <div 
-                class="font-normal text-lg text-gray-800 truncate cursor-pointer hover:text-[#FF5000] transition-colors"
+                class="font-bold text-base md:text-lg text-gray-800 line-clamp-2 cursor-pointer hover:text-[#FF5000] transition-colors"
                 @click="goToProduct(order.items[0]?.productId)"
+                :title="order.items[0]?.name"
               >
-              
-                {{ order.items[0]?.name }}
+                {{ truncateProductName(order.items[0]?.name) }}
               </div>
-              <div class="text-gray-600 text-sm mt-1 truncate">
+              <div class="text-gray-600 text-sm mt-1">
                 {{ order.items.length > 1 ? `y ${order.items.length - 1} producto(s) más` : ' ' }}
               </div>
             </div>
             <!-- Actions -->
-            <div class="flex flex-col gap-2 items-end min-w-[200px]">
+            <div class="flex flex-col gap-2 w-full md:w-auto md:min-w-[200px]">
               <button
-                class="w-full min-w-[180px] px-6 py-2 border border-[#FF5000] text-[#FF5000] rounded-lg font-medium hover:bg-[#FF5000] hover:text-white transition"
+                class="w-full px-4 md:px-6 py-2 border border-[#FF5000] text-[#FF5000] rounded-lg font-bold text-sm md:text-base hover:bg-[#FF5000] hover:text-white transition"
                 @click="toggleOrderDetails(order.id)"
               >
                 {{ openDetails[order.id] ? 'Ocultar detalle' : 'Ver detalle de pedido' }}
               </button>
-              <button :class="[getStatusClass(order.status), 'w-full min-w-[180px] px-6 py-2 rounded-lg font-medium border border-gray-300']">
+              <button :class="[getStatusClass(order.status), 'w-full px-4 md:px-6 py-2 rounded-lg font-bold text-sm md:text-base border border-gray-300']">
                 {{ getStatusText(order.status) }}
               </button>
             </div>
@@ -135,24 +137,25 @@
                 <table v-else class="min-w-full bg-white">
                   <thead>
                     <tr class="bg-gray-200">
-                      <th class="text-left px-4 py-2 text-xl font-semibold">Descripción</th>
-                      <th class="text-center px-4 py-2 text-xl font-semibold">Cant.</th>
-                      <th class="text-center px-4 py-2 text-xl font-semibold">Precio</th>
+                      <th class="text-left px-2 md:px-4 py-2 text-sm md:text-xl font-bold">Descripción</th>
+                      <th class="text-center px-2 md:px-4 py-2 text-sm md:text-xl font-bold">Cant.</th>
+                      <th class="text-center px-2 md:px-4 py-2 text-sm md:text-xl font-bold">Precio</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="item in orderDetails[order.id].order.items" :key="item.id" class="border-b last:border-b-0">
-                      <td class="flex items-center gap-4 px-4 py-3">
-                        <img :src="item.image" :alt="item.name" class="w-14 h-14 rounded object-cover" />
+                      <td class="flex items-center gap-2 md:gap-4 px-2 md:px-4 py-3">
+                        <img :src="item.image" :alt="item.name" class="w-10 h-10 md:w-14 md:h-14 rounded object-cover flex-shrink-0" />
                         <span 
-                          class="font-bold text-lg text-gray-800 cursor-pointer hover:text-[#FF5000] transition-colors"
+                          class="font-bold text-sm md:text-lg text-gray-800 cursor-pointer hover:text-[#FF5000] transition-colors line-clamp-2"
                           @click="goToProduct(item.productId)"
+                          :title="item.name"
                         >
-                          {{ item.name }}
+                          {{ truncateProductName(item.name) }}
                         </span>
                       </td>
-                      <td class="text-center px-4 py-3 text-lg">{{ item.quantity }}</td>
-                      <td class="text-center px-4 py-3 text-lg">{{ $formatPrice(item.price) }}</td>
+                      <td class="text-center px-2 md:px-4 py-3 text-sm md:text-lg font-bold">{{ item.quantity }}</td>
+                      <td class="text-center px-2 md:px-4 py-3 text-sm md:text-lg font-bold">{{ $formatPrice(item.price) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -325,5 +328,13 @@ function goToProduct(productId) {
   if (productId) {
     router.push(`/product/${productId}`)
   }
+}
+
+/**
+ * Truncar nombres de productos largos
+ */
+function truncateProductName(name) {
+  if (!name) return ''
+  return name.length > 60 ? name.substring(0, 60) + '...' : name
 }
 </script>
