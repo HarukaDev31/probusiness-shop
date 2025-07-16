@@ -175,13 +175,7 @@
       <CartButton v-if="isMobile" class="flex justify-end" />
       <!-- Barra de búsqueda para tablet -->
       <div class="flex sm:flex md:flex lg:hidden px-4 col-span-2 items-center" v-if="isTablet">
-        <div class="flex items-center bg-white rounded shadow overflow-hidden w-full">
-          <input type="text" placeholder="Escribe el nombre de lo que buscas" v-model="searchQuery" @keyup.enter="search"
-            class="flex-1 px-3 py-2 text-sm outline-none" />
-          <button class="bg-[#FF5C00] p-2 flex items-center justify-center" @click="search">
-            <Icon name="heroicons:magnifying-glass-20-solid" class="w-5 h-5 text-white" />
-          </button>
-        </div>
+        <SearchBar />
       </div>
 
       <!-- Carrito y menú hamburguesa para tablet -->
@@ -205,13 +199,7 @@
 
       <!-- Barra de búsqueda para móvil -->
       <div class="flex sm:flex md:flex lg:hidden px-4 pb-2 col-span-4 mt-4 md:mt-0" v-if="isMobile">
-        <div class="flex items-center bg-white rounded shadow overflow-hidden w-full">
-          <input type="text" placeholder="Escribe el nombre de lo que buscas" v-model="searchQuery" @keyup.enter="search"
-            class="flex-1 px-3 py-2 text-sm outline-none" />
-          <button class="bg-[#FF5C00] p-2 flex items-center justify-center" @click="search">
-            <Icon name="heroicons:magnifying-glass-20-solid" class="w-5 h-5 text-white" />
-          </button>
-        </div>
+        <SearchBar />
       </div>
     </div>
     <!-- Barra de búsqueda móvil -->
@@ -271,18 +259,10 @@
             </clipPath>
           </defs>
         </svg>
-
       </NuxtLink>
       <!-- Search Bar -->
       <div class="flex-1 mx-8 col-span-3" v-if="isDesktop">
-        <div class="relative w-full ">
-          <input type="text" placeholder="Escribe el nombre de lo que buscas" v-model="searchQuery" @keyup.enter="search"
-          class="w-full border border-gray-300 rounded-md pl-4 pr-10 py-2 focus:outline-none focus:border-primary">
-          <button class="absolute right-0 top-0 bg-primary text-white h-4/5 my-1 px-3 mx-1 rounded-md flex items-center justify-center"
-            @click="search">
-            <Icon name="heroicons:magnifying-glass" class="w-7 h-7" />
-          </button>
-        </div>
+        <SearchBar />
       </div>
       <!-- User/Cart/Redes (solo desktop) -->
       <div class="flex items-center gap-10 col-span-2 justify-center ">
@@ -522,6 +502,7 @@ import { onMounted, watchEffect, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useScreenSize } from '~/composables/useScreenSize';
 import { useCartStore } from '~/stores/cart';
+import SearchBar from '~/components/SearchBar.vue';
 const { isMobile, isTablet, isDesktop } = useScreenSize();
 const categoryStore = useCategoryStore();
 const categories = computed(() => categoryStore.categories)

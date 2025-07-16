@@ -145,56 +145,66 @@
           <!-- Vista Mobile -->
           <div class="md:hidden">
             <!-- Slider principal -->
-            <div class="relative bg-white rounded-lg shadow-md">
-              <div class="w-full h-[300px] relative flex items-center justify-center"
+            <div class="relative bg-white rounded-lg shadow-md overflow-hidden">
+              <!-- Contenedor con scroll horizontal que muestra un poco de la siguiente imagen -->
+              <div class="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory" 
                    @touchstart="handleTouchStart"
-                   @touchmove="handleTouchMove"
-                   @touchend="handleTouchEnd">
-                <!-- Wishlist en la esquina superior derecha -->
-                <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
+                   @touchmove="handleTouchMove" 
+                   @touchend="handleTouchEnd"
+                   @scroll="handleScrollGallery"
+                   ref="galleryContainer"
+                   style="scroll-behavior: smooth;">
                 
-                <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
-                  class="object-contain w-full h-full max-w-full max-h-full" />
-                <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
-                  <video :src="activeMedia.url" :alt="product.nombre"
-                    class="object-cover w-full h-full" autoplay muted loop
-                    controls preload="metadata" @error="handleVideoError" @loadstart="handleVideoLoadStart"
-                    crossorigin="anonymous">
-                    <source :src="activeMedia.url" type="video/mp4">
-                    Tu navegador no soporta el elemento de video.
-                  </video>
-                  <!-- Loading state -->
-                  <div v-if="videoLoading"
-                    class="absolute inset-0 flex items-center justify-center bg-gray-100">
-                    <div class="text-center p-4">
-                      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-                      <p class="text-gray-600 text-sm">Cargando video...</p>
+                <div v-for="(media, index) in mediaItems" :key="index"
+                     class="w-[90vw] h-[300px] flex-shrink-0 relative flex items-center justify-center snap-center"
+                     :class="{ 'mr-4': index < mediaItems.length - 1 }">
+                  
+                  <!-- Wishlist en la primera imagen -->
+                  <WishlistButton v-if="index === 0" :product="product" class="absolute top-4 right-4 z-30" />
+                  
+                  <NuxtImg v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
+                    class="object-contain w-full h-full max-w-full max-h-full" />
+                  <div v-else-if="media.type === 'video'" class="w-full h-full flex items-center justify-center">
+                    <video :src="media.url" :alt="product.nombre"
+                      class="object-cover w-full h-full" autoplay muted loop
+                      controls preload="metadata" @error="handleVideoError" @loadstart="handleVideoLoadStart"
+                      crossorigin="anonymous">
+                      <source :src="media.url" type="video/mp4">
+                      Tu navegador no soporta el elemento de video.
+                    </video>
+                    <!-- Loading state -->
+                    <div v-if="videoLoading"
+                      class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                      <div class="text-center p-4">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                        <p class="text-gray-600 text-sm">Cargando video...</p>
+                      </div>
                     </div>
-                  </div>
 
-                  <!-- Fallback para videos bloqueados -->
-                  <div v-if="videoError"
-                    class="absolute inset-0 flex items-center justify-center bg-gray-100">
-                    <div class="text-center p-4">
-                      <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                        </path>
-                      </svg>
-                      <p class="text-gray-600 text-sm">Video no disponible</p>
-                      <p class="text-gray-400 text-xs mt-1">El contenido está protegido por Alibaba</p>
-                      <button @click="loadVideo(activeMedia.url)"
-                        class="mt-2 px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary-dark transition">
-                        Reintentar
-                      </button>
+                    <!-- Fallback para videos bloqueados -->
+                    <div v-if="videoError"
+                      class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                      <div class="text-center p-4">
+                        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
+                          viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                          </path>
+                        </svg>
+                        <p class="text-gray-600 text-sm">Video no disponible</p>
+                        <p class="text-gray-400 text-xs mt-1">El contenido está protegido por Alibaba</p>
+                        <button @click="loadVideo(media.url)"
+                          class="mt-2 px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary-dark transition">
+                          Reintentar
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               
               <!-- Contador en la parte inferior -->
-              <div class="absolute bottom-4 left-4">
+              <div class="absolute bottom-4 left-4 z-20">
                 <!-- Contador de imágenes -->
                 <div class="bg-black/50 text-white px-2 py-1 rounded text-sm">
                   {{ activeMediaIndex + 1 }} / {{ mediaItems.length }}
@@ -231,8 +241,7 @@
           </div>
           <!-- Panel lateral de carrito -->
           <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40"
-            @click.self="showCartPanel = false"
-            
+            @click.self="closeCartPanel"
             >
             <!-- Mobile: desde abajo -->
             <div class="md:hidden bg-white w-full h-[580px] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0" @click.stop>
@@ -381,7 +390,6 @@
                       d="M11.1161 6.05201L8.74852 7.66268L6.64496 4.57335C6.44252 4.2741 6.02885 4.19489 5.7296 4.39732C5.43035 4.59976 5.35114 5.01343 5.55357 5.31268L8.02679 8.9477C8.15882 9.13253 8.36125 9.23815 8.57249 9.23815C8.69571 9.23815 8.82773 9.20294 8.94215 9.12373L11.8554 7.14339C12.1547 6.94096 12.2339 6.52729 12.0315 6.22804C11.829 5.92878 11.4154 5.84957 11.1161 6.05201Z"
                       fill="#272A30" />
                   </svg>
-
                 </span>
                 <div>
                   <span class="font-semibold">Tiempo de entrega</span><br>
@@ -590,6 +598,8 @@ const getProductMOQ = computed(() => {
 });
 
 function openCartPanel() {
+  // Resetear goToCart para mostrar el botón correcto
+  goToCart.value = false;
   // Asegurar que cartQuantity tenga el MOQ correcto
   cartQuantity.value = getProductMOQ.value;
   showCartPanel.value = true;
@@ -655,20 +665,10 @@ computed(() => {
 
 
 const iniciarPedidoMinimo = () => {
-  //open cart panel
+  // Resetear goToCart para mostrar el botón de agregar al carrito
   goToCart.value = true;
   cartQuantity.value = getProductMOQ.value;
   showCartPanel.value = true;
-  /*if (product.value) {
-    cartStore.addItem({
-      id: product.value.id,
-      name: product.value.name || product.value.nombre,
-      price: getPrecioPuestoEnPeru(),
-      quantity: 1,
-      image: product.value.main_image_url || product.value.image || '/images/logo.png'
-    });
-    router.push('/cart');
-  }*/
 };
 
 const addToCartFromPanel = () => {
@@ -684,6 +684,13 @@ const addToCartFromPanel = () => {
     showCartPanel.value = false;
   }
 };
+
+// También agregar una función para cerrar el panel que resetee el estado
+const closeCartPanel = () => {
+  showCartPanel.value = false;
+  // Opcional: resetear goToCart al cerrar
+  // goToCart.value = false;
+}
 
 // SEO
 const { setProductSEO } = useSEO();
@@ -928,6 +935,20 @@ const handleTouchEnd = () => {
   // Resetear valores
   touchStartX.value = 0;
   touchEndX.value = 0;
+};
+
+// Función para manejar scroll de la galería y actualizar el activeMediaIndex
+const galleryContainer = ref(null);
+
+const handleScrollGallery = () => {
+  if (!galleryContainer.value) return;
+  
+  const container = galleryContainer.value;
+  const scrollLeft = container.scrollLeft;
+  const itemWidth = container.clientWidth * 0.9 + 16; // 90vw + margin
+  
+  const newIndex = Math.round(scrollLeft / itemWidth);
+  activeMediaIndex.value = Math.max(0, Math.min(newIndex, mediaItems.value.length - 1));
 };
 
 // Debe estar en el scope superior para ser accesible en todo el componente
@@ -1206,7 +1227,7 @@ table tr:hover {
   }
 
   50% {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 }
 
@@ -1216,5 +1237,15 @@ table tr:hover {
 
 .floating-button:hover {
   animation: glow 2s ease-in-out infinite;
+}
+
+/* Ocultar barra de scroll en galería mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 </style>

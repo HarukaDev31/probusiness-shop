@@ -47,7 +47,10 @@ export const useProductStore = defineStore('product', () => {
   async function searchProducts(searchTerm,currentPage = 1) {
     const {data,total} = await productService.searchProducts(searchTerm,currentPage);
     totalProducts.value = total;
-    products.value.push(...data.map(product => ({
+    // Solo agregar productos que no existen ya en el array (por id)
+    const existingIds = new Set(products.value.map(p => p.id));
+    const nuevos = data.filter(product => !existingIds.has(product.id));
+    products.value.push(...nuevos.map(product => ({
       ...product,
       slug: product.slug || product.category_name.toLowerCase().replace(/\s+/g, '-')
     })));

@@ -113,8 +113,8 @@
               <span class="text-black-600 text-lg">Resumen de pedido</span>
             </div>
             <Icon 
-              :name="mobileSummaryOpen ? 'heroicons:chevron-down' : 'heroicons:chevron-up'" 
-              class="w-5 h-5 text-gray-500 transition-transform duration-300"
+              name="heroicons:chevron-up" 
+              class="w-5 h-5 text-gray-500 transition-transform duration-300 animate-bounce-gentle"
               :class="mobileSummaryOpen ? 'rotate-180' : 'rotate-0'"
             />
           </button>
@@ -285,5 +285,22 @@ onMounted(() => {
 .mobile-summary-leave-from {
   transform: translateY(0);
   opacity: 1;
+}
+
+/* Animación suave de bounce para la flecha */
+@keyframes bounce-gentle {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 2s infinite;
 }
 </style>

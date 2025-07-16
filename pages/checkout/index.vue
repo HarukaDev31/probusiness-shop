@@ -55,6 +55,7 @@
                 </div>
             <button
               type="button"
+              v-if="!isUserLoggedIn"
               class="w-[25%] bg-[#FF5000] text-white font-semibold p-3 rounded mt-4 font-epilogue"
               @click="guardarDatos"
             >
@@ -217,6 +218,7 @@
             </div>
             <button
               type="button"
+              v-if="!isUserLoggedIn"
               class="w-full bg-[#FF5000] text-white font-semibold p-3 rounded mt-4 font-epilogue"
               @click="guardarDatos"
             >
@@ -269,8 +271,8 @@
               <span class="text-black-600 text-lg">Resumen de pedido</span>
             </div>
             <Icon 
-              :name="mobileSummaryOpen ? 'heroicons:chevron-down' : 'heroicons:chevron-up'" 
-              class="w-5 h-5 text-gray-500 transition-transform duration-300"
+              name="heroicons:chevron-up" 
+              class="w-5 h-5 text-gray-500 transition-transform duration-300 animate-bounce-gentle"
               :class="mobileSummaryOpen ? 'rotate-180' : 'rotate-0'"
             />
           </button>
@@ -449,6 +451,11 @@ const cartStore = useCartStore();
 const userStore = useUserStore();
 const savedMessage = ref(false)
 const mobileSummaryOpen = ref(false)
+
+// Computed property para verificar si el usuario está logueado
+const isUserLoggedIn = computed(() => {
+  return !!userStore.token || !!userStore.name || !!localStorage.getItem('access_token');
+});
 
 // Usar las funciones directamente en vez de locationService.getX
 
@@ -988,6 +995,23 @@ input[type="radio"]:checked::after {
 .mobile-summary-leave-from {
   transform: translateY(0);
   opacity: 1;
+}
+
+/* Animación suave de bounce para la flecha */
+@keyframes bounce-gentle {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 2s infinite;
 }
 
 </style>
