@@ -1,14 +1,14 @@
   <template>
     <div>
       <!-- Hero de la categoría -->
-      <div v-if="category && !loading" class="container-custom py-8">
-        <div class="bg-white rounded-lg shadow-sm border  md:h-[280px]h-[340px]">
+      <div v-if="category && !loading" class="container-custom py-8 w-full flex justify-center">
+        <div class="bg-white rounded-lg shadow-sm border  md:h-[280px] h-[340px] w-2/3">
           <div class="flex flex-row md:flex-row items-center gap-6 justify-between">
             <div class="w-full md:w-2/3 text-center md:text-center">
               <h1 class="text-3xl md:text-4xl font-bold text-gray-800">{{ category.name }}</h1>
             </div>
             <!-- Imagen de la categoría -->
-            <div class="w-full flex flex-row  items-end justify-end">
+            <div class="w-full flex flex-row items-end justify-end">
               <!-- Primera imagen (visible en mobile y desktop) -->
               <div v-if="category.img_url" class="h-[280px] rounded-lg overflow-hidden">
                 <NuxtImg :src="category.img_url" :alt="category.name" class="h-full" loading="lazy" />
@@ -22,9 +22,7 @@
               </div>
 
               <!-- Segunda imagen (solo visible en desktop) -->
-              <div v-if="category.img_url" class="hidden md:block h-[320px] rounded-lg overflow-hidden ">
-                <NuxtImg :src="category.img_url" :alt="category.name" class="h-full" loading="lazy" />
-              </div>
+
               <div v-else
                 class="hidden md:block h-[320px] rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center mt-4">
                 <div class="text-center">
@@ -197,9 +195,9 @@ const total = computed(() => {
 });
 
 onMounted(async () => {
-  await Promise.all([
-    productStore.fetchProductsByCategory(slug, currentPage.value)
-  ]);
+  loading.value = true;
+  await categoryStore.fetchCategories();
+  await productStore.fetchProductsByCategory(slug, currentPage.value);
   loading.value = false;
 });
 onBeforeRouteUpdate(async (to) => {
@@ -209,12 +207,11 @@ onBeforeRouteUpdate(async (to) => {
 });
 // Update when route changes
 watch(() => route.params.slug, async (newSlug) => {
-  if (newSlug && newSlug !== slug) {
+  if (newSlug) {
     loading.value = true;
-    await Promise.all([
-      categoryStore.fetchCategories(),
-      productStore.fetchProducts()
-    ]);
+    await categoryStore.fetchCategories();
+    await productStore.fetchProductsByCategory(newSlug, 1);
+    currentPage.value = 1;
     loading.value = false;
   }
 });

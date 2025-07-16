@@ -115,6 +115,13 @@
                     </button>
                     <p class="text-xs text-gray-500 mt-1">(*) La contraseña debe tener al menos 6 caracteres.</p>
                 </div>
+                <div>
+                    <label class="block text-gray-600 mb-1" for="repeatPassword">Repetir contraseña</label>
+                    <input id="repeatPassword" v-model="registerData.repeatPassword" :type="showPassword ? 'text' : 'password'"
+                    class="w-full px-4 py-3 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-[#F0F4F9] text-base"
+                    placeholder="Repite tu contraseña" required />
+                    <p class="text-xs text-gray-500 mt-1">(*) Debe coincidir con la contraseña.</p>
+                </div>
                 <button type="submit" :disabled="loading"
                     class="w-full bg-orange-500 text-white py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg hover:bg-orange-600 transition disabled:opacity-60">
                     <span v-if="loading" class="animate-spin h-5 w-5 mr-3 border-t-2 border-white rounded-full"></span>
@@ -196,7 +203,8 @@ const registerData = ref({
     apellido: '',
     email: '',
     whatsapp: '',
-    password: ''
+    password: '',
+    repeatPassword: ''
 })
 
 const showForgot = ref(false)
@@ -233,6 +241,11 @@ async function handleRegister() {
 
     if (registerData.value.password.length < 6) {
         showWarning('La contraseña debe tener al menos 6 caracteres', 'Contraseña Inválida')
+        return
+    }
+
+    if (registerData.value.password !== registerData.value.repeatPassword) {
+        showWarning('Las contraseñas no coinciden', 'Contraseña')
         return
     }
 
