@@ -1,8 +1,12 @@
 <template>
   <section class="py-8">
     <div class="container-custom max-w-[1440px] mx-auto">
-      <div class="mb-6">
+      <div class="mb-6 flex justify-between items-center">
         <h2 class="text-2xl font-bold">{{ title }}</h2>
+        <!-- Ver más para desktop -->
+        <NuxtLink v-if="isDesktop" :to="`/category/${slug}`" class="text-blue-500 text-sm flex items-center hover:underline font-medium">
+          Ver más <Icon name="lucide:plus" class="w-3 h-3 ml-1" />
+        </NuxtLink>
       </div>
       <div class="relative">
         <div v-if="!isLoading">

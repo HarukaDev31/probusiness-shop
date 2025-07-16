@@ -80,12 +80,7 @@ import 'swiper/css/scrollbar';
 const defaultThumbnail = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5SaY5SpcvkbuONkzR3lXbHCFKDEUef2z8f6tpvcLH2dKKuXFMg3gyk2av2qs2C2o0tHk';
 
 const testimonios = [
-  {
-    id: 1,
-    nombre: 'ALUMNO DE CHINA',
-    thumbnail: 'https://intranet.probusiness.pe/assets/testimonios/alumnochino_1.webp',
-    tiktokUrl: 'https://www.tiktok.com/embed/v2/7518214656066915602'
-  },
+
   {
     id: 2,
     nombre: 'IMPORTADOR ARIEL MEDINA',
@@ -109,6 +104,12 @@ const testimonios = [
     nombre: 'IMPORTADOR PERCY ACUÑA',
     thumbnail: 'https://intranet.probusiness.pe/assets/testimonios/percy.webp',
     tiktokUrl: 'https://www.tiktok.com/embed/v2/7485545802073525512'
+  },
+  {
+    id: 1,
+    nombre: 'ALUMNO DE CHINA',
+    thumbnail: 'https://intranet.probusiness.pe/assets/testimonios/alumnochino_1.webp',
+    tiktokUrl: 'https://www.tiktok.com/embed/v2/7518214656066915602'
   },
 ];
 
