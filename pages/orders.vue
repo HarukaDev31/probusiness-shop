@@ -79,7 +79,7 @@
             <!-- Product Info -->
             <div class="flex-1 min-w-0">
               <div 
-                class="font-bold text-lg text-gray-800 truncate cursor-pointer hover:text-[#FF5000] transition-colors"
+                class="font-normal text-lg text-gray-800 truncate cursor-pointer hover:text-[#FF5000] transition-colors"
                 @click="goToProduct(order.items[0]?.productId)"
               >
               

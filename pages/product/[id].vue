@@ -295,9 +295,21 @@
               <div class="border-b-2 border-gray-300 rounded my-3"></div>
               <div>
                 <div class="flex flex-col gap-3 my-4">
-                  <button v-if="!goToCart" @click="iniciarPedidoPanel"
-                    class="w-full bg-[#FF5000] text-white font-semibold py-6 rounded-lg hover:bg-[#e04a00] transition">Iniciar
-                    pedido</button>
+                  <button v-if="!goToCart" @click="iniciarPedidoPanel" :disabled="cartQuantity < getMinimumOrderQuantity()"
+                    :class="[
+                      'w-full font-semibold py-6 rounded-lg transition',
+                      cartQuantity < getMinimumOrderQuantity()
+                        ? 'bg-orange-200 text-orange-700 cursor-not-allowed'
+                        : 'bg-[#FF5000] text-white hover:bg-[#e04a00]'
+                    ]">
+                    Iniciar pedido
+                  </button>
+                  <span
+                    v-if="cartQuantity < getMinimumOrderQuantity()"
+                    class="text-red-600 text-sm font-semibold mt-2 block"
+                  >
+                    Debes colocar al menos la cantidad mínima: {{ getMinimumOrderQuantity() }}
+                  </span>
                   <button v-if="goToCart"
                     class="w-full border border-gray-800 text-gray-900 font-semibold py-6 rounded-lg bg-white hover:bg-gray-100 transition"
                     @click="addToCartFromPanel">
@@ -346,9 +358,21 @@
                   <span class="text-lg font-bold">{{ $formatPrice(getPrecioPuestoEnPeru() * cartQuantity) }}</span>
                 </div>
                 <div class="flex flex-col gap-3">
-                  <button v-if="!goToCart" @click="iniciarPedidoPanel"
-                    class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar
-                    pedido</button>
+                  <button v-if="!goToCart" @click="iniciarPedidoPanel" :disabled="cartQuantity < getMinimumOrderQuantity()"
+                    :class="[
+                      'w-full font-semibold py-3 rounded-lg transition',
+                      cartQuantity < getMinimumOrderQuantity()
+                        ? 'bg-orange-200 text-orange-700 cursor-not-allowed'
+                        : 'bg-[#FF5000] text-white hover:bg-[#e04a00]'
+                    ]">
+                    Iniciar pedido
+                  </button>
+                  <span
+                    v-if="cartQuantity < getMinimumOrderQuantity()"
+                    class="text-red-600 text-sm font-semibold mt-2 block"
+                  >
+                    Debes colocar al menos la cantidad mínima: {{ getMinimumOrderQuantity() }}
+                  </span>
                   <button v-if="goToCart"
                     class="w-full border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition"
                     @click="addToCartFromPanel">
@@ -544,6 +568,7 @@ import 'swiper/css/scrollbar';
 import { Navigation } from 'swiper/modules';
 import { useRouter } from 'vue-router'
 import { useVideoLoader } from '~/composables/useVideoLoader';
+import { useUserStore } from '~/stores/user'
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 
@@ -566,6 +591,7 @@ const { $formatPrice } = useNuxtApp();
 const { videoError, videoLoading, loadVideo, isAlibabaVideo, getAlternativeUrl } = useVideoLoader();
 const router = useRouter();
 const cartQuantity = ref(1)
+const userStore = useUserStore()
 
 const iniciarPedidoPanel = () => {
   goToCart.value = true;
@@ -578,6 +604,10 @@ const iniciarPedidoPanel = () => {
       image: product.value.main_image_url || product.value.image || '/images/logo.png'
     });
     showCartPanel.value = false;
+    if (!userStore.token) {
+    router.push('/register')
+    return
+  }
     router.push('/checkout');
   }
 }
@@ -605,12 +635,7 @@ function openCartPanel() {
   showCartPanel.value = true;
 }
 
-// Validar que la cantidad nunca sea menor al MOQ
-watch(cartQuantity, (val) => {
-  if (val < getProductMOQ.value) {
-    cartQuantity.value = getProductMOQ.value;
-  }
-});
+
 
 const route = useRoute();
 const productId = parseInt(route.params.id);
@@ -720,7 +745,7 @@ watch(() => route.params.id, () => {
 // Handler para forzar el mínimo en el input de cantidad
 function handleCartQuantityInput() {
   const min = getMinimumOrderQuantity() || 1;
-  if (cartQuantity.value < min) cartQuantity.value = min;
+  if (cartQuantity.value < 1) cartQuantity.value = 1;
 }
 // Variables para el carrusel
 const activeMediaIndex = ref(0);

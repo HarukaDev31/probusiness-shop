@@ -2,14 +2,14 @@
   <div class="product-card flex flex-col h-full">
     <div class="relative ">
       <div class="absolute inset-0 relative">
-        <NuxtLink :to="`/product/${product.id}`">
+        <a :href="`/product/${product.id}`" target="_blank" rel="noopener">
           <NuxtImg  
             :src="getProductImage()" 
             :alt="product.nombre"
             loading="lazy"
             class="w-full h-full object-contain p-1 md:p-4 hover:scale-105 transition-transform duration-300 max-w-full max-h-full"
           />
-        </NuxtLink>
+        </a>
         
         <!-- Wishlist button -->
         <WishlistButton :product="product" class="absolute top-2 right-2 z-20" />
@@ -18,9 +18,9 @@
     <div class="p-4 flex flex-col flex-grow">
       <!--badge from category-->
  
-      <NuxtLink :to="`/product/${product.id}`">
+      <a :href="`/product/${product.id}`" target="_blank" rel="noopener">
         <h3 class="font-medium mb-2 line-clamp-2 hover:text-[#FF5000] leading-1 transition-colors h-12 flex items-start">{{ truncateName(product.nombre) }}</h3>
-      </NuxtLink>
+      </a>
       <div class="text-sm text-gray-500 mb-2">Orden mínima: {{ product.moq }}</div>
       <div class="text-2xl font-bold text-black mt-auto">{{ $formatPrice(product.precio) }}</div>
     </div>
