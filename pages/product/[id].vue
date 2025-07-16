@@ -146,10 +146,14 @@
           <div class="md:hidden">
             <!-- Slider principal -->
             <div class="relative bg-white rounded-lg shadow-md">
-              <div class="w-full h-[300px] relative flex items-center justify-center"
-                   @touchstart="handleTouchStart"
-                   @touchmove="handleTouchMove"
-                   @touchend="handleTouchEnd">
+              <Swiper
+                :modules="[Scrollbar]"
+                :slides-per-view="1"
+                :space-between="0"
+                :scrollbar="{ draggable: false }"
+                class="w-full h-[300px] rounded-lg"
+                @slideChange="(swiper) => activeMediaIndex = swiper.activeIndex"
+              ><SwiperSlide v-for="(media, idx) in mediaItems" :key="idx">
                 <!-- Wishlist en la esquina superior derecha -->
                 <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
                 
@@ -191,7 +195,9 @@
                     </div>
                   </div>
                 </div>
-              </div>
+                </SwiperSlide>
+              </Swiper>
+
               
               <!-- Contador en la parte inferior -->
               <div class="absolute bottom-4 left-4">
@@ -738,7 +744,7 @@ watch(() => route.params.id, () => {
 // Handler para forzar el mínimo en el input de cantidad
 function handleCartQuantityInput() {
   const min = getMinimumOrderQuantity() || 1;
-  if (cartQuantity.value < 1) cartQuantity.value = 1;
+  if (cartQuantity.value < min) cartQuantity.value = min;
 }
 // Variables para el carrusel
 const activeMediaIndex = ref(0);
