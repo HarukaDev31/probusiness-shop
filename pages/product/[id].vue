@@ -128,7 +128,7 @@
                   </div>
                 </div>
               </div>
-              <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
+              <WishlistButton :product="product" class="absolute bottom-4 md:top-4 right-4 z-30" />
 
               <!-- Flecha derecha -->
               <button v-if="mediaItems.length > 1" @click="nextMedia"
