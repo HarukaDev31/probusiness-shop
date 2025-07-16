@@ -6,7 +6,7 @@
           v-for="category in categories"
           :key="category.id"
           class="bg-white rounded-xl shadow flex flex-row items-stretch min-h-[220px] md:min-h-[260px] h-[220px] md:h-[260px] relative overflow-hidden outline-none group transition-all duration-300 p-0"
-          @click="$router.push(`/category/${category.slug}`)"
+          @click="openCategory(category.slug)"
           type="button"
         >
           <div class="flex flex-col justify-between flex-1 pl-8 py-10">
@@ -39,4 +39,7 @@
 defineProps({
   categories: { type: Array, required: true }
 });
+function openCategory(slug) {
+  window.open(`/category/${slug}`, '_blank');
+}
 </script>

@@ -145,40 +145,34 @@
           <!-- Vista Mobile -->
           <div class="md:hidden">
             <!-- Slider principal -->
-            <div class="relative bg-white rounded-lg shadow-md overflow-hidden">
-              <!-- Contenedor con scroll horizontal que muestra un poco de la siguiente imagen -->
-              <div class="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory" 
-                   @touchstart="handleTouchStart"
-                   @touchmove="handleTouchMove" 
-                   @touchend="handleTouchEnd"
-                   @scroll="handleScrollGallery"
-                   ref="galleryContainer"
-                   style="scroll-behavior: smooth;">
+            <div class="relative bg-white rounded-lg shadow-md">
+              <Swiper
+                :modules="[Scrollbar]"
+                :slides-per-view="1"
+                :space-between="0"
+                :scrollbar="{ draggable: true }"
+                class="w-full h-[300px] rounded-lg"
+                @slideChange="(swiper) => activeMediaIndex = swiper.activeIndex"
+              ><SwiperSlide v-for="(media, idx) in mediaItems" :key="idx">
+                <!-- Wishlist en la esquina superior derecha -->
+                <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
                 
-                <div v-for="(media, index) in mediaItems" :key="index"
-                     class="w-[90vw] h-[300px] flex-shrink-0 relative flex items-center justify-center snap-center"
-                     :class="{ 'mr-4': index < mediaItems.length - 1 }">
-                  
-                  <!-- Wishlist en la primera imagen -->
-                  <WishlistButton v-if="index === 0" :product="product" class="absolute top-4 right-4 z-30" />
-                  
-                  <NuxtImg v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
-                    class="object-contain w-full h-full max-w-full max-h-full" />
-                  <div v-else-if="media.type === 'video'" class="w-full h-full flex items-center justify-center">
-                    <video :src="media.url" :alt="product.nombre"
-                      class="object-cover w-full h-full" autoplay muted loop
-                      controls preload="metadata" @error="handleVideoError" @loadstart="handleVideoLoadStart"
-                      crossorigin="anonymous">
-                      <source :src="media.url" type="video/mp4">
-                      Tu navegador no soporta el elemento de video.
-                    </video>
-                    <!-- Loading state -->
-                    <div v-if="videoLoading"
-                      class="absolute inset-0 flex items-center justify-center bg-gray-100">
-                      <div class="text-center p-4">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-                        <p class="text-gray-600 text-sm">Cargando video...</p>
-                      </div>
+                <NuxtImg v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
+                  class="object-contain w-full h-full max-w-full max-h-full" />
+                <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
+                  <video :src="activeMedia.url" :alt="product.nombre"
+                    class="object-cover w-full h-full" autoplay muted loop
+                    controls preload="metadata" @error="handleVideoError" @loadstart="handleVideoLoadStart"
+                    crossorigin="anonymous">
+                    <source :src="activeMedia.url" type="video/mp4">
+                    Tu navegador no soporta el elemento de video.
+                  </video>
+                  <!-- Loading state -->
+                  <div v-if="videoLoading"
+                    class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                    <div class="text-center p-4">
+                      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                      <p class="text-gray-600 text-sm">Cargando video...</p>
                     </div>
 
                     <!-- Fallback para videos bloqueados -->
@@ -201,10 +195,12 @@
                     </div>
                   </div>
                 </div>
-              </div>
+                </SwiperSlide>
+              </Swiper>
+
               
               <!-- Contador en la parte inferior -->
-              <div class="absolute bottom-4 left-4 z-20">
+              <div class="absolute bottom-4 left-4 z-40">
                 <!-- Contador de imágenes -->
                 <div class="bg-black/50 text-white px-2 py-1 rounded text-sm">
                   {{ activeMediaIndex + 1 }} / {{ mediaItems.length }}
@@ -295,9 +291,21 @@
               <div class="border-b-2 border-gray-300 rounded my-3"></div>
               <div>
                 <div class="flex flex-col gap-3 my-4">
-                  <button v-if="!goToCart" @click="iniciarPedidoPanel"
-                    class="w-full bg-[#FF5000] text-white font-semibold py-6 rounded-lg hover:bg-[#e04a00] transition">Iniciar
-                    pedido</button>
+                  <button v-if="!goToCart" @click="iniciarPedidoPanel" :disabled="cartQuantity < getMinimumOrderQuantity()"
+                    :class="[
+                      'w-full font-semibold py-6 rounded-lg transition',
+                      cartQuantity < getMinimumOrderQuantity()
+                        ? 'bg-orange-200 text-orange-700 cursor-not-allowed'
+                        : 'bg-[#FF5000] text-white hover:bg-[#e04a00]'
+                    ]">
+                    Iniciar pedido
+                  </button>
+                  <span
+                    v-if="cartQuantity < getMinimumOrderQuantity()"
+                    class="text-red-600 text-sm font-semibold mt-2 block"
+                  >
+                    Debes colocar al menos la cantidad mínima: {{ getMinimumOrderQuantity() }}
+                  </span>
                   <button v-if="goToCart"
                     class="w-full border border-gray-800 text-gray-900 font-semibold py-6 rounded-lg bg-white hover:bg-gray-100 transition"
                     @click="addToCartFromPanel">
@@ -346,9 +354,21 @@
                   <span class="text-lg font-bold">{{ $formatPrice(getPrecioPuestoEnPeru() * cartQuantity) }}</span>
                 </div>
                 <div class="flex flex-col gap-3">
-                  <button v-if="!goToCart" @click="iniciarPedidoPanel"
-                    class="w-full bg-[#FF5000] text-white font-semibold py-3 rounded-lg hover:bg-[#e04a00] transition">Iniciar
-                    pedido</button>
+                  <button v-if="!goToCart" @click="iniciarPedidoPanel" :disabled="cartQuantity < getMinimumOrderQuantity()"
+                    :class="[
+                      'w-full font-semibold py-3 rounded-lg transition',
+                      cartQuantity < getMinimumOrderQuantity()
+                        ? 'bg-orange-200 text-orange-700 cursor-not-allowed'
+                        : 'bg-[#FF5000] text-white hover:bg-[#e04a00]'
+                    ]">
+                    Iniciar pedido
+                  </button>
+                  <span
+                    v-if="cartQuantity < getMinimumOrderQuantity()"
+                    class="text-red-600 text-sm font-semibold mt-2 block"
+                  >
+                    Debes colocar al menos la cantidad mínima: {{ getMinimumOrderQuantity() }}
+                  </span>
                   <button v-if="goToCart"
                     class="w-full border border-gray-800 text-gray-900 font-semibold py-3 rounded-lg bg-white hover:bg-gray-100 transition"
                     @click="addToCartFromPanel">
@@ -544,6 +564,7 @@ import 'swiper/css/scrollbar';
 import { Navigation } from 'swiper/modules';
 import { useRouter } from 'vue-router'
 import { useVideoLoader } from '~/composables/useVideoLoader';
+import { useUserStore } from '~/stores/user'
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 
@@ -566,6 +587,7 @@ const { $formatPrice } = useNuxtApp();
 const { videoError, videoLoading, loadVideo, isAlibabaVideo, getAlternativeUrl } = useVideoLoader();
 const router = useRouter();
 const cartQuantity = ref(1)
+const userStore = useUserStore()
 
 const iniciarPedidoPanel = () => {
   goToCart.value = true;
@@ -578,6 +600,10 @@ const iniciarPedidoPanel = () => {
       image: product.value.main_image_url || product.value.image || '/images/logo.png'
     });
     showCartPanel.value = false;
+    if (!userStore.token) {
+    router.push('/register')
+    return
+  }
     router.push('/checkout');
   }
 }
@@ -605,12 +631,7 @@ function openCartPanel() {
   showCartPanel.value = true;
 }
 
-// Validar que la cantidad nunca sea menor al MOQ
-watch(cartQuantity, (val) => {
-  if (val < getProductMOQ.value) {
-    cartQuantity.value = getProductMOQ.value;
-  }
-});
+
 
 const route = useRoute();
 const productId = parseInt(route.params.id);

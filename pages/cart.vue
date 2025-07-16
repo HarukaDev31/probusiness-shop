@@ -216,11 +216,13 @@ definePageMeta({
 
 import { ref, computed } from 'vue'
 import { useCartStore } from '~/stores/cart';
+import { useUserStore } from '~/stores/user'
 
 const { $formatPrice } = useNuxtApp();
 
 const router = useRouter(); 
 const cartStore = useCartStore();
+const userStore = useUserStore()
 const cartItems = computed(() => cartStore.cartItems)
 const cartTotal = computed(() => cartStore.cartTotal)
 const cartItemCount = computed(() => cartStore.cartItemCount)
@@ -240,6 +242,10 @@ const toggleMobileSummary = () => {
 }
 async function goToCheckout() {
   cartStore.checkoutItems = selectedItems.value
+  if (!userStore.token) {
+    router.push('/register')
+    return
+  }
   router.push('/checkout')
 }
 

@@ -32,8 +32,6 @@
     <!-- Botón principal -->
     <button 
       @click="handleWishlistClick"
-      @mouseenter="handleMouseEnter"
-      @mouseleave="handleMouseLeave"
       :class="[
         'wishlist-button w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out relative overflow-hidden group',
         isInWishlist 
@@ -63,14 +61,7 @@
       ></div>
     </button>
 
-    <!-- Tooltip mejorado -->
-    <div 
-      v-if="showTooltip"
-      class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 animate-fade-in whitespace-nowrap z-10"
-    >
-      {{ isInWishlist ? 'Remover de favoritos' : 'Agregar a favoritos' }}
-      <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
-    </div>
+
   </div>
 </template>
 
@@ -92,7 +83,6 @@ const userStore = useUserStore()
 // Estados para animaciones
 const showParticles = ref(false)
 const showRipple = ref(false)
-const showTooltip = ref(false)
 
 const isInWishlist = computed(() => {
   return props.product.is_in_wishlist
@@ -146,14 +136,7 @@ const handleWishlistClick = async () => {
   }
 }
 
-// Mostrar tooltip en hover
-const handleMouseEnter = () => {
-  showTooltip.value = true
-}
 
-const handleMouseLeave = () => {
-  showTooltip.value = false
-}
 </script>
 
 <style scoped>
