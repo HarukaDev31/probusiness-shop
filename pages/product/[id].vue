@@ -155,7 +155,7 @@
                 @slideChange="(swiper) => activeMediaIndex = swiper.activeIndex"
               ><SwiperSlide v-for="(media, idx) in mediaItems" :key="idx">
                 <!-- Wishlist en la esquina superior derecha -->
-                <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
+                <WishlistButton :product="product" class="absolute bottom-4 md:top-4 right-4 z-30" />
                 
                 <NuxtImg v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
                   class="object-contain w-full h-full max-w-full max-h-full" />
