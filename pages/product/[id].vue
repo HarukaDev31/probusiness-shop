@@ -741,7 +741,7 @@ watch(() => route.params.id, () => {
 // Handler para forzar el mínimo en el input de cantidad
 function handleCartQuantityInput() {
   const min = getMinimumOrderQuantity() || 1;
-  if (cartQuantity.value < min) cartQuantity.value = min;
+  if (cartQuantity.value < 1) cartQuantity.value = 1;
 }
 // Variables para el carrusel
 const activeMediaIndex = ref(0);
