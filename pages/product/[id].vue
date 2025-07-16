@@ -150,14 +150,14 @@
                 :modules="[Scrollbar]"
                 :slides-per-view="1"
                 :space-between="0"
-                :scrollbar="{ draggable: false }"
+                :scrollbar="{ draggable: true }"
                 class="w-full h-[300px] rounded-lg"
                 @slideChange="(swiper) => activeMediaIndex = swiper.activeIndex"
               ><SwiperSlide v-for="(media, idx) in mediaItems" :key="idx">
                 <!-- Wishlist en la esquina superior derecha -->
                 <WishlistButton :product="product" class="absolute top-4 right-4 z-30" />
                 
-                <NuxtImg v-if="activeMedia.type === 'image'" :src="activeMedia.url" :alt="product.nombre"
+                <NuxtImg v-if="media.type === 'image'" :src="media.url" :alt="product.nombre"
                   class="object-contain w-full h-full max-w-full max-h-full" />
                 <div v-else-if="activeMedia.type === 'video'" class="w-full h-full flex items-center justify-center">
                   <video :src="activeMedia.url" :alt="product.nombre"
@@ -200,7 +200,7 @@
 
               
               <!-- Contador en la parte inferior -->
-              <div class="absolute bottom-4 left-4">
+              <div class="absolute bottom-4 left-4 z-40">
                 <!-- Contador de imágenes -->
                 <div class="bg-black/50 text-white px-2 py-1 rounded text-sm">
                   {{ activeMediaIndex + 1 }} / {{ mediaItems.length }}
