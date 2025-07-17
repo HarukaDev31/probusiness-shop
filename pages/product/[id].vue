@@ -254,9 +254,12 @@
                         class="w-12 h-12 flex items-center justify-center bg-gray-100 text-2xl font-bold disabled:opacity-50">-</button>
                       <input type="number" v-model.number="cartQuantity" :min="getMinimumOrderQuantity() || 1"
                         class="w-20 text-center border-0 focus:ring-0 focus:outline-none text-xl font-bold"
-                        @input="handleCartQuantityInput" />
-                      <button @click="cartQuantity++"
-                        class="w-12 h-12 flex items-center justify-center bg-gray-100 text-2xl font-bold">+</button>
+                        @input=""
+                      />
+                      <button
+                        @click="cartQuantity++"
+                        class="w-12 h-12 flex items-center justify-center bg-gray-100 text-2xl font-bold"
+                      >+</button>
                     </div>
                   </div>
                   <div class="flex flex-col flex-1">
@@ -322,7 +325,7 @@
                     </button>
                     <input type="number" v-model.number="cartQuantity" :min="getMinimumOrderQuantity() || 1"
                       class="w-16 text-center border border-gray-200 rounded px-2 py-1"
-                      @input="handleCartQuantityInput" />
+                      @input="" />
                     <button @click="cartQuantity++"
                       class="w-8 h-8 rounded border border-gray-300 flex items-center justify-center text-2xl">+</button>
                   </div>
@@ -732,11 +735,7 @@ watch(() => route.params.id, () => {
 });
 // Inicializamos con la imagen principal
 
-// Handler para forzar el mínimo en el input de cantidad
-function handleCartQuantityInput() {
-  const min = getMinimumOrderQuantity() || 1;
-  if (cartQuantity.value < min) cartQuantity.value = min;
-}
+
 // Variables para el carrusel
 const activeMediaIndex = ref(0);
 const currentPage = ref(0);
