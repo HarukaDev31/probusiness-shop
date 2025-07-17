@@ -198,7 +198,7 @@
       </div>
 
       <!-- Barra de búsqueda para móvil -->
-      <div class="flex sm:flex md:flex lg:hidden px-4 pb-2 col-span-4 mt-4 md:mt-0" v-if="isMobile">
+      <div class="flex sm:flex md:flex lg:hidden pb-2 col-span-4 mt-4 md:mt-0" v-if="isMobile">
         <SearchBar />
       </div>
     </div>
