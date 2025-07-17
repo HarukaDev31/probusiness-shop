@@ -3,7 +3,7 @@
     <div class="max-w-6xl mx-auto p-4 md:p-6">
       <!-- Filtro de año y contador de pedidos -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white rounded-lg shadow-md p-4 md:p-6 mb-4 md:mb-6 gap-4">
-        <div class="flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row items-center gap-2">
           <span class="font-bold text-lg text-gray-800">{{ orders.length }} pedidos</span>
           <span class="text-gray-600">realizados en</span>
           <select
@@ -81,7 +81,7 @@
             <!-- Product Info -->
             <div class="flex-1 min-w-0">
               <div 
-                class="font-bold text-base md:text-lg text-gray-800 line-clamp-2 cursor-pointer hover:text-[#FF5000] transition-colors"
+                class=" text-base md:text-lg text-gray-800 line-clamp-2 cursor-pointer hover:text-[#FF5000] transition-colors"
                 @click="goToProduct(order.items[0]?.productId)"
                 :title="order.items[0]?.name"
               >
@@ -94,12 +94,12 @@
             <!-- Actions -->
             <div class="flex flex-col gap-2 w-full md:w-auto md:min-w-[200px]">
               <button
-                class="w-full px-4 md:px-6 py-2 border border-[#FF5000] text-[#FF5000] rounded-lg font-bold text-sm md:text-base hover:bg-[#FF5000] hover:text-white transition"
+                class="w-full px-4 md:px-6 py-2 border border-[#FF5000] text-[#FF5000] rounded-lg  text-sm md:text-base hover:bg-[#FF5000] hover:text-white transition"
                 @click="toggleOrderDetails(order.id)"
               >
                 {{ openDetails[order.id] ? 'Ocultar detalle' : 'Ver detalle de pedido' }}
               </button>
-              <button :class="[getStatusClass(order.status), 'w-full px-4 md:px-6 py-2 rounded-lg font-bold text-sm md:text-base border border-gray-300']">
+              <button :class="[getStatusClass(order.status), 'w-full px-4 md:px-6 py-2 rounded-lg  text-sm md:text-base border border-gray-300']">
                 {{ getStatusText(order.status) }}
               </button>
             </div>
@@ -154,8 +154,8 @@
                           {{ truncateProductName(item.name) }}
                         </span>
                       </td>
-                      <td class="text-center px-2 md:px-4 py-3 text-sm md:text-lg font-bold">{{ item.quantity }}</td>
-                      <td class="text-center px-2 md:px-4 py-3 text-sm md:text-lg font-bold">{{ $formatPrice(item.price) }}</td>
+                      <td class="text-center px-2 md:px-4 py-3 text-sm md:text-lg ">{{ item.quantity }}</td>
+                      <td class="text-center px-2 md:px-4 py-3 text-sm md:text-lg ">{{ $formatPrice(item.price) }}</td>
                     </tr>
                   </tbody>
                 </table>
