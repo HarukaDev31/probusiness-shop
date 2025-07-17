@@ -78,7 +78,7 @@
     <!-- Vista Mobile -->
     <div class="md:hidden flex flex-col min-h-screen">
       <!-- Contenido principal -->
-      <div class="flex-1 overflow-y-auto p-4 pb-32">
+      <div class="flex-1 overflow-y-auto p-4" :class="mobileSummaryOpen ? 'pb-80' : 'pb-20'">
         <div class="bg-white rounded-lg shadow-md p-6 mb-4">
           <h2 class="text-xl font-bold mb-4">Tus productos</h2>
           <div v-if="cartItems.length === 0" class="text-center py-8">
@@ -214,7 +214,7 @@ definePageMeta({
   middleware: ['cart-init']
 })
 
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useCartStore } from '~/stores/cart';
 import { useUserStore } from '~/stores/user'
 
@@ -241,6 +241,18 @@ const toggleMobileSummary = () => {
   mobileSummaryOpen.value = !mobileSummaryOpen.value
 }
 
+// Función para abrir el panel sin causar scroll
+const openMobileSummary = async () => {
+  if (!mobileSummaryOpen.value) {
+    const currentScrollY = window.scrollY
+    mobileSummaryOpen.value = true
+    
+    // Esperar a que el DOM se actualice y luego restaurar la posición de scroll
+    await nextTick()
+    window.scrollTo(0, currentScrollY)
+  }
+}
+
 // Variables para detectar scroll
 let lastScrollY = 0
 let scrollTimeout = null
@@ -251,7 +263,7 @@ const handleScroll = () => {
   
   // Si está cerca del top, abrir el panel
   if (currentScrollY < 50) {
-    mobileSummaryOpen.value = true
+    openMobileSummary()
   }
   
   // Detectar scroll hacia arriba
@@ -263,7 +275,7 @@ const handleScroll = () => {
     
     // Abrir panel después de un pequeño delay
     scrollTimeout = setTimeout(() => {
-      mobileSummaryOpen.value = true
+      openMobileSummary()
     }, 300)
   }
   

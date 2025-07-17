@@ -140,7 +140,7 @@
     <!-- Vista Mobile -->
     <div class="md:hidden flex flex-col min-h-screen">
       <!-- Contenido principal -->
-      <div class="flex-1 overflow-y-auto p-4 pb-32">
+      <div class="flex-1 overflow-y-auto p-4" :class="mobileSummaryOpen ? 'pb-80' : 'pb-20'">
         <div class="bg-white rounded-lg shadow-md p-6 mb-4">
           <h2 class="text-xl font-bold mb-4">Tus datos</h2>
           <svg class="text-orange-400 pb-1" width="22" height="22" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -438,7 +438,7 @@ import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart'
 import { useUserStore } from '~/stores/user'
 
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
 import { useOrders } from '~/composables/useOrders'
 import { useModal } from '~/composables/useModal'
 import { getDepartamentos, getProvincias, getDistritos } from '~/services/location-service'
@@ -469,6 +469,18 @@ const toggleMobileSummary = () => {
   mobileSummaryOpen.value = !mobileSummaryOpen.value;
 }
 
+// Función para abrir el panel sin causar scroll
+const openMobileSummary = async () => {
+  if (!mobileSummaryOpen.value) {
+    const currentScrollY = window.scrollY
+    mobileSummaryOpen.value = true
+    
+    // Esperar a que el DOM se actualice y luego restaurar la posición de scroll
+    await nextTick()
+    window.scrollTo(0, currentScrollY)
+  }
+}
+
 // Variables para detectar scroll
 let lastScrollY = 0
 let scrollTimeout = null
@@ -479,7 +491,7 @@ const handleScroll = () => {
   
   // Si está cerca del top, abrir el panel
   if (currentScrollY < 50) {
-    mobileSummaryOpen.value = true
+    openMobileSummary()
   }
   
   // Detectar scroll hacia arriba
@@ -491,7 +503,7 @@ const handleScroll = () => {
     
     // Abrir panel después de un pequeño delay
     scrollTimeout = setTimeout(() => {
-      mobileSummaryOpen.value = true
+      openMobileSummary()
     }, 300)
   }
   
