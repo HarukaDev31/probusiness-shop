@@ -226,7 +226,7 @@
           <div v-if="showCartPanel" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-40"
             @click.self="closeCartPanel">
             <!-- Mobile: desde abajo -->
-            <div class="md:hidden bg-white w-full h-[580px] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0"
+            <div class="md:hidden bg-white w-full h-[610px] shadow-xl p-8 flex flex-col rounded-t-lg absolute bottom-0"
               @click.stop>
               <div class="flex flex-col justify-between items-start my-3">
                 <h2 class="text-lg font-bold">Selecciona la cantidad de tu interés</h2>

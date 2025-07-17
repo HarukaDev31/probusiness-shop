@@ -32,7 +32,7 @@
 import { useCartStore } from '~/stores/cart';
 
 const { $formatPrice } = useNuxtApp();
-
+const { isMobile } = useDevice();
 const props = defineProps({
   product: {
     type: Object,
