@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevenir zoom accidental en móviles */
+* {
+  touch-action: manipulation;
+}
+
+/* Deshabilitar zoom por doble tap específicamente */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+/* Mejorar experiencia táctil para botones */
+button, 
+[role="button"], 
+input[type="submit"], 
+input[type="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 @layer components {
   .btn {
     @apply px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 transition duration-300;

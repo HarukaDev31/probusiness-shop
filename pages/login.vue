@@ -275,9 +275,11 @@ const handleLogin = async () => {
     if (data.access_token) {
       loginSuccess.value = true
       //get checkout route from local storage
-      const checkoutRoute = localStorage.getItem('checkoutRoute')
-      if (checkoutRoute) {
-        router.push(checkoutRoute)
+      const checkingRoute = localStorage.getItem('checkingRoute')
+      if (checkingRoute) {
+        console.log('Redirigiendo a:', checkingRoute)
+        localStorage.removeItem('checkingRoute') // Limpiar después de usar
+        router.push(checkingRoute)
       } else {
         router.push('/')
       }
@@ -295,7 +297,6 @@ const handleLogin = async () => {
 
 }
 definePageMeta({
-  middleware: 'guest',
   layout: 'auth'
 })
 </script>

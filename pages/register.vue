@@ -262,7 +262,15 @@ async function handleRegister() {
         await userStore.registerUser(registerData.value)
         showSuccess('¡Cuenta creada exitosamente! Redirigiendo...', 'Registro Exitoso')
         setTimeout(() => {
-            router.push('/')
+            // Verificar si hay ruta de retorno guardada
+            const checkingRoute = localStorage.getItem('checkingRoute')
+            if (checkingRoute) {
+                console.log('Redirigiendo a:', checkingRoute)
+                localStorage.removeItem('checkingRoute') // Limpiar después de usar
+                router.push(checkingRoute)
+            } else {
+                router.push('/')
+            }
         }, 1000)
     } catch (error) {
         console.log(error)
@@ -299,9 +307,9 @@ const handleLogin = async () => {
         const data = await userStore.loginUser(registerData.value.email, registerData.value.password)
         if (data.access_token) {
             $modal.showSuccess('¡Has iniciado sesión exitosamente! Redirigiendo...', 'Inicio de Sesión Exitoso')
-            const checkoutRoute = localStorage.getItem('checkoutRoute')
-            if (checkoutRoute) {
-                router.push(checkoutRoute)
+            const checkingRoute = localStorage.getItem('checkingRoute')
+            if (checkingRoute) {
+                router.push(checkingRoute)
             } else {
                 router.push('/')
             }

@@ -120,6 +120,9 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'auth'
+})
 import { ref, onMounted, watch } from 'vue'
 import { getUserAccount, updateUserAccount } from '~/services/user-account-service'
 import * as locationService from '~/services/location-service'

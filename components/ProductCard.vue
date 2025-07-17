@@ -2,7 +2,7 @@
   <div class="product-card flex flex-col h-full">
     <div class="relative ">
       <div class="absolute inset-0 relative">
-        <a :href="`/product/${product.id}`" target="_blank" rel="noopener">
+        <a :href="`/product/${product.id}`" :target="isMobile ? '_self' : '_blank'" rel="noopener">
           <NuxtImg  
             :src="getProductImage()" 
             :alt="product.nombre"

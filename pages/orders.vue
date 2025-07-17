@@ -177,6 +177,9 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: 'auth'
+})
 import { useOrders } from '~/composables/useOrders'
 import orderService from '~/services/order-service'
 import { useRouter } from 'vue-router'

@@ -681,7 +681,7 @@ async function handlePedido() {
       
       } else {
         //set on local storage route to redirect later login or register
-        localStorage.setItem('checkoutRoute', '/checkout');
+        localStorage.setItem('checkingRoute', '/checkout');
         showError(result.message || 'Error al procesar el pedido. Por favor, inténtalo de nuevo.')
       }
     }

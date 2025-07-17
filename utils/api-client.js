@@ -32,6 +32,14 @@ export const apiClient = {
 
       // Manejar respuesta 401 automáticamente
       if (response.status === 401) {
+        console.log('🚨 Error 401 en api-client - ruta actual:', router?.currentRoute?.value?.path)
+        
+        // Solo procesar si no estamos ya en login o register
+        if (router?.currentRoute?.value?.path === '/login' || router?.currentRoute?.value?.path === '/register') {
+          console.log('⚠️ Ya estamos en login/register, no redirigir desde api-client')
+          throw new Error('Unauthorized')
+        }
+        
         // Limpiar datos del usuario
         userStore.logout()
         
@@ -39,6 +47,7 @@ export const apiClient = {
         $modal.showWarning('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', 'Sesión Expirada')
         
         // Redirigir al login
+        console.log('🔄 Redirigiendo a login desde api-client')
         router.push('/login')
         
         throw new Error('Unauthorized')
