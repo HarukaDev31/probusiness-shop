@@ -438,7 +438,7 @@ import { useRouter } from 'vue-router'
 import { useCartStore } from '~/stores/cart'
 import { useUserStore } from '~/stores/user'
 
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useOrders } from '~/composables/useOrders'
 import { useModal } from '~/composables/useModal'
 import { getDepartamentos, getProvincias, getDistritos } from '~/services/location-service'
@@ -468,6 +468,47 @@ const { createOrder, loading: orderLoading, error: orderError, clearError } = us
 const toggleMobileSummary = () => {
   mobileSummaryOpen.value = !mobileSummaryOpen.value;
 }
+
+// Variables para detectar scroll
+let lastScrollY = 0
+let scrollTimeout = null
+
+// Función para detectar scroll hacia arriba y abrir el panel
+const handleScroll = () => {
+  const currentScrollY = window.scrollY
+  
+  // Si está cerca del top, abrir el panel
+  if (currentScrollY < 50) {
+    mobileSummaryOpen.value = true
+  }
+  
+  // Detectar scroll hacia arriba
+  if (currentScrollY < lastScrollY && currentScrollY > 100) {
+    // Limpiar timeout anterior
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout)
+    }
+    
+    // Abrir panel después de un pequeño delay
+    scrollTimeout = setTimeout(() => {
+      mobileSummaryOpen.value = true
+    }, 300)
+  }
+  
+  lastScrollY = currentScrollY
+}
+
+// Agregar event listener para scroll
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+  if (scrollTimeout) {
+    clearTimeout(scrollTimeout)
+  }
+})
 const cartItems = computed(() => cartStore.cartItems)
 const cartTotal = computed(() => cartStore.cartTotal)
 const checkoutItems = computed(() => cartStore.checkoutItems)
